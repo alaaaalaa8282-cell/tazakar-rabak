@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0D4A28">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp">
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/father_photo"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="محمد عبد العظيم طرفايه الطويل"
+            android:textColor="#FFD700"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:lineSpacingMultiplier="1.6"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:text="اللهم اغفر له وارحمه وعافه واعف عنه&#10;وأكرم نزله ووسع مدخله&#10;واغسله بالماء والثلج والبرد&#10;ونقه من الخطايا كما نقيت الثوب الأبيض من الدنس&#10;وأدخله الجنة وأعذه من عذاب القبر ومن عذاب النار" />
+
+    </LinearLayout>
+
+</RelativeLayout>
