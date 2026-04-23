@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="إهداء"
+        android:layout="@layout/preference_catagory">
+        <Preference
+            android:layout="@layout/dedication_layout"
+            android:selectable="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/language"
+        android:layout="@layout/preference_catagory">
+        <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
+            android:entries="@array/languagelist"
+            android:entryValues="@array/languagelistValues"
+            android:key="language"
+            android:title="@string/language" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

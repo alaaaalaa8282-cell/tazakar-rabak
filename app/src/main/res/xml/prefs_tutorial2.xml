@@ -1,0 +1,89 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+        android:title="@string/RemindMeSettings"
+        android:layout="@layout/preference_catagory">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="RemindmeThroughTheDay"
+            android:title="@string/RemindmeThroughTheDay" />
+        <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
+            android:defaultValue="30"
+            android:entries="@array/ReminderIncrementOptions"
+            android:entryValues="@array/ReminderIncrementValues"
+            android:key="RemindMeEvery"
+            android:title="@string/RemindMeEvery" />
+        <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
+            android:defaultValue="1"
+            android:entries="@array/RemindmeThroughTheDayType"
+            android:entryValues="@array/RemindmeThroughTheDayTypeValues"
+            android:key="RemindmeThroughTheDayType"
+            android:title="@string/general_thikr_reminder_type" />
+        <com.alaaeltaweel.thikrallah.Utilities.SeekBarPreference
+            android:defaultValue="100"
+            android:key="volume"
+            android:title="@string/volume_level"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/quiet_time"
+        android:layout="@layout/preference_catagory">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="quiet_time_choice"
+            android:title="@string/quiet_time_choice" />
+
+        <com.alaaeltaweel.thikrallah.Utilities.TimePreference
+            android:defaultValue="22:00"
+            android:key="quiet_time_start"
+            android:title="@string/quiet_time_start" />
+        <com.alaaeltaweel.thikrallah.Utilities.TimePreference
+            android:defaultValue="@string/quiet_time_endvalue"
+            android:key="quiet_time_end"
+            android:title="@string/quiet_time_end" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="quiet_time_after_athan_choice"
+            android:title="@string/quiet_time_after_athan_choice"
+            android:summary="@string/quiet_time_after_athan_choice_summary" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/morningThikrSettings"
+        android:layout="@layout/preference_catagory">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="remindMeMorningThikr"
+            android:title="@string/remindMeMorningThikr" />
+
+        <com.alaaeltaweel.thikrallah.Utilities.TimePreference
+            android:defaultValue="08:00"
+            android:key="daytReminderTime"
+            android:title="@string/changeReminderTime" />
+
+        <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
+            android:defaultValue="1"
+            android:entries="@array/RemindmeType"
+            android:entryValues="@array/RemindmeTypeValues"
+            android:key="remindMeDayThikrType"
+            android:title="@string/general_thikr_reminder_type" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/nightThikrSettings"
+        android:layout="@layout/preference_catagory">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="remindMeNightThikr"
+            android:title="@string/remindMeNightThikr" />
+
+        <com.alaaeltaweel.thikrallah.Utilities.TimePreference
+            android:defaultValue="20:00"
+            android:key="nightReminderTime"
+            android:title="@string/changeReminderTime" />
+
+        <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
+            android:defaultValue="1"
+            android:entries="@array/RemindmeType"
+            android:entryValues="@array/RemindmeTypeValues"
+            android:key="remindMeNightThikrType"
+            android:title="@string/general_thikr_reminder_type" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
