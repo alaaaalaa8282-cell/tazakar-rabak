@@ -292,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface, Lo
     public void requestBatteryExclusion() {
         Log.d(TAG,"requestBatteryExclusion");
         PowerManager powerManager = (PowerManager) this.getSystemService(POWER_SERVICE);
-        String packageName = "com.alaaeltaweel.thikrallah.alaa";
+        String packageName = "com.alaaeltaweel.thikrallah";
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
             if (!powerManager.isIgnoringBatteryOptimizations(packageName)) {
