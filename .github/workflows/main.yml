@@ -27,7 +27,7 @@ jobs:
 
       - name: Generate Keystore
         run: |
-          keytool -genkey -v \
+          keytool -genkeypair \
             -keystore app/keystore.jks \
             -alias ${{ secrets.KEY_ALIAS }} \
             -keyalg RSA \
@@ -35,7 +35,8 @@ jobs:
             -validity 10000 \
             -storepass ${{ secrets.STORE_PASSWORD }} \
             -keypass ${{ secrets.KEY_PASSWORD }} \
-            -dname "CN=alaaeltaweel, O=alaaeltaweel, C=EG"
+            -dname "CN=alaaeltaweel, O=alaaeltaweel, C=EG" \
+            -storetype JKS
 
       - name: ⭐ COPY THIS - Keystore Base64
         run: |
