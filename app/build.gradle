@@ -33,7 +33,7 @@ android {
         applicationId "com.alaaeltaweel.thikrallah"
         minSdkVersion 21
         targetSdkVersion 36
-        versionCode 152
+        versionCode System.getenv("GITHUB_RUN_NUMBER")?.toInteger() ?: 152
         versionName "7.7.1"
     }
     buildTypes {
