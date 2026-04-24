@@ -1,3 +1,4 @@
+
 package com.alaaeltaweel.thikrallah;
 
 
@@ -442,7 +443,7 @@ public class ThikrMediaPlayerService extends Service implements OnCompletionList
                 updateActions();
                 break;
         }
-        return Service.START_NOT_STICKY;
+        return Service.START_STICKY;
     }
 
     public int getCurrentPlaying() {
