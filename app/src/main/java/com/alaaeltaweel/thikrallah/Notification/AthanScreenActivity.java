@@ -90,11 +90,10 @@ public class AthanScreenActivity extends AppCompatActivity {
         switch (dataType) {
             case MainActivity.DATA_TYPE_ATHAN1: return "الفجر";
             case MainActivity.DATA_TYPE_ATHAN2:
-           case MainActivity.DATA_TYPE_ATHAN2:
-           java.util.Calendar cal = java.util.Calendar.getInstance();
-            if (cal.get(java.util.Calendar.DAY_OF_WEEK) == java.util.Calendar.FRIDAY) {
-           return "الجمعة";
-      }
+    java.util.Calendar cal = java.util.Calendar.getInstance();
+    if (cal.get(java.util.Calendar.DAY_OF_WEEK) == java.util.Calendar.FRIDAY) {
+        return "الجمعة";
+    }
     return "الظهر";
 case MainActivity.DATA_TYPE_ATHAN3: return "العصر";
             case MainActivity.DATA_TYPE_ATHAN3: return "العصر";
