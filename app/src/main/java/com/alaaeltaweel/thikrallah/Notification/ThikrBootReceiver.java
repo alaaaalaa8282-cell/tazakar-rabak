@@ -1,12 +1,13 @@
 package com.alaaeltaweel.thikrallah.Notification;
 
-
 import android.app.AlarmManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -24,6 +25,11 @@ public class ThikrBootReceiver extends BroadcastReceiver {
 				MyAlarmsManager manager=new MyAlarmsManager(context.getApplicationContext());
 				manager.UpdateAllApplicableAlarms();
 
+				// تأخير 5 ثواني عشان الجهاز يكمل الإقلاع
+				new Handler(Looper.getMainLooper()).postDelayed(() -> {
+					manager.UpdateAllApplicableAlarms();
+				}, 5000);
+
 				SharedPreferences mPrefs=PreferenceManager.getDefaultSharedPreferences(context);
 				boolean isTimer=mPrefs.getBoolean("foreground_athan_timer",true);
 
@@ -35,7 +41,6 @@ public class ThikrBootReceiver extends BroadcastReceiver {
 							}
 							//foreground service start not allowed unless at boot completed since SDK 31
 
-
 						}else{
 							context.startForegroundService(new Intent(context,AthanTimerService.class));
 						}
@@ -46,9 +51,6 @@ public class ThikrBootReceiver extends BroadcastReceiver {
 				}
 			}
 		}
-
-
-
-
 	}
 }
+
