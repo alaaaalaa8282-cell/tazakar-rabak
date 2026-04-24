@@ -46,6 +46,9 @@ public class AthanScreenActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+               getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
+                getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+                
             );
         }
 
