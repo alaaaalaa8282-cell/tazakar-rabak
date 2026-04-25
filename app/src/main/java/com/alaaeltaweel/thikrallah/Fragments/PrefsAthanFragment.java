@@ -29,22 +29,21 @@ public class PrefsAthanFragment extends PreferenceFragmentCompat implements OnSh
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.preferences_athan);
 		initSummary(getPreferenceScreen());
 	}
+
 	@Override
 	public void onAttach(Context context) {
 		super.onAttach(context);
 		MainActivity.setLocale(context);
 	}
+
 	@Override
 	public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-
 	}
 
 	private void updatePrefSummary(Preference pref) {
-
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity().getApplicationContext());
 		if (pref instanceof ListPreference) {
 			Timber.tag("prefs").d("pref is instance of listpreference");
@@ -53,33 +52,32 @@ public class PrefsAthanFragment extends PreferenceFragmentCompat implements OnSh
 		}
 		if (pref instanceof TimePreference) {
 			Timber.tag("prefs").d("pref is instance of TimePreference");
-			String time=sharedPreferences.getString(pref.getKey(), "00:00");
-			String AMPM="AM";
-			int hour=TimePreference.getHour(time);
-			if (hour>12){
-				hour=hour-12;
-				AMPM="PM";
+			String time = sharedPreferences.getString(pref.getKey(), "00:00");
+			String AMPM = "AM";
+			int hour = TimePreference.getHour(time);
+			if (hour > 12) {
+				hour = hour - 12;
+				AMPM = "PM";
 			}
-			if (hour==0){
-				hour=12;
+			if (hour == 0) {
+				hour = 12;
 			}
-			String hourString="";
-			if (hour<10){
-				hourString="0"+hour;
-			}else{
-				hourString=""+hour;
+			String hourString = "";
+			if (hour < 10) {
+				hourString = "0" + hour;
+			} else {
+				hourString = "" + hour;
 			}
-			int minutes=TimePreference.getMinute(time);
-			String minutesString="";
-			if (minutes<10){
-				minutesString="0"+minutes;
-			}else{
-				minutesString=""+minutes;
+			int minutes = TimePreference.getMinute(time);
+			String minutesString = "";
+			if (minutes < 10) {
+				minutesString = "0" + minutes;
+			} else {
+				minutesString = "" + minutes;
 			}
-			pref.setSummary(hourString+":"+minutesString+" "+AMPM);
+			pref.setSummary(hourString + ":" + minutesString + " " + AMPM);
 		}
 	}
-
 
 	private void initSummary(PreferenceScreen p) {
 		if (p != null) {
@@ -91,71 +89,75 @@ public class PrefsAthanFragment extends PreferenceFragmentCompat implements OnSh
 			updatePrefSummary(p);
 		}
 	}
+
 	private void initSummary(Preference p) {
-        if (p instanceof PreferenceGroup) {
-            PreferenceGroup pGrp = (PreferenceGroup) p;
-            for (int i = 0; i < pGrp.getPreferenceCount(); i++) {
-                initSummary(pGrp.getPreference(i));
-            }
-        } else {
-            updatePrefSummary(p);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-        logScreen();
-    }
-
-    private void logScreen() {
+		if (p instanceof PreferenceGroup) {
+			PreferenceGroup pGrp = (PreferenceGroup) p;
+			for (int i = 0; i < pGrp.getPreferenceCount(); i++) {
+				initSummary(pGrp.getPreference(i));
+			}
+		} else {
+			updatePrefSummary(p);
+		}
 	}
 
-    @Override
-    public void onPause() {
-        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-        super.onPause();
-    }
+	@Override
+	public void onResume() {
+		super.onResume();
+		getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+		logScreen();
+	}
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-                                          String key) {
-        MyAlarmsManager manager = new MyAlarmsManager(this.getActivity().getApplicationContext());
-		Log.d("MyAlarmsManager","onSharedPreferenceChanged called. Now calling UpdateAllApplicableAlarms");
+	private void logScreen() {
+	}
+
+	@Override
+	public void onPause() {
+		getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+		super.onPause();
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+		MyAlarmsManager manager = new MyAlarmsManager(this.getActivity().getApplicationContext());
+		Log.d("MyAlarmsManager", "onSharedPreferenceChanged called. Now calling UpdateAllApplicableAlarms");
 		manager.UpdateAllApplicableAlarms();
 		Preference pref = findPreference(key);
 		updatePrefSummary(pref);
-		if (key.equalsIgnoreCase("language")){
-            Intent intent=new Intent();
-            intent.setClass(this.getActivity(), MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.putExtra("FromPreferenceActivity",true);
-            this.startActivity(intent);
-        }
-		if (key.contains("_reminder_type")){//athan type changed
+		if (key.equalsIgnoreCase("language")) {
+			Intent intent = new Intent();
+			intent.setClass(this.getActivity(), MainActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			intent.putExtra("FromPreferenceActivity", true);
+			this.startActivity(intent);
+		}
+		if (key.contains("_reminder_type")) {
 			play_athan(key);
 		}
-		if (key.equalsIgnoreCase("foreground_athan_timer")){//athan type changed
-			boolean isTimer=sharedPreferences.getBoolean("foreground_athan_timer",true);
-
-			if(isTimer){
+		if (key.equalsIgnoreCase("foreground_athan_timer")) {
+			boolean isTimer = sharedPreferences.getBoolean("foreground_athan_timer", true);
+			if (isTimer) {
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-					this.getActivity().startForegroundService(new Intent(this.getActivity(),AthanTimerService.class));
+					this.getActivity().startForegroundService(new Intent(this.getActivity(), AthanTimerService.class));
 				} else {
-					this.getActivity().startService(new Intent(this.getActivity(),AthanTimerService.class));
+					this.getActivity().startService(new Intent(this.getActivity(), AthanTimerService.class));
 				}
-			}else{
-				this.getActivity().startService(new Intent(this.getActivity(),AthanTimerService.class));
+			} else {
+				this.getActivity().startService(new Intent(this.getActivity(), AthanTimerService.class));
 			}
-
-			//AthanTimerService.enqueueWork(this.getActivity(), new Intent(this.getActivity(),AthanTimerService.class));
 		}
 	}
+
 	private void play_athan(String key) {
-		Bundle data=new Bundle();
-		data.putInt("ACTION", ThikrMediaPlayerService.MEDIA_PLAYER_PLAY);
-		switch (key){
+		// وقف أي أذان شغال أول
+		Bundle stopData = new Bundle();
+		stopData.putInt("ACTION", ThikrMediaPlayerService.MEDIA_PLAYER_RESET);
+		stopData.putString("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_ATHAN1);
+		sendActionToMediaService(stopData);
+
+		// شغل الأذان الجديد
+		Bundle data = new Bundle();
+		switch (key) {
 			case "fajr_reminder_type":
 				data.putString("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_ATHAN1);
 				break;
@@ -174,19 +176,18 @@ public class PrefsAthanFragment extends PreferenceFragmentCompat implements OnSh
 		}
 		data.putInt("ACTION", ThikrMediaPlayerService.MEDIA_PLAYER_PLAY);
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity().getApplicationContext());
-		int file=Integer.parseInt(sharedPreferences.getString(key,"3"));
+		int file = Integer.parseInt(sharedPreferences.getString(key, "3"));
 		data.putInt("FILE", file);
 		sendActionToMediaService(data);
 	}
-	public void sendActionToMediaService(Bundle data){
-		if (data!=null){
+
+	public void sendActionToMediaService(Bundle data) {
+		if (data != null) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 				this.getActivity().startForegroundService(new Intent(this.getActivity(), ThikrService.class).putExtras(data));
 			} else {
 				this.getActivity().startService(new Intent(this.getActivity(), ThikrService.class).putExtras(data));
 			}
-
 		}
-
 	}
 }
