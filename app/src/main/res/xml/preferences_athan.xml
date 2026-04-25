@@ -36,31 +36,31 @@
             android:title="@string/is_foreground_athan_timer" />
 
     <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
-        android:defaultValue="3"
+        android:defaultValue="8"
         android:entries="@array/athan_notification_types"
         android:entryValues="@array/athan_notification_types_values"
         android:key="fajr_reminder_type"
         android:title="@string/fajr_reminder_type"/>
     <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
-        android:defaultValue="3"
+        android:defaultValue="8"
         android:entries="@array/athan_notification_types"
         android:entryValues="@array/athan_notification_types_values"
         android:key="duhr_reminder_type"
         android:title="@string/duhr_reminder_type"/>
     <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
-        android:defaultValue="3"
+        android:defaultValue="8"
         android:entries="@array/athan_notification_types"
         android:entryValues="@array/athan_notification_types_values"
         android:key="asr_reminder_type"
         android:title="@string/asr_reminder_type"/>
     <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
-        android:defaultValue="3"
+        android:defaultValue="8"
         android:entries="@array/athan_notification_types"
         android:entryValues="@array/athan_notification_types_values"
         android:key="maghrib_reminder_type"
         android:title="@string/maghrib_reminder_type"/>
     <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
-        android:defaultValue="3"
+        android:defaultValue="8"
         android:entries="@array/athan_notification_types"
         android:entryValues="@array/athan_notification_types_values"
         android:key="isha_reminder_type"
