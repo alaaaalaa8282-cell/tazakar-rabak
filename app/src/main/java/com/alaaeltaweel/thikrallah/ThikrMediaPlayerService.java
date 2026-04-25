@@ -2024,7 +2024,7 @@ public class ThikrMediaPlayerService extends Service implements OnCompletionList
 
                     player.stop();
 
-                    stopSelf();
+                    ThikrMediaPlayerService.this.stopSelf();
 
                 }
 
