@@ -194,9 +194,10 @@ public class ChatHeadService extends Service implements View.OnTouchListener {
 							new Handler().postDelayed(new DestroyRunnable(this), 10000);
 						}
 					} else {
-						Log.d(TAG, "No overlay permission - stopping service");
-						this.stopSelf();
-					}
+    Log.d(TAG, "No overlay permission - stopping service");
+    stopForeground(true);
+    this.stopSelf();
+}  
 				} else {
 					windowManager.addView(chatHead, params);
 					if (!isAthan) {
