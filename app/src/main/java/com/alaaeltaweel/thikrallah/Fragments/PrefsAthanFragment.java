@@ -155,6 +155,7 @@ public class PrefsAthanFragment extends PreferenceFragmentCompat implements OnSh
 	private void play_athan(String key) {
 		Bundle data=new Bundle();
 		data.putInt("ACTION", ThikrMediaPlayerService.MEDIA_PLAYER_PLAY);
+		data.putBoolean("isUserAction", true);
 		switch (key){
 			case "fajr_reminder_type":
 				data.putString("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_ATHAN1);
