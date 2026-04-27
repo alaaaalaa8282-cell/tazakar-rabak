@@ -89,7 +89,12 @@ public class AthanScreenActivity extends AppCompatActivity {
         if (dataType == null) return "الصلاة";
         switch (dataType) {
             case MainActivity.DATA_TYPE_ATHAN1: return "الفجر";
-            case MainActivity.DATA_TYPE_ATHAN2: return "الظهر";
+            case MainActivity.DATA_TYPE_ATHAN2:
+                java.util.Calendar cal = java.util.Calendar.getInstance();
+                if (cal.get(java.util.Calendar.DAY_OF_WEEK) == java.util.Calendar.FRIDAY) {
+                    return "الجمعة";
+                }
+                return "الظهر";
             case MainActivity.DATA_TYPE_ATHAN3: return "العصر";
             case MainActivity.DATA_TYPE_ATHAN4: return "المغرب";
             case MainActivity.DATA_TYPE_ATHAN5: return "العشاء";
@@ -112,14 +117,12 @@ public class AthanScreenActivity extends AppCompatActivity {
     }
 
     private void stopAthanAndClose() {
-        // وقف الصوت مباشرة عبر ThikrMediaPlayerService
         Bundle data = new Bundle();
         data.putInt("ACTION", ThikrMediaPlayerService.MEDIA_PLAYER_STOP);
         data.putString("com.alaaeltaweel.thikrallah.datatype", dataType);
         Intent stopMedia = new Intent(this, ThikrMediaPlayerService.class).putExtras(data);
         startService(stopMedia);
 
-        // وقف ThikrService كمان
         Intent stopThikr = new Intent(this, ThikrService.class);
         stopService(stopThikr);
 
