@@ -603,6 +603,8 @@ public class ThikrService extends IntentService  {
 
             }
             //starting chatheadservice
+			boolean isUserAction = data.getBoolean("isUserAction", false);
+           if (!isUserAction) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (Settings.canDrawOverlays(this)) {
                     Log.d(TAG, "calling chatheadservice 621");
@@ -627,7 +629,7 @@ public class ThikrService extends IntentService  {
 
 
         }
-
+} // نهاية if (!isUserAction) 
 	}
     public void handleRequiredDownload(PendingIntent launchAppPendingIntent,int notification_id) {
 
