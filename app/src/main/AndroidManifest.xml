@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
@@ -15,14 +14,14 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
-<uses-permission
-    android:name="android.permission.READ_EXTERNAL_STORAGE"
-    android:maxSdkVersion="32" />
+    <!-- ✅ للأندرويد 11 وأقل -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
-
 
     <!--PERMISSIONS BELOW ARE NORMAL PERMISSIONS. NO NEED To ASK FOR THEM/-->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -35,16 +34,16 @@
     <uses-sdk tools:overrideLibrary="timber.log" />
     <application
         android:name="com.alaaeltaweel.thikrallah.quran.labs.androidquran.QuranApplication"
-
-        android:allowBackup="true"
-        android:exported="false"
+        android:allowBackup="false"
+        android:exported="true"
+        android:fullBackupContent="@xml/backup"
         android:icon="@drawable/ic_launcher"
         android:label="@string/my_app_name"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
-
         android:theme="@style/AppTheme"
         tools:replace="android:theme,android:label,android:icon">
+
         <activity
             android:name="com.alaaeltaweel.thikrallah.MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -55,7 +54,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
 
         <activity
             android:name="com.alaaeltaweel.thikrallah.PreferenceActivity"
@@ -70,7 +68,6 @@
             android:name="com.alaaeltaweel.thikrallah.hisnulmuslim.DuaGroupActivity"
             android:exported="false"
             android:label="@string/title_activity_dua_list"
-
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.Base">
             <meta-data
@@ -115,15 +112,16 @@
             android:label="@string/title_activity_preferences"
             android:theme="@style/AppTheme.Base" />
 
-         <activity
-    android:name="com.alaaeltaweel.thikrallah.Notification.AthanScreenActivity"
-    android:exported="false"
-    android:showWhenLocked="true"
-    android:turnScreenOn="true"
-    android:excludeFromRecents="true"
-    android:noHistory="true"
-    android:theme="@style/AppTheme" />
-        
+        <!-- ✅ شاشة الأذان - لا تظهر في Recent Apps -->
+        <activity
+            android:name="com.alaaeltaweel.thikrallah.Notification.AthanScreenActivity"
+            android:exported="false"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@style/AppTheme" />
+
         <service
             android:name="com.alaaeltaweel.thikrallah.Notification.ThikrService"
             android:enabled="true"
@@ -135,23 +133,25 @@
             android:enabled="true"
             android:foregroundServiceType="mediaPlayback"
             android:exported="false" />
+
         <service
             android:name="com.alaaeltaweel.thikrallah.Notification.ChatHeadService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="specialUse">
-        <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-            android:value="One of the app's functionality is to trigger exact alarms at pre-set times.
-                            Those exact alarms are core part of app functionality. They provide timely reminder
-                            of prayer times for muslims 5 times a day. This service shows an overlay window
-                            that allows user to turn off the alarm quickly as needed"/>
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="One of the app's functionality is to trigger exact alarms at pre-set times.
+                                Those exact alarms are core part of app functionality. They provide timely reminder
+                                of prayer times for muslims 5 times a day. This service shows an overlay window
+                                that allows user to turn off the alarm quickly as needed"/>
         </service>
+
         <service
             android:name="com.alaaeltaweel.thikrallah.Notification.AthanTimerService"
             android:enabled="true"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"
-            android:foregroundServiceType="specialUse" >
+            android:foregroundServiceType="specialUse">
             <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="One of app's core functionality is to remind users of prayer times during the day.
                                 Islamic prayer times are schedueled at pre-set times during teh day. This service
@@ -159,22 +159,26 @@
                                 Users have the option to disable or enable this feature in the app's settings"/>
         </service>
 
-
         <receiver
             android:name="com.alaaeltaweel.thikrallah.Notification.ThikrAlarmReceiver"
             android:exported="false" />
         <receiver
             android:name="com.alaaeltaweel.thikrallah.Notification.QuranThikrDownloadNeeds"
             android:exported="false" />
+
+        <!-- ✅ ThikrBootReceiver مع directBootAware -->
         <receiver
-    android:name="com.alaaeltaweel.thikrallah.Notification.ThikrBootReceiver"
-    android:exported="true">
-    <intent-filter>
-        <action android:name="android.intent.action.BOOT_COMPLETED" />
-        <action android:name="com.alaaeltaweel.thikrallah.Notification.ThikrBootReceiver.android.action.broadcast" />
-        <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
-    </intent-filter>
-</receiver>
+            android:name="com.alaaeltaweel.thikrallah.Notification.ThikrBootReceiver"
+            android:exported="true"
+            android:directBootAware="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                <action android:name="com.alaaeltaweel.thikrallah.Notification.ThikrBootReceiver.android.action.broadcast" />
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
         <receiver
             android:name="com.alaaeltaweel.thikrallah.Notification.ThikrMediaBroadcastReciever"
             android:exported="true">
@@ -188,9 +192,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:label="@string/app_name"
-            android:theme="@style/QuranToolBar">
-
-        </activity>
+            android:theme="@style/QuranToolBar" />
 
         <activity
             android:name="com.alaaeltaweel.thikrallah.quran.labs.androidquran.ShortcutsActivity"
@@ -257,11 +259,10 @@
             android:exported="false"
             android:theme="@style/Quran" />
 
-        <!-- declare the default searchable Activity for the whole app -->
         <meta-data
             android:name="android.app.default_searchable"
             android:value=".SearchActivity" />
-        <!-- provides search suggestions for verses. -->
+
         <provider
             android:name="com.alaaeltaweel.thikrallah.quran.labs.androidquran.data.QuranDataProvider"
             android:authorities="@string/authority"
@@ -296,10 +297,8 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data android:scheme="file"/>
                 <data android:host="*"/>
                 <data android:mimeType="*/*"/>
@@ -318,8 +317,7 @@
             android:name="com.alaaeltaweel.thikrallah.quran.labs.androidquran.service.QuranDownloadService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="dataSync"
-            />
+            android:foregroundServiceType="dataSync" />
         <service
             android:name="com.alaaeltaweel.thikrallah.quran.labs.androidquran.service.AudioService"
             android:exported="false"
@@ -329,8 +327,8 @@
             </intent-filter>
         </service>
     </application>
+
     <queries>
-        <!-- Email -->
         <intent>
             <action android:name="android.intent.action.SEND" />
             <data android:mimeType="*/*" />
@@ -338,6 +336,5 @@
         <intent>
             <action android:name="android.intent.action.VIEW" />
         </intent>
-
     </queries>
 </manifest>
