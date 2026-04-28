@@ -104,7 +104,7 @@ public class AthanScreenActivity extends AppCompatActivity {
         data.putString("com.alaaeltaweel.thikrallah.datatype", dataType);
         data.putBoolean("isUserAction", false);
 
-        Intent intent = new Intent(this, ThikrMediaPlayerService.class).putExtras(data);
+        Intent intent = new Intent(this, ThikrService.class).putExtras(data);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent);
         } else {
