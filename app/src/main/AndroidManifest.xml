@@ -114,13 +114,11 @@
 
         <!-- ✅ شاشة الأذان - لا تظهر في Recent Apps -->
         <activity
-            android:name="com.alaaeltaweel.thikrallah.Notification.AthanScreenActivity"
-            android:exported="false"
-            android:showWhenLocked="true"
-            android:turnScreenOn="true"
-            android:excludeFromRecents="true"
-            android:launchMode="singleTop"
-            android:theme="@style/AppTheme" />
+    android:name="com.alaaeltaweel.thikrallah.Notification.AthanScreenActivity"
+    android:exported="false"
+    android:showWhenLocked="true"
+    android:turnScreenOn="true"
+    android:theme="@style/AppTheme" />
 
         <service
             android:name="com.alaaeltaweel.thikrallah.Notification.ThikrService"
