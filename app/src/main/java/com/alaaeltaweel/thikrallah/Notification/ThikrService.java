@@ -604,7 +604,7 @@ public class ThikrService extends IntentService  {
             }
             //starting chatheadservice + AthanScreenActivity
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (Settings.canDrawOverlays(this) && !data.getBoolean("isUserAction", false)) {
+                if (Settings.canDrawOverlays(this)) {
                     Log.d(TAG, "calling chatheadservice 621");
                     // تشغيل شاشة الأذان
                     Intent athanScreenIntent = new Intent(this.getApplicationContext(), AthanScreenActivity.class);
@@ -621,7 +621,7 @@ public class ThikrService extends IntentService  {
                         startService(intentChatHead);
                     }
                 }
-            } else if (!data.getBoolean("isUserAction", false)) {
+            } else {
                 Log.d(TAG, "calling chatheadservice 634");
                 // تشغيل شاشة الأذان
                 Intent athanScreenIntent = new Intent(this.getApplicationContext(), AthanScreenActivity.class);
