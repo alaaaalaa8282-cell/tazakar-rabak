@@ -64,7 +64,7 @@ public class AthanScreenActivity extends AppCompatActivity {
 
         stopButton.setOnClickListener(v -> stopAthanAndClose());
 
-      //  playAthan();//
+       playAthan();
 
         autoHandler.postDelayed(this::stopAthanAndClose, AUTO_DISMISS_DELAY);
     }
