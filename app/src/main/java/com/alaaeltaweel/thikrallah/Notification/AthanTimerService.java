@@ -1,4 +1,4 @@
-package com.alaaeltaweel.thikrallah.Notification;
+package com.HMSolutions.thikrallah.Notification;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -15,9 +15,9 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
-import com.alaaeltaweel.thikrallah.MainActivity;
-import com.alaaeltaweel.thikrallah.R;
-import com.alaaeltaweel.thikrallah.Utilities.PrayTime;
+import com.HMSolutions.thikrallah.MainActivity;
+import com.HMSolutions.thikrallah.R;
+import com.HMSolutions.thikrallah.Utilities.PrayTime;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -98,7 +98,7 @@ public class AthanTimerService extends Service {
 
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			String NOTIFICATION_CHANNEL_ID = "com.alaaeltaweel.thikrallah.Notification.AthanTimerService";
+			String NOTIFICATION_CHANNEL_ID = "com.HMSolutions.thikrallah.Notification.AthanTimerService";
 			String channelName = this.getResources().getString(R.string.athan_timer_notifiaction);
 			NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_DEFAULT);
 			chan.setSound(null,null);
