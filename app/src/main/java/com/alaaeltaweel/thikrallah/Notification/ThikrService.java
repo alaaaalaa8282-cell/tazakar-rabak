@@ -598,7 +598,11 @@ public class ThikrService extends IntentService  {
                         this.startForegroundService(new Intent(this, ThikrMediaPlayerService.class).putExtras(data));
                     } else {
                         this.startService(new Intent(this, ThikrMediaPlayerService.class).putExtras(data));
-                    }
+                  Intent athanScreenIntent = new Intent(this.getApplicationContext(), AthanScreenActivity.class);
+                   athanScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                  athanScreenIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", thikrType);
+                  startActivity(athanScreenIntent);
+					}
                 }
 
             }
@@ -607,10 +611,6 @@ public class ThikrService extends IntentService  {
                 if (Settings.canDrawOverlays(this)) {
                     Log.d(TAG, "calling chatheadservice 621");
                     // تشغيل شاشة الأذان
-                    Intent athanScreenIntent = new Intent(this.getApplicationContext(), AthanScreenActivity.class);
-                    athanScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    athanScreenIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", thikrType);
-                    startActivity(athanScreenIntent);
                     // تشغيل ChatHeadService
                     Intent intentChatHead = new Intent(this.getApplicationContext(), ChatHeadService.class);
                     intentChatHead.putExtra("thikr", athan);
@@ -624,10 +624,6 @@ public class ThikrService extends IntentService  {
             } else {
                 Log.d(TAG, "calling chatheadservice 634");
                 // تشغيل شاشة الأذان
-                Intent athanScreenIntent = new Intent(this.getApplicationContext(), AthanScreenActivity.class);
-                athanScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                athanScreenIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", thikrType);
-                startActivity(athanScreenIntent);
                 // تشغيل ChatHeadService
                 Intent intentChatHead = new Intent(this.getApplicationContext(), ChatHeadService.class);
                 intentChatHead.putExtra("thikr", athan);
