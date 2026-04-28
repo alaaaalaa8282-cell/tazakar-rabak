@@ -125,7 +125,7 @@ public class AthanScreenActivity extends AppCompatActivity {
         stopService(stopThikr);
 
         autoHandler.removeCallbacksAndMessages(null);
-        finish();
+        finishAndRemoveTask();
     }
 
     @Override
