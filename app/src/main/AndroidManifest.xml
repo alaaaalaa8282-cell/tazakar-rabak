@@ -34,7 +34,7 @@
     <uses-sdk tools:overrideLibrary="timber.log" />
     <application
         android:name="com.alaaeltaweel.thikrallah.quran.labs.androidquran.QuranApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:exported="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/my_app_name"
