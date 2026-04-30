@@ -126,7 +126,19 @@ public class MainActivity extends AppCompatActivity implements MainInterface, Lo
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+   if (key.equals("RemindmeThroughTheDayRepeat") ||
+        key.equals("RemindmeThroughTheDayType") ||
+        key.equals("RemindmeThroughTheNightRepeat") ||
+        key.equals("RemindmeThroughTheNightType") ||
+        key.equals("remindMeDayThikrType") ||
+        key.equals("remindMeNightThikrType") ||
+        key.equals("quiet_time_choice") ||
+        key.equals("quiet_time_start") ||
+        key.equals("quiet_time_end")) {
 
+        Intent intent = new Intent("com.alaaeltaweel.thikrallah.Notification.ThikrBootReceiver.android.action.broadcast");
+        sendBroadcast(intent);
+   }
     }
 
 
