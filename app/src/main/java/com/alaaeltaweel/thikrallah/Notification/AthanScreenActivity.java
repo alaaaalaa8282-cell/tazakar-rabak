@@ -43,11 +43,15 @@ public class AthanScreenActivity extends AppCompatActivity {
             if (km != null) km.requestDismissKeyguard(this, null);
         } else {
             getWindow().addFlags(
-                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-            );
+                } else {
+    getWindow().addFlags(
+        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
+        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+    );
+    getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
+}   
         }
 
         setContentView(R.layout.activity_athan_screen);
@@ -70,15 +74,15 @@ public class AthanScreenActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         registerReceiver(athanCompleteReceiver,
                 new IntentFilter("com.alaaeltaweel.thikrallah.ATHAN_COMPLETE"));
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         try {
             unregisterReceiver(athanCompleteReceiver);
         } catch (IllegalArgumentException e) {
