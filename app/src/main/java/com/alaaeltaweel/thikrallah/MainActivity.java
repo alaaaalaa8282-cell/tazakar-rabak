@@ -624,8 +624,6 @@ public class MainActivity extends AppCompatActivity implements MainInterface, Lo
 
         PowerManager powerManager = (PowerManager) getApplicationContext().getSystemService(POWER_SERVICE);
         String packageName = "com.alaaeltaweel.thikrallah";
-        requestLocationPermission();
-        requestLocationUpdate();
         startAthanTimer(this.getApplicationContext());
         Intent intent = this.getIntent();
         boolean isNotification = intent.getBooleanExtra("FromNotification", false);
