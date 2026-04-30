@@ -133,6 +133,7 @@ mCallback.launchFragment(new ThikrFragment(), data, "ThikrFragment");
         mCallback.requestBatteryExclusion();
         mCallback.requestExactAlarmPermission();
         mCallback.requestLocationPermission();
+		mCallback.requestLocationUpdate();
         if (mPrefs.getBoolean("isMediaPermissionNeeded", false)){
             mCallback.requestMediaOrStoragePermission();
         }
