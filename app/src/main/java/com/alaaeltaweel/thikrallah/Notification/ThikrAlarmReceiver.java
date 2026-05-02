@@ -89,12 +89,7 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
         // لو الأذان افتح شاشة الأذان
 
         if (isAthanType(dataType)) {
-            long currentTime = System.currentTimeMillis();
-            long scheduledTime = data.getLong("scheduled_time", 0);
-            if (scheduledTime > 0 && currentTime - scheduledTime > 3 * 60 * 1000) {
-              Log.d(TAG, "Athan skipped - too late");
-              return;
-             }
+            
             Intent athanIntent = new Intent(context, AthanScreenActivity.class);
 
             athanIntent.putExtras(data);
