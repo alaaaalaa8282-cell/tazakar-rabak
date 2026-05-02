@@ -14,6 +14,10 @@ import android.content.Context;
 
 import android.content.Intent;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Calendar;
+
 import android.os.Build;
 
 import android.os.Bundle;
@@ -89,7 +93,20 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
         // لو الأذان افتح شاشة الأذان
 
         if (isAthanType(dataType)) {
-            
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            long lastAthanTime = prefs.getLong("last_athan_time_" + dataType, 0);
+            long nowMs = System.currentTimeMillis();
+            Calendar lastCal = Calendar.getInstance();
+            lastCal.setTimeInMillis(lastAthanTime);
+           Calendar nowCal = Calendar.getInstance();
+     if (lastAthanTime > 0 &&
+          lastCal.get(Calendar.DAY_OF_YEAR) == nowCal.get(Calendar.DAY_OF_YEAR) &&
+          lastCal.get(Calendar.YEAR) == nowCal.get(Calendar.YEAR)) {
+          Log.d(TAG, "Athan already played today, skipping: " + dataType);
+          return;
+            }
+    prefs.edit().putLong("last_athan_time_" + dataType, nowMs).apply();
+          
             Intent athanIntent = new Intent(context, AthanScreenActivity.class);
 
             athanIntent.putExtras(data);
