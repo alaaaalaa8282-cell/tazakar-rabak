@@ -25,6 +25,11 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
+      - name: Update version name
+        run: |
+          sed -i "s/versionName \".*\"/versionName \"${{ github.run_number }}\"/" app/build.gradle
+          sed -i "s/versionCode .*/versionCode ${{ github.run_number }}/" app/build.gradle
+
       - name: Decode Keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/keystore.jks
 
