@@ -15,27 +15,15 @@
             android:orientation="vertical"
             android:padding="12dp">
 
-         <!-- إهداء -->
-<TextView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="إهداءً إلى روح والدي الحبيب&#10;محمد عبد العظيم الطويل&#10;رحمه الله وأسكنه فسيح جناته"
-    android:textColor="#FFD700"
-    android:textSize="16sp"
-    android:textStyle="bold"
-    android:gravity="center"
-    android:padding="16dp"
-    android:layout_marginBottom="8dp"
-    android:background="#1A2E1A"
-    android:lineSpacingMultiplier="1.5"/>
-            
-            <!-- بانر والد -->
+            <!-- بانر والد مع الإهداء -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:padding="16dp">
+                android:padding="16dp"
+                android:background="#1A2E1A"
+                android:layout_marginBottom="8dp">
 
                 <ImageView
                     android:layout_width="100dp"
@@ -46,17 +34,91 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="محمد عبد العظيم طرفايه الطويل"
-                    android:textColor="#FFD700"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
+                    android:text="إهداءً إلى روح والدي الحبيب"
+                    android:textColor="#FFFFFF"
+                    android:textSize="13sp"
                     android:layout_marginTop="8dp"
                     android:gravity="center" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="محمد عبد العظيم طرفايه الطويل"
+                    android:textColor="#FFD700"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="رحمه الله وأسكنه فسيح جناته"
+                    android:textColor="#FFFFFF"
+                    android:textSize="13sp"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center" />
+
+            </LinearLayout>
+
+            <!-- كارد التاريخ والرمضان -->
+            <LinearLayout
+                android:id="@+id/date_ramadan_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="16dp"
+                android:background="#1A2E1A"
+                android:layout_marginBottom="8dp">
+
+                <!-- التاريخ الميلادي -->
+                <TextView
+                    android:id="@+id/text_gregorian_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textColor="#FFFFFF"
+                    android:textSize="13sp"
+                    android:gravity="center" />
+
+                <!-- التاريخ الهجري -->
+                <TextView
+                    android:id="@+id/text_hijri_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textColor="#FFD700"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center" />
+
+                <!-- فاصل -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#2E4A2E"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- معلومات رمضان -->
+                <TextView
+                    android:id="@+id/text_ramadan_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textColor="#FFD700"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:gravity="center" />
+
+                <!-- عد تنازلي أو أيام متبقية -->
+                <TextView
+                    android:id="@+id/text_ramadan_countdown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="--"
                     android:textColor="#FFFFFF"
                     android:textSize="13sp"
                     android:layout_marginTop="4dp"
