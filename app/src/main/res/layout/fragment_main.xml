@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0D4A28">
+    android:background="@color/page_background">
 
     <ScrollView
         android:id="@+id/container_scroll_view"
@@ -22,7 +22,7 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:padding="16dp"
-                android:background="#1A2E1A"
+                android:background="@color/panel_background_color"
                 android:layout_marginBottom="8dp">
 
                 <ImageView
@@ -35,7 +35,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="إهداءً إلى روح والدي الحبيب"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/title_color"
                     android:textSize="13sp"
                     android:layout_marginTop="8dp"
                     android:gravity="center" />
@@ -44,7 +44,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="محمد عبد العظيم طرفايه الطويل"
-                    android:textColor="#FFD700"
+                    android:textColor="@color/colorAccent"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:layout_marginTop="4dp"
@@ -54,7 +54,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="رحمه الله وأسكنه فسيح جناته"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/title_color"
                     android:textSize="13sp"
                     android:layout_marginTop="4dp"
                     android:gravity="center" />
@@ -69,7 +69,7 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:padding="16dp"
-                android:background="#1A2E1A"
+                android:background="@color/panel_background_color"
                 android:layout_marginBottom="8dp">
 
                 <!-- التاريخ الميلادي -->
@@ -78,7 +78,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="--"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/title_color"
                     android:textSize="13sp"
                     android:gravity="center" />
 
@@ -88,7 +88,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="--"
-                    android:textColor="#FFD700"
+                    android:textColor="@color/colorAccent"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:layout_marginTop="4dp"
@@ -98,7 +98,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#2E4A2E"
+                    android:background="@color/translation_divider_color"
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="12dp" />
 
@@ -108,7 +108,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="--"
-                    android:textColor="#FFD700"
+                    android:textColor="@color/colorAccent"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:gravity="center" />
@@ -119,86 +119,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="--"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/title_color"
                     android:textSize="13sp"
                     android:layout_marginTop="4dp"
                     android:gravity="center" />
 
             </LinearLayout>
 
-            <!-- Row 1 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_my_athkar"
-                    android:layout_width="0dp"
-                    android:layout_height="130dp"
-                    android:layout_weight="1"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/card_bg"
-                    android:drawableTop="@drawable/my_athkar"
-                    android:text="@string/my_athkar"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp"
-                    android:gravity="center"
-                    android:padding="10dp" />
-
-                <Button
-                    android:id="@+id/button_morning_thikr"
-                    android:layout_width="0dp"
-                    android:layout_height="130dp"
-                    android:layout_weight="1"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/card_bg"
-                    android:drawableTop="@drawable/sun"
-                    android:text="@string/morningThikr"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp"
-                    android:gravity="center"
-                    android:padding="10dp" />
-
-            </LinearLayout>
-
-            <!-- Row 2 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_night_thikr"
-                    android:layout_width="0dp"
-                    android:layout_height="130dp"
-                    android:layout_weight="1"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/card_bg"
-                    android:drawableTop="@drawable/moon"
-                    android:text="@string/nightThikr"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp"
-                    android:gravity="center"
-                    android:padding="10dp" />
-
-                <Button
-                    android:id="@+id/button_quran"
-                    android:layout_width="0dp"
-                    android:layout_height="130dp"
-                    android:layout_weight="1"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/card_bg"
-                    android:drawableTop="@drawable/quran"
-                    android:text="@string/quranic_verses"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp"
-                    android:gravity="center"
-                    android:padding="10dp" />
-
-            </LinearLayout>
-
-            <!-- Row 3 -->
+            <!-- Row 1: الأذان + القرآن -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -213,7 +141,79 @@
                     android:background="@drawable/card_bg"
                     android:drawableTop="@drawable/athan"
                     android:text="@string/athan"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/title_color"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:padding="10dp" />
+
+                <Button
+                    android:id="@+id/button_quran"
+                    android:layout_width="0dp"
+                    android:layout_height="130dp"
+                    android:layout_weight="1"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/card_bg"
+                    android:drawableTop="@drawable/quran"
+                    android:text="@string/quranic_verses"
+                    android:textColor="@color/title_color"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:padding="10dp" />
+
+            </LinearLayout>
+
+            <!-- Row 2: أذكار الصباح + أذكار المساء -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_morning_thikr"
+                    android:layout_width="0dp"
+                    android:layout_height="130dp"
+                    android:layout_weight="1"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/card_bg"
+                    android:drawableTop="@drawable/sun"
+                    android:text="@string/morningThikr"
+                    android:textColor="@color/title_color"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:padding="10dp" />
+
+                <Button
+                    android:id="@+id/button_night_thikr"
+                    android:layout_width="0dp"
+                    android:layout_height="130dp"
+                    android:layout_weight="1"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/card_bg"
+                    android:drawableTop="@drawable/moon"
+                    android:text="@string/nightThikr"
+                    android:textColor="@color/title_color"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:padding="10dp" />
+
+            </LinearLayout>
+
+            <!-- Row 3: اذكاري + القبلة -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_my_athkar"
+                    android:layout_width="0dp"
+                    android:layout_height="130dp"
+                    android:layout_weight="1"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/card_bg"
+                    android:drawableTop="@drawable/my_athkar"
+                    android:text="@string/my_athkar"
+                    android:textColor="@color/title_color"
                     android:textSize="14sp"
                     android:gravity="center"
                     android:padding="10dp" />
@@ -227,14 +227,14 @@
                     android:background="@drawable/card_bg"
                     android:drawableTop="@drawable/qibla"
                     android:text="@string/qibla"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/title_color"
                     android:textSize="14sp"
                     android:gravity="center"
                     android:padding="10dp" />
 
             </LinearLayout>
 
-            <!-- Row 4 -->
+            <!-- Row 4: حصن المسلم + الإعدادات -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -249,7 +249,7 @@
                     android:background="@drawable/card_bg"
                     android:drawableTop="@drawable/hisn_almuslim"
                     android:text="@string/hisn_almuslim"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/title_color"
                     android:textSize="14sp"
                     android:gravity="center"
                     android:padding="10dp" />
@@ -263,7 +263,7 @@
                     android:background="@drawable/card_bg"
                     android:drawableTop="@drawable/settings"
                     android:text="@string/Settings"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/title_color"
                     android:textSize="14sp"
                     android:gravity="center"
                     android:padding="10dp" />
@@ -279,7 +279,7 @@
                 android:background="@drawable/card_bg"
                 android:drawableTop="@drawable/share_button"
                 android:text="@string/sadaqa"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/title_color"
                 android:textSize="14sp"
                 android:gravity="center"
                 android:padding="10dp" />
