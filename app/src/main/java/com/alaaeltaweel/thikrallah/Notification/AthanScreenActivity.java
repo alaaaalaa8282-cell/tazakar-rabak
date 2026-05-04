@@ -8,6 +8,9 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -23,13 +26,18 @@ import com.alaaeltaweel.thikrallah.ThikrMediaPlayerService;
 
 public class AthanScreenActivity extends AppCompatActivity {
 
-    private static final int AUTO_DISMISS_DELAY = 10 * 60 * 1000;
-    private static final int SLIDESHOW_INTERVAL = 30 * 1000; // 30 ثانية
+    private static final int AUTO_DISMISS_DELAY  = 10 * 60 * 1000;
+    private static final int SLIDESHOW_INTERVAL  = 30 * 1000; // 30 ثانية
+    private static final int CALL_DISMISS_DELAY  = 4 * 60 * 1000; // 4 دقايق لو في مكالمة
+    private static final String TAG = "AthanScreenActivity";
 
     private Handler autoHandler = new Handler();
     private Handler slideshowHandler = new Handler();
     private Handler athanTextHandler = new Handler();
     private String dataType;
+    private boolean isCallInProgress = false;
+    private boolean athanPlayed = false;
+    private TelephonyManager telephonyManager;
     private ImageView fatherBgView;
     private TextView athanLinesText;
     private int currentPhotoIndex = 0;
@@ -66,6 +74,21 @@ public class AthanScreenActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             stopAthanAndClose();
+        }
+    };
+
+    // ✅ مراقبة حالة المكالمة
+    private PhoneStateListener phoneStateListener = new PhoneStateListener() {
+        @Override
+        public void onCallStateChanged(int state, String phoneNumber) {
+            if (state == TelephonyManager.CALL_STATE_IDLE && isCallInProgress && !athanPlayed) {
+                Log.d(TAG, "Call ended, playing athan now");
+                isCallInProgress = false;
+                athanPlayed = true;
+                autoHandler.removeCallbacksAndMessages(null);
+                playAthan();
+                autoHandler.postDelayed(() -> stopAthanAndClose(), AUTO_DISMISS_DELAY);
+            }
         }
     };
 
@@ -131,6 +154,7 @@ public class AthanScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_athan_screen);
 
         dataType = getIntent().getStringExtra("com.alaaeltaweel.thikrallah.datatype");
+        isCallInProgress = getIntent().getBooleanExtra("isCallInProgress", false);
 
         fatherBgView = findViewById(R.id.father_bg);
         athanLinesText = findViewById(R.id.allahu_akbar_text);
@@ -150,9 +174,38 @@ public class AthanScreenActivity extends AppCompatActivity {
         // ابدأ animation كلمات الأذان بعد ثانيتين
         athanTextHandler.postDelayed(athanTextRunnable, 2000);
 
-        playAthan();
+        if (isCallInProgress) {
+            // ✅ في مكالمة — افتح الشاشة بدون صوت وراقب المكالمة
+            Log.d(TAG, "Call in progress, opening screen silently");
+            registerPhoneStateListener();
+            autoHandler.postDelayed(() -> stopAthanAndClose(), CALL_DISMISS_DELAY);
+        } else {
+            // ✅ مفيش مكالمة — شغل الأذان عادي
+            athanPlayed = true;
+            playAthan();
+            autoHandler.postDelayed(this::stopAthanAndClose, AUTO_DISMISS_DELAY);
+        }
+    }
 
-        autoHandler.postDelayed(this::stopAthanAndClose, AUTO_DISMISS_DELAY);
+    private void registerPhoneStateListener() {
+        try {
+            telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+            if (telephonyManager != null) {
+                telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+            }
+        } catch (SecurityException e) {
+            Log.d(TAG, "Cannot listen to phone state: " + e.getMessage());
+        }
+    }
+
+    private void unregisterPhoneStateListener() {
+        try {
+            if (telephonyManager != null) {
+                telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Error unregistering phone listener");
+        }
     }
 
     private void changePhotoWithAnimation(final int newPhotoRes) {
@@ -234,6 +287,7 @@ public class AthanScreenActivity extends AppCompatActivity {
         slideshowHandler.removeCallbacksAndMessages(null);
         athanTextHandler.removeCallbacksAndMessages(null);
         autoHandler.removeCallbacksAndMessages(null);
+        unregisterPhoneStateListener();
         finish();
     }
 
@@ -242,6 +296,8 @@ public class AthanScreenActivity extends AppCompatActivity {
         slideshowHandler.removeCallbacksAndMessages(null);
         athanTextHandler.removeCallbacksAndMessages(null);
         autoHandler.removeCallbacksAndMessages(null);
+        unregisterPhoneStateListener();
         super.onDestroy();
     }
 }
+
