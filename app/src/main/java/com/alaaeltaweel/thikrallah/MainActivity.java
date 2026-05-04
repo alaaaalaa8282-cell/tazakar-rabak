@@ -549,6 +549,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface, Lo
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         MainActivity.setLocale(this);
         super.onCreate(savedInstanceState);
+        ReminderScheduler.scheduleAllReminders(this);
         requestNormalPermissions();
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         PreferenceManager.setDefaultValues(this.getApplicationContext(), R.xml.preferences, true);
