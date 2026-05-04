@@ -326,6 +326,8 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </service>
+  <activity android:name=".PrayerTrackerActivity"
+    android:exported="false" />
     </application>
 
     <queries>
