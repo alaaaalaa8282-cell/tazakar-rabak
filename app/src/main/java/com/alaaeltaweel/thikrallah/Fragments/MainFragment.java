@@ -113,7 +113,11 @@ public class MainFragment extends Fragment {
             Bundle data = new Bundle();
             mCallback.launchFragment(new MyAthkarFragment(), data, "MyAthkarFragment");
         });
-
+   button_prayer_tracker.setOnClickListener(v -> {
+    Intent intent = new Intent();
+    intent.setClass(v.getContext(), PrayerTrackerActivity.class);
+    startActivityForResult(intent, 0);
+});
         Log.d(TAG,"requestBatteryExclusion");
         requestBatteryExclusion(mContext);
         return view;
