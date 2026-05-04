@@ -270,6 +270,27 @@
 
             </LinearLayout>
 
+            <!-- متتبع الصلاة -->
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <Button
+        android:id="@+id/button_prayer_tracker"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_margin="8dp"
+        android:background="@drawable/card_bg"
+        android:text="📿 متتبع الصلاة اليومي"
+        android:textColor="@color/colorAccent"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:padding="10dp" />
+
+</LinearLayout>
+            
             <Button
                 android:id="@+id/button_sadaqa"
                 android:visibility="gone"
