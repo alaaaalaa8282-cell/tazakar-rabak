@@ -71,7 +71,8 @@ public class MainFragment extends Fragment {
         Button button_hisn_almuslim = (Button) view.findViewById(R.id.hisn_almuslim);
         Button button_athan = (Button) view.findViewById(R.id.button_athan);
         Button button_qibla = (Button) view.findViewById(R.id.button_qibla);
-
+        Button button_prayer_tracker = (Button) view.findViewById(R.id.button_prayer_tracker);
+        
         // ✅ التاريخ والرمضان
         TextView textGregorianDate = view.findViewById(R.id.text_gregorian_date);
         TextView textHijriDate = view.findViewById(R.id.text_hijri_date);
