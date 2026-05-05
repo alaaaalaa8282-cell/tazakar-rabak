@@ -277,7 +277,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
                 long s = (ms % 60000) / 1000;
                 if (countdownTimerView != null) {
                     countdownTimerView.setText(
-                            String.format("%02d:%02d:%02d", h, m, s));
+                            finalName + "  |  " + String.format("%02d:%02d:%02d", h, m, s));
                 }
             }
             @Override
