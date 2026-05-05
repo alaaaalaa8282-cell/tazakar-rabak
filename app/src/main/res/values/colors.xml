@@ -20,7 +20,7 @@
     <color name="translation_sura_header_night">#0D1B2A</color>
 
     <!-- ========== الشريط العلوي (Toolbar) ========== -->
-    <color name="toolbar_background">#0D1B2A</color>
+    <color name="toolbar_background">#96780A</color>
     <color name="toolbar_item_pressed">#33D4AF37</color>
     <color name="header_background">#0D1B2A</color>
     <color name="tabsScrollColor">#0D1B2A</color>
