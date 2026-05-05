@@ -17,7 +17,11 @@ public class ThikrBootReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		if (null != intent.getAction()){
 			Log.d("ThikrBootReceiver","intent called with action"+intent.getAction());
-			if (intent.getAction().equalsIgnoreCase(AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED)){
+			if (intent.getAction().equalsIgnoreCase(AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED)
+    || intent.getAction().equalsIgnoreCase(Intent.ACTION_TIME_CHANGED)
+    || intent.getAction().equalsIgnoreCase(Intent.ACTION_TIMEZONE_CHANGED)){
+    new MyAlarmsManager(context.getApplicationContext()).UpdateAllApplicableAlarms();
+			}
 				new MyAlarmsManager(context.getApplicationContext()).UpdateAllApplicableAlarms();
 			}
 			if (intent.getAction().equalsIgnoreCase("com.alaaeltaweel.thikrallah.Notification.ThikrBootReceiver.android.action.broadcast")
