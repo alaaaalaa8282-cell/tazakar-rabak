@@ -3,9 +3,12 @@
     <style name="AppBaseTheme" parent="Theme.AppCompat">
     </style>
 
-    <style name="AppTheme" parent="AppBaseTheme">
-        <item name="android:windowBackground">@color/page_background</item>
-    </style>
+ <style name="AppTheme" parent="AppBaseTheme">
+    <item name="android:windowBackground">@color/page_background</item>
+    <item name="colorPrimary">#96780A</item>
+    <item name="colorPrimaryDark">#7A6008</item>
+    <item name="colorAccent">@color/colorAccent</item>
+</style>
     <style name="Divider">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">4dp</item>
