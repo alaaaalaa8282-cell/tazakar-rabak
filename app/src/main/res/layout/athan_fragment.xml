@@ -1,265 +1,317 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="12dp">
+    android:layout_height="match_parent"
+    android:background="#1B2234">
 
-    <TextView
-        android:id="@+id/Hijri_date"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingTop="16dp"
-        android:paddingBottom="12dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:text="" />
+        android:orientation="vertical"
+        android:padding="12dp">
 
-    <View style="@style/Divider" android:id="@+id/divider_1"/>
-
-    <!-- فجر -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
-            <TextView android:id="@+id/athan_timing1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentStart="true"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
-            <androidx.appcompat.widget.SwitchCompat android:id="@+id/switch1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_centerInParent="true"/>
-            <TextView android:id="@+id/athan_name1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:text="@string/prayer1"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
-        </RelativeLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- شروق -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
-            <TextView android:id="@+id/sunrise_timing1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentStart="true"
-                android:textSize="16sp"/>
-            <TextView android:id="@+id/sunrise_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:text="@string/sunrise"
-                android:textSize="16sp"/>
-        </RelativeLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- ظهر -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
-            <TextView android:id="@+id/athan_timing2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentStart="true"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
-            <androidx.appcompat.widget.SwitchCompat android:id="@+id/switch2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_centerInParent="true"/>
-            <TextView android:id="@+id/athan_name2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:text="@string/prayer2"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
-        </RelativeLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- عصر -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
-            <TextView android:id="@+id/athan_timing3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentStart="true"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
-            <androidx.appcompat.widget.SwitchCompat android:id="@+id/switch3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_centerInParent="true"/>
-            <TextView android:id="@+id/athan_name3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:text="@string/prayer3"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
-        </RelativeLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- مغرب -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
-            <TextView android:id="@+id/athan_timing4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentStart="true"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
-            <androidx.appcompat.widget.SwitchCompat android:id="@+id/switch4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_centerInParent="true"/>
-            <TextView android:id="@+id/athan_name4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:text="@string/prayer4"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
-        </RelativeLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- عشاء -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
-            <TextView android:id="@+id/athan_timing5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentStart="true"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
-            <androidx.appcompat.widget.SwitchCompat android:id="@+id/switch5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_centerInParent="true"/>
-            <TextView android:id="@+id/athan_name5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:text="@string/prayer5"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
-        </RelativeLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- الموقع -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="15dp"
-        android:layout_marginTop="8dp">
-        <TextView android:id="@+id/current_location"
+        <TextView
+            android:id="@+id/Hijri_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="20dp"
+            android:paddingBottom="8dp"
+            android:text=""
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+        <View
+            style="@style/Divider"
+            android:id="@+id/divider_1"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:id="@+id/countdown_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="12dp"
+            android:text=""
+            android:textColor="#4dd0c4"
+            android:textSize="16sp" />
+
+        <!-- فجر -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:cardBackgroundColor="#2D3548"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="14dp">
+                <TextView
+                    android:id="@+id/athan_name1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/prayer1"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:checked="true"
+                    android:text="" />
+                <TextView
+                    android:id="@+id/athan_timing1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- شروق -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:cardBackgroundColor="#2D3548"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="14dp">
+                <TextView
+                    android:id="@+id/sunrise_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/sunrise"
+                    android:textColor="#AAAAAA"
+                    android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/sunrise_timing1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="60dp"
+                    android:text=""
+                    android:textColor="#AAAAAA"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- ظهر -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:cardBackgroundColor="#2D3548"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="14dp">
+                <TextView
+                    android:id="@+id/athan_name2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/prayer2"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:checked="true"
+                    android:text="" />
+                <TextView
+                    android:id="@+id/athan_timing2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- عصر -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:cardBackgroundColor="#2D3548"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="14dp">
+                <TextView
+                    android:id="@+id/athan_name3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/prayer3"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:checked="true"
+                    android:text="" />
+                <TextView
+                    android:id="@+id/athan_timing3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- مغرب -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:cardBackgroundColor="#2D3548"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="14dp">
+                <TextView
+                    android:id="@+id/athan_name4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/prayer4"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:checked="true"
+                    android:text="" />
+                <TextView
+                    android:id="@+id/athan_timing4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- عشاء -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#2D3548"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="14dp">
+                <TextView
+                    android:id="@+id/athan_name5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/prayer5"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:checked="true"
+                    android:text="" />
+                <TextView
+                    android:id="@+id/athan_timing5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- الموقع -->
+        <TextView
+            android:id="@+id/current_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/current_location"/>
-        <View style="@style/Divider"
+            android:text="@string/current_location"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <View
+            style="@style/Divider"
             android:id="@+id/divider_2"
-            android:layout_below="@id/current_location"/>
-        <TextView android:id="@+id/adjustment_text"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/adjustment_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/divider_2"
-            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
             android:paddingTop="10dp"
             android:text="@string/location_adjustment"
-            android:textAppearance="?android:attr/textAppearanceLarge"/>
-        <CheckBox android:id="@+id/is_manual_location"
+            android:textColor="#AAAAAA"
+            android:textSize="14sp" />
+
+        <CheckBox
+            android:id="@+id/is_manual_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/adjustment_text"
+            android:layout_marginBottom="20dp"
+            android:layoutDirection="locale"
             android:text="@string/override_location"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layoutDirection="locale"/>
-    </RelativeLayout>
+            android:textColor="#AAAAAA" />
 
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>
