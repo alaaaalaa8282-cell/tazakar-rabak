@@ -4,6 +4,7 @@ package com.alaaeltaweel.thikrallah.Fragments;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.icu.util.IslamicCalendar;
 import android.icu.util.ULocale;
@@ -16,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import androidx.appcompat.widget.SwitchCompat;
 import android.widget.TextView;
@@ -33,7 +33,6 @@ import com.alaaeltaweel.thikrallah.MainActivity;
 import com.alaaeltaweel.thikrallah.Models.Prayer;
 import com.alaaeltaweel.thikrallah.Notification.MyAlarmsManager;
 import com.alaaeltaweel.thikrallah.R;
-import com.alaaeltaweel.thikrallah.Utilities.CitiesCoordinatesDbOpenHelper;
 import com.alaaeltaweel.thikrallah.Utilities.CustomLocation;
 import com.alaaeltaweel.thikrallah.Utilities.MainInterface;
 import com.alaaeltaweel.thikrallah.Utilities.PrayTime;
@@ -43,11 +42,9 @@ import java.util.Calendar;
 
 public class AthanFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener, View.OnClickListener, DialogInterface.OnDismissListener {
 
-
     private Prayer[] prayers;
 
     private MainInterface mCallback;
-    private ListView AthanList;
     private TextView prayer1_time;
     private TextView HijriDate;
     private TextView prayer2_time;
@@ -71,7 +68,6 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
 
     // ── الخط الديجيتال ──
     private Typeface digitalFont;
-
 
     public AthanFragment() {
     }
@@ -128,7 +124,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
             digitalFont = null;
         }
 
-        HijriDate = (TextView) view.findViewById(R.id.Hijri_date);
+        HijriDate = view.findViewById(R.id.Hijri_date);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             IslamicCalendar islamic_cal = (IslamicCalendar) IslamicCalendar
                     .getInstance(new ULocale("ar_SA@calendar=islamic"));
@@ -136,28 +132,25 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
             HijriDate.setText(getHijriDate());
         }
 
-        // ── ربط العداد ──
         countdownTimerView = view.findViewById(R.id.countdown_timer);
 
-        prayer1_time = (TextView) view.findViewById(R.id.athan_timing1);
-        prayer2_time = (TextView) view.findViewById(R.id.athan_timing2);
-        prayer3_time = (TextView) view.findViewById(R.id.athan_timing3);
-        prayer4_time = (TextView) view.findViewById(R.id.athan_timing4);
-        prayer5_time = (TextView) view.findViewById(R.id.athan_timing5);
-        sunrise_time = (TextView) view.findViewById(R.id.sunrise_timing1);
+        prayer1_time = view.findViewById(R.id.athan_timing1);
+        prayer2_time = view.findViewById(R.id.athan_timing2);
+        prayer3_time = view.findViewById(R.id.athan_timing3);
+        prayer4_time = view.findViewById(R.id.athan_timing4);
+        prayer5_time = view.findViewById(R.id.athan_timing5);
+        sunrise_time = view.findViewById(R.id.sunrise_timing1);
 
-        // ── تطبيق الخط الديجيتال على الأوقات والعداد ──
-        if (digitalFont != null) {
-            prayer1_time.setTypeface(digitalFont);
-            prayer2_time.setTypeface(digitalFont);
-            prayer3_time.setTypeface(digitalFont);
-            prayer4_time.setTypeface(digitalFont);
-            prayer5_time.setTypeface(digitalFont);
-            sunrise_time.setTypeface(digitalFont);
-            countdownTimerView.setTypeface(digitalFont);
-        }
+        // ── تطبيق الخط + اللون الأحمر المضيء ──
+        applyDigitalStyle(prayer1_time);
+        applyDigitalStyle(prayer2_time);
+        applyDigitalStyle(prayer3_time);
+        applyDigitalStyle(prayer4_time);
+        applyDigitalStyle(prayer5_time);
+        applyDigitalStyle(sunrise_time);
+        applyDigitalStyle(countdownTimerView);
 
-        is_Manual_Location = (CheckBox) view.findViewById(R.id.is_manual_location);
+        is_Manual_Location = view.findViewById(R.id.is_manual_location);
         currentLocation    = view.findViewById(R.id.current_location);
 
         boolean isLocationManual = PreferenceManager.getDefaultSharedPreferences(this.getContext()).getBoolean("isCustomLocation", false);
@@ -167,11 +160,11 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
         currentLocation.setOnClickListener(this);
         is_Manual_Location.setOnClickListener(this);
 
-        fajr_switch    = (SwitchCompat) view.findViewById(R.id.switch1);
-        duhr_switch    = (SwitchCompat) view.findViewById(R.id.switch2);
-        asr_switch     = (SwitchCompat) view.findViewById(R.id.switch3);
-        maghrib_switch = (SwitchCompat) view.findViewById(R.id.switch4);
-        ishaa_switch   = (SwitchCompat) view.findViewById(R.id.switch5);
+        fajr_switch    = view.findViewById(R.id.switch1);
+        duhr_switch    = view.findViewById(R.id.switch2);
+        asr_switch     = view.findViewById(R.id.switch3);
+        maghrib_switch = view.findViewById(R.id.switch4);
+        ishaa_switch   = view.findViewById(R.id.switch5);
 
         fajr_switch.setChecked(mPrefs.getBoolean("isFajrReminder", true));
         duhr_switch.setChecked(mPrefs.getBoolean("isDuhrReminder", true));
@@ -183,22 +176,18 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
             mPrefs.edit().putBoolean("isFajrReminder", isChecked).apply();
             updateAthanAlarms();
         });
-
         duhr_switch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mPrefs.edit().putBoolean("isDuhrReminder", isChecked).apply();
             updateAthanAlarms();
         });
-
         asr_switch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mPrefs.edit().putBoolean("isAsrReminder", isChecked).apply();
             updateAthanAlarms();
         });
-
         maghrib_switch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mPrefs.edit().putBoolean("isMaghribReminder", isChecked).apply();
             updateAthanAlarms();
         });
-
         ishaa_switch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mPrefs.edit().putBoolean("isIshaaReminder", isChecked).apply();
             updateAthanAlarms();
@@ -209,16 +198,26 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
         return view;
     }
 
+    // ── تطبيق الخط + اللون الأحمر + الـ Glow ──
+    private void applyDigitalStyle(TextView tv) {
+        if (tv == null) return;
+        if (digitalFont != null) tv.setTypeface(digitalFont);
+        tv.setTextColor(Color.RED);
+        tv.setShadowLayer(18f, 0f, 0f, Color.RED);
+        tv.setBackgroundColor(Color.BLACK);
+        tv.setPadding(8, 4, 8, 4);
+    }
+
     private void updateprayerTimes() {
         double latitude  = Double.parseDouble(MainActivity.getLatitude(this.getContext()));
         double longitude = Double.parseDouble(MainActivity.getLongitude(this.getContext()));
         if (latitude == 0.0 && longitude == 0.0) {
-            prayer1_time.setText("NA:NA");
-            sunrise_time.setText("NA:NA");
-            prayer2_time.setText("NA:NA");
-            prayer3_time.setText("NA:NA");
-            prayer4_time.setText("NA:NA");
-            prayer5_time.setText("NA:NA");
+            prayer1_time.setText("--:--");
+            sunrise_time.setText("--:--");
+            prayer2_time.setText("--:--");
+            prayer3_time.setText("--:--");
+            prayer4_time.setText("--:--");
+            prayer5_time.setText("--:--");
             return;
         }
         prayers = getPrayersArray();
@@ -234,8 +233,6 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
         }
 
         updateAthanAlarms();
-
-        // ── تشغيل العداد بعد تحديث الأوقات ──
         startCountdown();
     }
 
@@ -244,7 +241,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
     }
 
     // ══════════════════════════════════════════
-    // العداد التنازلي للصلاة القادمة
+    // العداد التنازلي
     // ══════════════════════════════════════════
 
     private void startCountdown() {
@@ -280,10 +277,9 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
                 long s = (ms % 60000) / 1000;
                 if (countdownTimerView != null) {
                     countdownTimerView.setText(
-                            String.format("باقي على %s: %02d:%02d:%02d", finalName, h, m, s));
+                            String.format("%02d:%02d:%02d", h, m, s));
                 }
             }
-
             @Override
             public void onFinish() {
                 if (getContext() != null) startCountdown();
@@ -346,11 +342,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
     public void onResume() {
         super.onResume();
         PreferenceManager.getDefaultSharedPreferences(this.getContext()).registerOnSharedPreferenceChangeListener(prefListener);
-        logScreen();
         this.updateprayerTimes();
-    }
-
-    private void logScreen() {
     }
 
     @Override
@@ -404,7 +396,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
 
     @Override
     public void onDismiss(DialogInterface dialogInterface) {
-        Log.d("AthanFragment", "onDismiss called. isLocationManual:");
+        Log.d("AthanFragment", "onDismiss called.");
         if (this.getContext() != null) {
             boolean isLocationManual = PreferenceManager.getDefaultSharedPreferences(this.getContext()).getBoolean("isCustomLocation", false);
             is_Manual_Location.setChecked(isLocationManual);
