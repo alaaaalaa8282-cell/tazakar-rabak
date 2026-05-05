@@ -11,50 +11,49 @@ import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-
 public class ThikrBootReceiver extends BroadcastReceiver {
-	@Override
-	public void onReceive(Context context, Intent intent) {
-		if (null != intent.getAction()){
-			Log.d("ThikrBootReceiver","intent called with action"+intent.getAction());
-			if (intent.getAction().equalsIgnoreCase(AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED)
-    || intent.getAction().equalsIgnoreCase(Intent.ACTION_TIME_CHANGED)
-    || intent.getAction().equalsIgnoreCase(Intent.ACTION_TIMEZONE_CHANGED)){
-    new MyAlarmsManager(context.getApplicationContext()).UpdateAllApplicableAlarms();
-			}
-				new MyAlarmsManager(context.getApplicationContext()).UpdateAllApplicableAlarms();
-			}
-			if (intent.getAction().equalsIgnoreCase("com.alaaeltaweel.thikrallah.Notification.ThikrBootReceiver.android.action.broadcast")
-					|| intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED)){
-				MyAlarmsManager manager=new MyAlarmsManager(context.getApplicationContext());
-				manager.UpdateAllApplicableAlarms();
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (null != intent.getAction()) {
+            Log.d("ThikrBootReceiver", "intent called with action" + intent.getAction());
 
-				// تأخير 5 ثواني عشان الجهاز يكمل الإقلاع
-				new Handler(Looper.getMainLooper()).postDelayed(() -> {
-					manager.UpdateAllApplicableAlarms();
-				}, 5000);
+            // إعادة جدولة الـ alarms فقط بدون تشغيل الأذان
+            if (intent.getAction().equalsIgnoreCase(AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED)
+                || intent.getAction().equalsIgnoreCase(Intent.ACTION_TIME_CHANGED)
+                || intent.getAction().equalsIgnoreCase(Intent.ACTION_TIMEZONE_CHANGED)) {
+                new MyAlarmsManager(context.getApplicationContext()).UpdateAllApplicableAlarms();
+                return;
+            }
 
-				SharedPreferences mPrefs=PreferenceManager.getDefaultSharedPreferences(context);
-				boolean isTimer=mPrefs.getBoolean("foreground_athan_timer",true);
+            // تشغيل الـ alarms عند البوت
+            if (intent.getAction().equalsIgnoreCase("com.alaaeltaweel.thikrallah.Notification.ThikrBootReceiver.android.action.broadcast")
+                || intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED)) {
 
-				if(isTimer){
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-						if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
-							if (intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED)){
-								context.startForegroundService(new Intent(context,AthanTimerService.class));
-							}
-							//foreground service start not allowed unless at boot completed since SDK 31
+                MyAlarmsManager manager = new MyAlarmsManager(context.getApplicationContext());
+                manager.UpdateAllApplicableAlarms();
 
-						}else{
-							context.startForegroundService(new Intent(context,AthanTimerService.class));
-						}
+                // تأخير 5 ثواني عشان الجهاز يكمل الإقلاع
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    manager.UpdateAllApplicableAlarms();
+                }, 5000);
 
-					} else {
-						context.startService(new Intent(context,AthanTimerService.class));
-					}
-				}
-			}
-		}
-	}
+                SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+                boolean isTimer = mPrefs.getBoolean("foreground_athan_timer", true);
+
+                if (isTimer) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            if (intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED)) {
+                                context.startForegroundService(new Intent(context, AthanTimerService.class));
+                            }
+                        } else {
+                            context.startForegroundService(new Intent(context, AthanTimerService.class));
+                        }
+                    } else {
+                        context.startService(new Intent(context, AthanTimerService.class));
+                    }
+                }
+            }
+        }
+    }
 }
-
