@@ -176,34 +176,35 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_my_athkar"
+                    android:id="@+id/button_athan"
                     android:layout_width="0dp"
                     android:layout_height="130dp"
                     android:layout_weight="1"
                     android:layout_margin="8dp"
                     android:background="@drawable/card_bg"
-                    android:drawableTop="@drawable/my_athkar"
-                    android:text="@string/my_athkar"
+                    android:drawableTop="@drawable/athan"
+                    android:text="@string/athan"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp"
                     android:gravity="center"
                     android:padding="10dp" />
 
                 <Button
-                    android:id="@+id/button_morning_thikr"
+                    android:id="@+id/button_qibla"
                     android:layout_width="0dp"
                     android:layout_height="130dp"
                     android:layout_weight="1"
                     android:layout_margin="8dp"
                     android:background="@drawable/card_bg"
-                    android:drawableTop="@drawable/sun"
-                    android:text="@string/morningThikr"
+                    android:drawableTop="@drawable/qibla"
+                    android:text="@string/qibla"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp"
                     android:gravity="center"
                     android:padding="10dp" />
 
             </LinearLayout>
+
 
             <!-- Row 2 -->
             <LinearLayout
@@ -242,34 +243,34 @@
             </LinearLayout>
 
             <!-- Row 3 -->
-            <LinearLayout
+             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_athan"
+                    android:id="@+id/button_my_athkar"
                     android:layout_width="0dp"
                     android:layout_height="130dp"
                     android:layout_weight="1"
                     android:layout_margin="8dp"
                     android:background="@drawable/card_bg"
-                    android:drawableTop="@drawable/athan"
-                    android:text="@string/athan"
+                    android:drawableTop="@drawable/my_athkar"
+                    android:text="@string/my_athkar"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp"
                     android:gravity="center"
                     android:padding="10dp" />
 
                 <Button
-                    android:id="@+id/button_qibla"
+                    android:id="@+id/button_morning_thikr"
                     android:layout_width="0dp"
                     android:layout_height="130dp"
                     android:layout_weight="1"
                     android:layout_margin="8dp"
                     android:background="@drawable/card_bg"
-                    android:drawableTop="@drawable/qibla"
-                    android:text="@string/qibla"
+                    android:drawableTop="@drawable/sun"
+                    android:text="@string/morningThikr"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp"
                     android:gravity="center"
