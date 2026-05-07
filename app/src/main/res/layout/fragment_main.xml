@@ -189,19 +189,20 @@
                     android:gravity="center"
                     android:padding="10dp" />
 
-                <Button
-                    android:id="@+id/button_qibla"
+               <Button
+                    android:id="@+id/button_quran"
                     android:layout_width="0dp"
                     android:layout_height="130dp"
                     android:layout_weight="1"
                     android:layout_margin="8dp"
                     android:background="@drawable/card_bg"
-                    android:drawableTop="@drawable/qibla"
-                    android:text="@string/qibla"
+                    android:drawableTop="@drawable/quran"
+                    android:text="@string/quranic_verses"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp"
                     android:gravity="center"
                     android:padding="10dp" />
+               
 
             </LinearLayout>
 
@@ -226,15 +227,15 @@
                     android:gravity="center"
                     android:padding="10dp" />
 
-                <Button
-                    android:id="@+id/button_quran"
+                 <Button
+                    android:id="@+id/button_qibla"
                     android:layout_width="0dp"
                     android:layout_height="130dp"
                     android:layout_weight="1"
                     android:layout_margin="8dp"
                     android:background="@drawable/card_bg"
-                    android:drawableTop="@drawable/quran"
-                    android:text="@string/quranic_verses"
+                    android:drawableTop="@drawable/qibla"
+                    android:text="@string/qibla"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp"
                     android:gravity="center"
