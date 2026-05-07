@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,15 +21,14 @@ import com.alaaeltaweel.thikrallah.MainActivity;
 import com.alaaeltaweel.thikrallah.PreferenceActivity;
 import com.alaaeltaweel.thikrallah.R;
 import com.alaaeltaweel.thikrallah.Utilities.MainInterface;
+import com.alaaeltaweel.thikrallah.Utilities.PrayTime;
 import com.alaaeltaweel.thikrallah.hisnulmuslim.DuaGroupActivity;
 import com.alaaeltaweel.thikrallah.quran.labs.androidquran.QuranDataActivity;
-import com.alaaeltaweel.thikrallah.PrayerTrackerActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
 
 public class MainFragment extends Fragment {
     private MainInterface mCallback;
@@ -35,16 +36,28 @@ public class MainFragment extends Fragment {
     SharedPreferences mPrefs;
     String TAG = "MainFragment";
 
+    // ✅ Views للتاريخ والرمضان
+    private TextView textGregorianDate;
+    private TextView textHijriDate;
+    private TextView textRamadanInfo;
+    private TextView textSuhoor;
+    private TextView textIftar;
+    private TextView textCountdown;
+    private TextView textCountdownLabel;
+    private LinearLayout layoutSuhoorIftar;
+
+    // ✅ Handler للعداد التنازلي
+    private Handler countdownHandler = new Handler();
+    private Runnable countdownRunnable;
+
     public MainFragment() {
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.d("MainFragment","onattach called");
-
+        Log.d("MainFragment", "onattach called");
         MainActivity.setLocale(context);
-
         mContext = context;
         try {
             mCallback = (MainInterface) mContext;
@@ -72,15 +85,20 @@ public class MainFragment extends Fragment {
         Button button_hisn_almuslim = (Button) view.findViewById(R.id.hisn_almuslim);
         Button button_athan = (Button) view.findViewById(R.id.button_athan);
         Button button_qibla = (Button) view.findViewById(R.id.button_qibla);
-        Button button_prayer_tracker = (Button) view.findViewById(R.id.button_prayer_tracker);
-        
-        // ✅ التاريخ والرمضان
-        TextView textGregorianDate = view.findViewById(R.id.text_gregorian_date);
-        TextView textHijriDate = view.findViewById(R.id.text_hijri_date);
-        TextView textRamadanInfo = view.findViewById(R.id.text_ramadan_info);
-        TextView textRamadanCountdown = view.findViewById(R.id.text_ramadan_countdown);
 
-        updateDateAndRamadan(textGregorianDate, textHijriDate, textRamadanInfo, textRamadanCountdown);
+        // ✅ Views التاريخ والرمضان
+        textGregorianDate  = view.findViewById(R.id.text_gregorian_date);
+        textHijriDate      = view.findViewById(R.id.text_hijri_date);
+        textRamadanInfo    = view.findViewById(R.id.text_ramadan_info);
+        textSuhoor         = view.findViewById(R.id.text_suhoor);
+        textIftar          = view.findViewById(R.id.text_iftar);
+        textCountdown      = view.findViewById(R.id.text_countdown);
+        textCountdownLabel = view.findViewById(R.id.text_countdown_label);
+        layoutSuhoorIftar  = view.findViewById(R.id.layout_suhoor_iftar);
+
+        // ✅ ابدأ عرض التاريخ والرمضان
+        updateDateAndRamadan();
+        startCountdown();
 
         button_athan.setOnClickListener(v -> mCallback.launchFragment(new AthanFragment(), new Bundle(), "AthanFragment"));
         button_qibla.setOnClickListener(v -> mCallback.launchFragment(new QiblaFragment(), new Bundle(), "QiblaFragment"));
@@ -115,30 +133,25 @@ public class MainFragment extends Fragment {
             Bundle data = new Bundle();
             mCallback.launchFragment(new MyAthkarFragment(), data, "MyAthkarFragment");
         });
-   button_prayer_tracker.setOnClickListener(v -> {
-    Intent intent = new Intent();
-    intent.setClass(v.getContext(), PrayerTrackerActivity.class);
-    startActivityForResult(intent, 0);
-});
-        Log.d(TAG,"requestBatteryExclusion");
+
+        Log.d(TAG, "requestBatteryExclusion");
         requestBatteryExclusion(mContext);
         return view;
     }
 
     // ===================== التاريخ والرمضان =====================
-    private void updateDateAndRamadan(TextView gregorianView, TextView hijriView,
-                                       TextView ramadanInfoView, TextView ramadanCountdownView) {
+    private void updateDateAndRamadan() {
         try {
             // التاريخ الميلادي
             SimpleDateFormat gregorianFormat = new SimpleDateFormat("EEEE، d MMMM yyyy", new Locale("ar"));
             String gregorianDate = gregorianFormat.format(new Date());
-            gregorianView.setText(gregorianDate);
+            textGregorianDate.setText(gregorianDate);
 
             // التاريخ الهجري
             android.icu.util.IslamicCalendar islamicCalendar = new android.icu.util.IslamicCalendar();
-            int hijriDay = islamicCalendar.get(android.icu.util.Calendar.DAY_OF_MONTH);
+            int hijriDay   = islamicCalendar.get(android.icu.util.Calendar.DAY_OF_MONTH);
             int hijriMonth = islamicCalendar.get(android.icu.util.Calendar.MONTH);
-            int hijriYear = islamicCalendar.get(android.icu.util.Calendar.YEAR);
+            int hijriYear  = islamicCalendar.get(android.icu.util.Calendar.YEAR);
 
             String[] hijriMonths = {
                 "محرم", "صفر", "ربيع الأول", "ربيع الثاني",
@@ -146,20 +159,21 @@ public class MainFragment extends Fragment {
                 "رمضان", "شوال", "ذو القعدة", "ذو الحجة"
             };
 
-            String hijriMonthName = hijriMonths[hijriMonth];
-            hijriView.setText(hijriDay + " " + hijriMonthName + " " + hijriYear);
+            textHijriDate.setText(hijriDay + " " + hijriMonths[hijriMonth] + " " + hijriYear);
 
-            // هل دلوقتي رمضان؟
-            boolean isRamadan = (hijriMonth == 8); // رمضان = الشهر 9 (index 8)
+            // أوقات الصلاة من PrayTime
+            PrayTime prayersObject = PrayTime.instancePrayTime(mContext);
+            String[] times = prayersObject.getPrayerTimes(mContext);
+            // times[0]=فجر, times[1]=شروق, times[2]=ظهر, times[3]=عصر, times[4]=مغرب, times[5]=عشاء
+
+            boolean isRamadan = (hijriMonth == 8);
 
             if (isRamadan) {
-                ramadanInfoView.setText("🌙 رمضان كريم");
-                // عدد الأيام المتبقية في رمضان
-                int daysLeft = 30 - hijriDay;
-                if (daysLeft > 0) {
-                    ramadanCountdownView.setText("باقي على نهاية رمضان " + daysLeft + " يوم");
-                } else {
-                    ramadanCountdownView.setText("آخر يوم في رمضان");
+                textRamadanInfo.setText("🌙 رمضان كريم - اليوم " + hijriDay);
+                layoutSuhoorIftar.setVisibility(View.VISIBLE);
+                if (times != null && times.length >= 5) {
+                    textSuhoor.setText("الإمساك: " + times[0]);
+                    textIftar.setText("الإفطار: " + times[4]);
                 }
             } else {
                 // كم يوم فاضل على رمضان
@@ -171,12 +185,12 @@ public class MainFragment extends Fragment {
                 } else {
                     nextRamadan.set(android.icu.util.Calendar.YEAR, hijriYear);
                 }
-
                 long diffMs = nextRamadan.getTimeInMillis() - System.currentTimeMillis();
                 long daysToRamadan = diffMs / (1000 * 60 * 60 * 24);
-
-                ramadanInfoView.setText("🌙 " + hijriMonthName);
-                ramadanCountdownView.setText("باقي على رمضان " + daysToRamadan + " يوم");
+                textRamadanInfo.setText("🌙 " + hijriMonths[hijriMonth]);
+                textCountdownLabel.setText("باقي على رمضان");
+                textCountdown.setText(daysToRamadan + " يوم");
+                layoutSuhoorIftar.setVisibility(View.GONE);
             }
 
         } catch (Exception e) {
@@ -184,10 +198,86 @@ public class MainFragment extends Fragment {
         }
     }
 
+    // ===================== العداد التنازلي =====================
+    private void startCountdown() {
+        countdownRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (getActivity() == null || !isAdded()) return;
+                try {
+                    android.icu.util.IslamicCalendar islamicCalendar = new android.icu.util.IslamicCalendar();
+                    int hijriMonth = islamicCalendar.get(android.icu.util.Calendar.MONTH);
+                    boolean isRamadan = (hijriMonth == 8);
+
+                    if (isRamadan) {
+                        PrayTime prayersObject = PrayTime.instancePrayTime(mContext);
+                        String[] times = prayersObject.getPrayerTimes(mContext);
+                        if (times != null && times.length >= 5) {
+                            long now = System.currentTimeMillis();
+                            long iftarMs  = parseTimeToMs(times[4]);
+                            long suhoorMs = parseTimeToMs(times[0]);
+
+                            long diff;
+                            String label;
+                            if (now < suhoorMs) {
+                                diff  = suhoorMs - now;
+                                label = "باقي على الإمساك";
+                            } else if (now < iftarMs) {
+                                diff  = iftarMs - now;
+                                label = "باقي على الإفطار";
+                            } else {
+                                diff  = 0;
+                                label = "أفطر على بركة الله 🌙";
+                            }
+
+                            if (diff > 0) {
+                                long hours   = diff / (1000 * 60 * 60);
+                                long minutes = (diff % (1000 * 60 * 60)) / (1000 * 60);
+                                long seconds = (diff % (1000 * 60)) / 1000;
+                                textCountdown.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
+                            } else {
+                                textCountdown.setText("🌙");
+                            }
+                            textCountdownLabel.setText(label);
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.d(TAG, "Countdown error: " + e.getMessage());
+                }
+                countdownHandler.postDelayed(this, 1000);
+            }
+        };
+        countdownHandler.post(countdownRunnable);
+    }
+
+    private long parseTimeToMs(String timeStr) {
+        try {
+            String format = timeStr.length() == 8 ? "hh:mm a" : "HH:mm";
+            SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
+            Date parsed = sdf.parse(timeStr);
+            Calendar cal = Calendar.getInstance();
+            Calendar parsedCal = Calendar.getInstance();
+            parsedCal.setTime(parsed);
+            cal.set(Calendar.HOUR_OF_DAY, parsedCal.get(Calendar.HOUR_OF_DAY));
+            cal.set(Calendar.MINUTE, parsedCal.get(Calendar.MINUTE));
+            cal.set(Calendar.SECOND, 0);
+            return cal.getTimeInMillis();
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
+        updateDateAndRamadan();
         logScreen();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        countdownHandler.removeCallbacksAndMessages(null);
     }
 
     private void logScreen() {
@@ -196,15 +286,13 @@ public class MainFragment extends Fragment {
     private void requestBatteryExclusion(Context mContext) {
         if (!mPrefs.getBoolean("isFirstLaunch", true)
                 && !mPrefs.getBoolean("permissionsRequested", false)) {
-
             mPrefs.edit().putBoolean("permissionsRequested", true).apply();
-
             mCallback.requestOverLayPermission();
             mCallback.requestNotificationPermission();
             mCallback.requestBatteryExclusion();
             mCallback.requestExactAlarmPermission();
             mCallback.requestLocationPermission();
-            if (mPrefs.getBoolean("isMediaPermissionNeeded", false)){
+            if (mPrefs.getBoolean("isMediaPermissionNeeded", false)) {
                 mCallback.requestMediaOrStoragePermission();
             }
         }
