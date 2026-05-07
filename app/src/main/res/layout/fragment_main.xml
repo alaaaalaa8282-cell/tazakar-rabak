@@ -75,7 +75,7 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:padding="16dp"
-                android:background="#1A2E1A"
+                android:background="@color/panel_background_color"
                 android:layout_marginBottom="8dp">
 
                 <TextView
