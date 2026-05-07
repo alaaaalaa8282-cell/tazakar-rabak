@@ -92,7 +92,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="--"
-                    android:textColor="#FFD700"
+                    android:textColor="#1A2E1A"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:layout_marginTop="4dp"
@@ -101,7 +101,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#2E4A2E"
+                    android:background="#1A2E1A"
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="12dp" />
 
@@ -110,7 +110,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="--"
-                    android:textColor="#FFD700"
+                    android:textColor="#1A2E1A"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:gravity="center" />
