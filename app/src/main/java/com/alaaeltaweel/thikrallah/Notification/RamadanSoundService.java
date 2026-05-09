@@ -1,0 +1,118 @@
+package com.alaaeltaweel.thikrallah.Notification;
+
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.Service;
+import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
+import android.os.Build;
+import android.os.IBinder;
+import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
+
+import com.alaaeltaweel.thikrallah.R;
+
+public class RamadanSoundService extends Service {
+
+    private static final String TAG = "RamadanSoundService";
+    public static final String ACTION_CANNON    = "com.alaaeltaweel.thikrallah.ACTION_CANNON";
+    public static final String ACTION_MESAHARATY = "com.alaaeltaweel.thikrallah.ACTION_MESAHARATY";
+
+    private MediaPlayer mediaPlayer;
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent == null) {
+            stopSelf();
+            return START_NOT_STICKY;
+        }
+
+        showForegroundNotification();
+
+        String action = intent.getAction();
+        String soundFile = null;
+
+        if (ACTION_CANNON.equals(action)) {
+            soundFile = "cannon.mp3";
+            Log.d(TAG, "Playing cannon sound");
+        } else if (ACTION_MESAHARATY.equals(action)) {
+            soundFile = "mesaharaty.mp3";
+            Log.d(TAG, "Playing mesaharaty sound");
+        }
+
+        if (soundFile != null) {
+            playSound(soundFile);
+        } else {
+            stopSelf();
+        }
+
+        return START_NOT_STICKY;
+    }
+
+    private void playSound(String fileName) {
+        try {
+            if (mediaPlayer != null) {
+                mediaPlayer.release();
+                mediaPlayer = null;
+            }
+
+            mediaPlayer = new MediaPlayer();
+            AssetFileDescriptor afd = getAssets().openFd(fileName);
+            mediaPlayer.setDataSource(
+                afd.getFileDescriptor(),
+                afd.getStartOffset(),
+                afd.getLength()
+            );
+            afd.close();
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+
+            mediaPlayer.setOnCompletionListener(mp -> {
+                mp.release();
+                mediaPlayer = null;
+                stopForeground(true);
+                stopSelf();
+            });
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error playing sound: " + e.getMessage());
+            stopSelf();
+        }
+    }
+
+    private void showForegroundNotification() {
+        String channelId = "ramadan_sound_channel";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                channelId, "أصوات رمضان", NotificationManager.IMPORTANCE_LOW);
+            NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            if (nm != null) nm.createNotificationChannel(channel);
+        }
+
+        Notification notification = new NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.ic_launcher)
+            .setContentTitle("رمضان كريم 🌙")
+            .setContentText("...")
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .build();
+
+        startForeground(77, notification);
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+}
