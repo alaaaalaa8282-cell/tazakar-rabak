@@ -36,6 +36,7 @@ public class MyAlarmsManager {
     public static final int requestCodeAthan3 = 102;
     public static final int requestCodeAthan4 = 103;
     public static final int requestCodeAthan5 = 104;
+    public static final String DATA_TYPE_PRE_ATHAN = "pre_athan";
     // ✅ رمضان
     public static final int requestCodeCannon = 200;
     public static final int requestCodeMesaharaty = 201;
