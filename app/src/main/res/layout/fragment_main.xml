@@ -31,7 +31,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="(صدقة جارية)   إهداءً إلى روح والدي الحبيب\nمحمد عبد العظيم طرفايه الطويل\nرحمه الله وأسكنه فسيح جناته"
+        android:text="(صدقة جارية اللهم تقبل) إهداءً إلى روح والدي الحبيب\nمحمد عبد العظيم طرفايه الطويل\nرحمه الله وأسكنه فسيح جناته"
         android:textColor="#FFD700"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -72,7 +72,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="رحمه الله وأسكنه فسيح جناته"
+            android:text="رحمه الله وأسكنه فسيح جناته وجعل قبره روضه من رياض الجنه"
             android:textColor="#FFFFFF"
             android:textSize="12sp"
             android:gravity="center"/>
