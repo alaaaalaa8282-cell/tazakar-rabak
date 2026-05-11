@@ -25,11 +25,6 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Update version name
-        run: |
-          sed -i "s/versionName \".*\"/versionName \"${{ github.run_number }}\"/" app/build.gradle
-          sed -i "s/versionCode .*/versionCode ${{ github.run_number }}/" app/build.gradle
-
       - name: Decode Keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/keystore.jks
 
@@ -41,11 +36,16 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
 
+      - name: Rename APK
+        run: |
+          mv app/build/outputs/apk/release/app-release.apk \
+             app/build/outputs/apk/release/app-tazakkar.apk
+
       - name: Create Release and Upload APK
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ github.run_number }}
           name: "محمد عبد العظيم اذكر ربك - إصدار ${{ github.run_number }}"
-          files: app/build/outputs/apk/release/*.apk
+          files: app/build/outputs/apk/release/app-tazakkar.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
