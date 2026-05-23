@@ -3,28 +3,48 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-  compileSdk = deps.android.build.compileSdkVersion
-  namespace = 'com.alaaeltaweel.thikrallah.quran.labs.androidquran.pages.madani'
-  defaultConfig {
-    minSdkVersion deps.android.build.minSdkVersion
-    targetSdkVersion deps.android.build.targetSdkVersion
-  }
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-  }
-  kotlinOptions {
-    jvmTarget = "17"
-  }
-}
-kotlin {
-  jvmToolchain(17)
-}
-dependencies {
-  implementation project(path: '::data')
-  implementation project(path: ':pages')
-  implementation deps.kotlin.stdlib
+    compileSdk = deps.android.build.compileSdkVersion
 
-  kapt deps.dagger.apt
-  implementation deps.dagger.runtime
+    namespace = 'com.alaaeltaweel.thikrallah.quran.labs.androidquran.pages.madani'
+
+    defaultConfig {
+        minSdkVersion deps.android.build.minSdkVersion
+        targetSdkVersion deps.android.build.targetSdkVersion
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion "1.5.14"
+    }
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+dependencies {
+    implementation project(path: '::data')
+    implementation project(path: ':pages')
+    implementation deps.kotlin.stdlib
+
+    kapt deps.dagger.apt
+    implementation deps.dagger.runtime
+
+    implementation "androidx.compose.ui:ui"
+    implementation "androidx.compose.material3:material3"
+    implementation "androidx.compose.foundation:foundation"
+    implementation "androidx.compose.runtime:runtime"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose"
 }
