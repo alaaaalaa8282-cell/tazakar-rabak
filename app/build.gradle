@@ -14,7 +14,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'net.ltgt.errorprone'
 apply plugin: 'kotlin-kapt'
-
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 android {
     signingConfigs {
         release {
@@ -55,8 +55,9 @@ android {
     }
     namespace = 'com.alaaeltaweel.thikrallah'
     buildFeatures {
-        buildConfig = true
-    }
+    buildConfig = true
+    compose = true
+}
 
 }
 kotlin {
