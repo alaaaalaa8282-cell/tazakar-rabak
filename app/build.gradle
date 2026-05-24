@@ -54,7 +54,7 @@ android {
         disable 'MissingTranslation'
     }
     namespace = 'com.alaaeltaweel.thikrallah'
-    buildFeatures {
+buildFeatures {
     buildConfig = true
     compose = true
 }
