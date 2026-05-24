@@ -25,6 +25,7 @@ import com.alaaeltaweel.thikrallah.Utilities.PrayTime;
 import com.alaaeltaweel.thikrallah.hisnulmuslim.DuaGroupActivity;
 import com.alaaeltaweel.thikrallah.quran.labs.androidquran.QuranDataActivity;
 import com.alaaeltaweel.thikrallah.PrayerTrackerActivity;
+import com.alaaeltaweel.thikrallah.RadioActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -87,6 +88,7 @@ public class MainFragment extends Fragment {
         Button button_athan = (Button) view.findViewById(R.id.button_athan);
         Button button_qibla = (Button) view.findViewById(R.id.button_qibla);
         Button button_prayer_tracker = (Button) view.findViewById(R.id.button_prayer_tracker);
+        Button button_radio = (Button) view.findViewById(R.id.button_radio);
         
         // ✅ Views التاريخ والرمضان
         textGregorianDate  = view.findViewById(R.id.text_gregorian_date);
@@ -140,7 +142,11 @@ public class MainFragment extends Fragment {
        intent.setClass(v.getContext(), PrayerTrackerActivity.class);
        startActivityForResult(intent, 0);
        });
-
+button_radio.setOnClickListener(v -> {
+    Intent intent = new Intent();
+    intent.setClass(v.getContext(), RadioActivity.class);
+    startActivityForResult(intent, 0);
+});
         Log.d(TAG, "requestBatteryExclusion");
         requestBatteryExclusion(mContext);
         return view;
