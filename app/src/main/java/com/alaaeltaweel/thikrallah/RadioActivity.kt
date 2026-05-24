@@ -149,6 +149,7 @@ class RadioActivity : AppCompatActivity() {
                         Text(
                             text = channel.name,
                             fontSize = 15.sp,
+                            color = Color.White,
                             textAlign = TextAlign.End,
                             modifier = Modifier
                                 .weight(1f)
