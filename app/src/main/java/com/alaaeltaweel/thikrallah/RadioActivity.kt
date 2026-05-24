@@ -8,11 +8,24 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -57,85 +70,92 @@ class RadioActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            var playingId by remember { mutableIntStateOf(-1) }
-            var loadingId by remember { mutableIntStateOf(-1) }
+            RadioScreen()
+        }
+    }
 
-            Column(modifier = Modifier.fillMaxSize()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color(0xFF1B5E20))
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "إذاعات القرآن الكريم",
-                        color = Color.White,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
-                    )
-                }
+    @Composable
+    private fun RadioScreen() {
+        var playingId by remember { mutableIntStateOf(-1) }
+        var loadingId by remember { mutableIntStateOf(-1) }
 
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(channels, key = { it.id }) { channel ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    if (playingId == channel.id) {
-                                        stopPlayer()
-                                        playingId = -1
-                                        loadingId = -1
-                                    } else {
-                                        stopPlayer()
-                                        loadingId = channel.id
-                                        playingId = -1
-                                        val mp = MediaPlayer()
-                                        @Suppress("DEPRECATION")
-                                        mp.setAudioStreamType(AudioManager.STREAM_MUSIC)
-                                        try {
-                                            mp.setDataSource(channel.url)
-                                            mp.setOnPreparedListener {
-                                                it.start()
-                                                loadingId = -1
-                                                playingId = channel.id
-                                            }
-                                            mp.setOnErrorListener { _, _, _ ->
-                                                loadingId = -1
-                                                playingId = -1
-                                                Toast.makeText(this@RadioActivity, "تعذّر الاتصال", Toast.LENGTH_SHORT).show()
-                                                true
-                                            }
-                                            mp.prepareAsync()
-                                            mediaPlayer = mp
-                                        } catch (e: Exception) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFF1B5E20))
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "إذاعات القرآن الكريم",
+                    color = Color.White,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(channels, key = { it.id }) { channel ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                if (playingId == channel.id) {
+                                    stopPlayer()
+                                    playingId = -1
+                                    loadingId = -1
+                                } else {
+                                    stopPlayer()
+                                    loadingId = channel.id
+                                    playingId = -1
+                                    val mp = MediaPlayer()
+                                    @Suppress("DEPRECATION")
+                                    mp.setAudioStreamType(AudioManager.STREAM_MUSIC)
+                                    try {
+                                        mp.setDataSource(channel.url)
+                                        mp.setOnPreparedListener {
+                                            it.start()
                                             loadingId = -1
+                                            playingId = channel.id
                                         }
+                                        mp.setOnErrorListener { _, _, _ ->
+                                            loadingId = -1
+                                            playingId = -1
+                                            Toast.makeText(this@RadioActivity, "تعذّر الاتصال", Toast.LENGTH_SHORT).show()
+                                            true
+                                        }
+                                        mp.prepareAsync()
+                                        mediaPlayer = mp
+                                    } catch (e: Exception) {
+                                        loadingId = -1
                                     }
                                 }
-                                .padding(horizontal = 16.dp, vertical = 14.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            when {
-                                loadingId == channel.id -> CircularProgressIndicator(
-                                    modifier = Modifier.size(24.dp),
-                                    color = Color(0xFF1B5E20),
-                                    strokeWidth = 2.dp
-                                )
-                                playingId == channel.id -> Text("⏸", fontSize = 20.sp)
-                                else -> Text("▶", fontSize = 20.sp)
                             }
-                            Text(
-                                text = channel.name,
-                                fontSize = 15.sp,
-                                textAlign = TextAlign.End,
-                                modifier = Modifier.weight(1f).padding(end = 8.dp)
+                            .padding(horizontal = 16.dp, vertical = 14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        when {
+                            loadingId == channel.id -> CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                color = Color(0xFF1B5E20),
+                                strokeWidth = 2.dp
                             )
+                            playingId == channel.id -> Text("⏸", fontSize = 20.sp)
+                            else -> Text("▶", fontSize = 20.sp)
                         }
-                        HorizontalDivider(color = Color(0xFFE0E0E0))
+                        Text(
+                            text = channel.name,
+                            fontSize = 15.sp,
+                            textAlign = TextAlign.End,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp)
+                        )
                     }
+                    HorizontalDivider(color = Color(0xFFE0E0E0))
                 }
             }
         }
