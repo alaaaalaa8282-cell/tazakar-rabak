@@ -332,6 +332,7 @@
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="dataSync" />
+      <activity android:name=".RadioActivity"/>
         <service
             android:name="com.alaaeltaweel.thikrallah.quran.labs.androidquran.service.AudioService"
             android:exported="false"
