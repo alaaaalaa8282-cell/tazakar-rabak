@@ -83,7 +83,7 @@ class RadioActivity : AppCompatActivity() {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFF1B5E20))
+                    .background(Color(0xFF2E7D32))
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
