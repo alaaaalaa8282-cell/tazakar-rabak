@@ -136,8 +136,8 @@ public class ThikrService extends IntentService  {
         am = (AudioManager) this.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
 		Bundle data=intent.getExtras();
 		String thikrType="";
-		thikrType=data.getString("com.alaaeltaweel.thikrallah.datatype");
-		if (thikrType.equals(MainActivity.DATA_TYPE_GENERAL_THIKR)){
+		thikrType = data.getString("com.alaaeltaweel.thikrallah.datatype", "");
+        if (thikrType.equals(MainActivity.DATA_TYPE_GENERAL_THIKR)){
             MyDBHelper db = new MyDBHelper(this);
             UserThikr thikr=db.getRandomThikr();
             if (thikr==null){
@@ -203,7 +203,7 @@ public class ThikrService extends IntentService  {
 			int reminderType=Integer.parseInt(sharedPrefs.getString("remindMeDayThikrType", "1"));
 			if (reminderType==1){
 				NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-				NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+				NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "ThikrService");
 				mBuilder.setContentTitle(this.getString(R.string.my_app_name))
 				.setContentText(this.getString(R.string.morningThikr))
 				.setSmallIcon(R.drawable.ic_launcher)
@@ -255,7 +255,7 @@ public class ThikrService extends IntentService  {
 			int reminderType=Integer.parseInt(sharedPrefs.getString("remindMeNightThikrType", "1"));
 			if (reminderType==1){
 				NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-				NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+				NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "ThikrService");
 				mBuilder.setContentTitle(this.getString(R.string.my_app_name))
 				.setContentText(this.getString(R.string.nightThikr))
 				.setSmallIcon(R.drawable.ic_launcher)
@@ -308,7 +308,7 @@ public class ThikrService extends IntentService  {
             int reminderType=Integer.parseInt(sharedPrefs.getString("remindMemulkType", "1"));
             if (reminderType==1){
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "ThikrService");
                 mBuilder.setContentTitle(this.getString(R.string.my_app_name))
                         .setContentText(this.getString(R.string.surat_almulk))
                         .setSmallIcon(R.drawable.ic_launcher)
@@ -402,7 +402,7 @@ public class ThikrService extends IntentService  {
 
 
                             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+                            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "ThikrService");
                             mBuilder.setContentTitle(this.getString(R.string.my_app_name))
                                     .setContentText(this.getString(R.string.surat_almulk))
                                     .setSmallIcon(R.drawable.ic_launcher)
@@ -443,12 +443,12 @@ public class ThikrService extends IntentService  {
             return;
         }
         if (thikrType.equals(MainActivity.DATA_TYPE_QURAN_KAHF)){
-            sharedPrefs.edit().putInt("", Calendar.getInstance().get(Calendar.DAY_OF_MONTH)).apply();
+           sharedPrefs.edit().putInt("lastKahfPlayed", Calendar.getInstance().get(Calendar.DAY_OF_MONTH)).apply();
 
             int reminderType=Integer.parseInt(sharedPrefs.getString("remindMekahfType", "1"));
             if (reminderType==1){
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "ThikrService");
                 mBuilder.setContentTitle(this.getString(R.string.my_app_name))
                         .setContentText(this.getString(R.string.surat_alkahf))
                         .setSmallIcon(R.drawable.ic_launcher)
@@ -542,7 +542,7 @@ public class ThikrService extends IntentService  {
 
 
                             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+                            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "ThikrService");
                             mBuilder.setContentTitle(this.getString(R.string.my_app_name))
                                     .setContentText(this.getString(R.string.surat_almulk))
                                     .setSmallIcon(R.drawable.ic_launcher)
@@ -692,7 +692,7 @@ public class ThikrService extends IntentService  {
     }
     private void showForegroundNotificationan(int ID){
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "ThikrService");
         mBuilder.setContentTitle(this.getString(R.string.my_app_name))
                 .setContentText(this.getString(R.string.my_app_name))
                 .setSmallIcon(R.drawable.ic_launcher)
