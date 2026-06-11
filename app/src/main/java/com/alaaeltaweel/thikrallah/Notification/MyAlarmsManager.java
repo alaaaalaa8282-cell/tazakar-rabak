@@ -140,7 +140,7 @@ public class MyAlarmsManager {
             alarmMgr.cancel(pendingIntentGeneral);
             Calendar calendar1 = Calendar.getInstance();
             calendar1.setTime(dat);
-            long lastFired = sharedPrefs.getLong("last_general_thikr_time", System.currentTimeMillMillis());
+           long lastFired = sharedPrefs.getLong("last_general_thikr_time", System.currentTimeMillis());
       calendar1.setTimeInMillis(lastFired + (Integer.parseInt(RandomReminderInterval) * 60 * 1000L));
             this.setAlarm(calendar1, pendingIntentGeneral);
         } else {
