@@ -125,6 +125,9 @@ return;
             }
 
             // باقي التنبيهات تشتغل عادي
+PreferenceManager.getDefaultSharedPreferences(context)
+    .edit().putLong("last_general_thikr_time", System.currentTimeMillis()).apply();
+            
             data.putBoolean("isUserAction", false);
             Intent intent2 = new Intent(context, ThikrService.class).putExtras(data);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
