@@ -289,6 +289,8 @@ public class AthanScreenActivity extends AppCompatActivity {
         autoHandler.removeCallbacksAndMessages(null);
         unregisterPhoneStateListener();
         finish();
+   // جدد الأذان الجاي
+MainActivity.startAthanTimer(getApplicationContext());
     }
 
     @Override
