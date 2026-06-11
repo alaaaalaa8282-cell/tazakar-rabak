@@ -65,7 +65,7 @@ public class AthanTimerService extends Service {
                         initNotification();
 					}
 				}, 0, 1000);
-			}
+			}scheduleNextAthan();
 		} else {
 			this.stopSelf();
 		}
@@ -219,4 +219,97 @@ public class AthanTimerService extends Service {
 String secondsText = seconds + " " + getResources().getString(R.string.second);
 return hoursText + " " + minutesText + " " + secondsText + " " + getResources().getString(R.string.until) + " " + prayerName;
 	}
+private void scheduleNextAthan() {
+    PrayTime prayers = PrayTime.instancePrayTime(this);
+    prayers.setTimeFormat(PrayTime.TIME_FORMAT_Time24);
+    String[] prayerTimes = prayers.getPrayerTimes(this);
+
+    // اسماء الـ datatype لكل صلاة
+    String[] dataTypes = {
+        MainActivity.DATA_TYPE_ATHAN1, // فجر
+        null,                          // شروق - مفيش أذان
+        MainActivity.DATA_TYPE_ATHAN2, // ظهر
+        MainActivity.DATA_TYPE_ATHAN3, // عصر
+        MainActivity.DATA_TYPE_ATHAN4, // مغرب
+        MainActivity.DATA_TYPE_ATHAN5  // عشاء
+    };
+
+    // indexes في prayerTimes: 0=فجر,1=شروق,2=ظهر,3=عصر,5=مغرب,6=عشاء
+    int[] timeIndexes = {0, 1, 2, 3, 5, 6};
+
+    Calendar now = Calendar.getInstance();
+    long minDiff = Long.MAX_VALUE;
+    String nextDataType = null;
+    long nextAthanTime = 0;
+
+    for (int i = 0; i < timeIndexes.length; i++) {
+        if (dataTypes[i] == null) continue; // تخطى الشروق
+        String timeStr = prayerTimes[timeIndexes[i]];
+        if (timeStr == null || timeStr.equalsIgnoreCase(prayers.getInvalidTime())) continue;
+
+        try {
+            String[] parts = timeStr.split(":");
+            Calendar prayerCal = Calendar.getInstance();
+            prayerCal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0]));
+            prayerCal.set(Calendar.MINUTE, Integer.parseInt(parts[1]));
+            prayerCal.set(Calendar.SECOND, 0);
+            prayerCal.set(Calendar.MILLISECOND, 0);
+
+            if (prayerCal.before(now)) {
+                prayerCal.add(Calendar.DAY_OF_MONTH, 1);
+            }
+
+            long diff = prayerCal.getTimeInMillis() - now.getTimeInMillis();
+            if (diff < minDiff) {
+                minDiff = diff;
+                nextDataType = dataTypes[i];
+                nextAthanTime = prayerCal.getTimeInMillis();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error parsing prayer time: " + timeStr);
+        }
+    }
+
+    if (nextDataType == null) return;
+
+    // شوف لو في مكالمة
+    boolean isCallInProgress = false;
+    try {
+        android.telephony.TelephonyManager tm =
+            (android.telephony.TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (tm != null) {
+            isCallInProgress = tm.getCallState() != android.telephony.TelephonyManager.CALL_STATE_IDLE;
+        }
+    } catch (Exception ignored) {}
+
+    Intent athanIntent = new Intent(this, AthanScreenActivity.class);
+    athanIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", nextDataType);
+    athanIntent.putExtra("isCallInProgress", isCallInProgress);
+    athanIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+    PendingIntent pendingIntent = PendingIntent.getActivity(
+        this,
+        nextDataType.hashCode(), // request code مختلف لكل صلاة
+        athanIntent,
+        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+    );
+
+    AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+    if (alarmManager != null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                nextAthanTime,
+                pendingIntent
+            );
+        } else {
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                nextAthanTime,
+                pendingIntent
+            );
+        }
+        Log.d(TAG, "Athan alarm set for: " + nextDataType + " at " + new Date(nextAthanTime));
+    }
+		}
 }
