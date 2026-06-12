@@ -267,9 +267,9 @@ public class MyAlarmsManager {
                     alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMilliseconds, pendingIntent);
                     Log.d("MyAlarmsManager", "was able to set exact alarm");
                 } else {
-                    Log.d("MyAlarmsManager", "unable to set exact alarm due to permission issue. Requesting permission");
-                    requestExactAlarmPermission();
-                }
+    Log.d("MyAlarmsManager", "falling back to inexact alarm");
+    alarmMgr.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMilliseconds, pendingIntent);
+           }
             }
         }
     }
