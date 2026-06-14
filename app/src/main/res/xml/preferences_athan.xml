@@ -65,6 +65,65 @@
         android:entryValues="@array/athan_notification_types_values"
         android:key="isha_reminder_type"
         android:title="@string/isha_reminder_type"/>
-    </PreferenceCategory>
+   <PreferenceCategory
+    android:title="@string/pre_athan_reminder"
+    android:layout="@layout/preference_catagory">
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pre_athan_fajr_enabled"
+        android:title="@string/pre_athan_fajr_enabled" />
+
+    <EditTextPreference
+        android:defaultValue="15"
+        android:key="pre_athan_fajr_minutes"
+        android:title="@string/pre_athan_minutes"
+        android:inputType="number" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pre_athan_duhr_enabled"
+        android:title="@string/pre_athan_duhr_enabled" />
+
+    <EditTextPreference
+        android:defaultValue="15"
+        android:key="pre_athan_duhr_minutes"
+        android:title="@string/pre_athan_minutes"
+        android:inputType="number" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pre_athan_asr_enabled"
+        android:title="@string/pre_athan_asr_enabled" />
+
+    <EditTextPreference
+        android:defaultValue="15"
+        android:key="pre_athan_asr_minutes"
+        android:title="@string/pre_athan_minutes"
+        android:inputType="number" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pre_athan_maghrib_enabled"
+        android:title="@string/pre_athan_maghrib_enabled" />
+
+    <EditTextPreference
+        android:defaultValue="15"
+        android:key="pre_athan_maghrib_minutes"
+        android:title="@string/pre_athan_minutes"
+        android:inputType="number" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pre_athan_isha_enabled"
+        android:title="@string/pre_athan_isha_enabled" />
+
+    <EditTextPreference
+        android:defaultValue="15"
+        android:key="pre_athan_isha_minutes"
+        android:title="@string/pre_athan_minutes"
+        android:inputType="number" />
+
+</PreferenceCategory>
 
 </PreferenceScreen>
