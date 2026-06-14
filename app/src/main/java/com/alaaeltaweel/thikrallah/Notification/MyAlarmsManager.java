@@ -323,7 +323,7 @@ public class MyAlarmsManager {
         Date dat = new Date();
         Calendar now = Calendar.getInstance();
         now.setTime(dat);
-        PendingIntent intent = PendingIntent.getBroadcast(context, 100, launchIntent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent intent = PendingIntent.getBroadcast(context, 100, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         Calendar calendar1 = Calendar.getInstance();
         calendar1.set(Calendar.HOUR_OF_DAY, 1);
         calendar1.set(Calendar.MINUTE, 15);
@@ -381,7 +381,7 @@ public class MyAlarmsManager {
             if (calendar0.after(now)) {
                 setAlarm(calendar0, pendingIntentAthan);
             } else {
-                calendar0.add(Calendar.HOUR, 24);
+                calendar0.add(Calendar.DAY_OF_YEAR, 1);
                 setAlarm(calendar0, pendingIntentAthan);
             }
         } else {
