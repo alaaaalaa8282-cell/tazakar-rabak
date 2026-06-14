@@ -179,8 +179,7 @@ public class ThikrService extends IntentService  {
 
 			boolean isQuietTime=isTimeNowQuietTime();
 			if (((reminderType==1 ||reminderType==2)&&isQuietTime==false&&(thikr.isBuiltIn()==true||thikr.getFile().length()>2))){
-			    if (!isInCall()) {
-                sharedPrefs.edit().putString("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_GENERAL_THIKR).apply();
+			    sharedPrefs.edit().putString("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_GENERAL_THIKR).apply();
                 data.putInt("ACTION", ThikrMediaPlayerService.MEDIA_PLAYER_PLAY);
                 Log.d(TAG,"fileNumber sent through intent is "+fileNumber);
                 data.putInt("FILE", fileNumber);
@@ -189,9 +188,6 @@ public class ThikrService extends IntentService  {
                     this.startForegroundService(new Intent(this, ThikrMediaPlayerService.class).putExtras(data));
                 } else {
                     this.startService(new Intent(this, ThikrMediaPlayerService.class).putExtras(data));
-                }
-                } else {
-                    Log.d(TAG, "Call in progress, skipping general thikr audio");
                 }
 			}
             return;
@@ -236,7 +232,6 @@ public class ThikrService extends IntentService  {
                 mNotificationManager.notify(NOTIFICATION_ID_MORNING_NIGHT_THIKR, mBuilder.build());
 			}else{
 				//new here
-				if (!isInCall()) {
 				sharedPrefs.edit().putString("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_DAY_THIKR).apply();
 
 				data.putInt("ACTION", ThikrMediaPlayerService.MEDIA_PLAYER_PLAYALL);
@@ -244,9 +239,6 @@ public class ThikrService extends IntentService  {
                     this.startForegroundService(new Intent(this, ThikrMediaPlayerService.class).putExtras(data));
                 } else {
                     this.startService(new Intent(this, ThikrMediaPlayerService.class).putExtras(data));
-                }
-                } else {
-                    Log.d(TAG, "Call in progress, skipping day thikr audio");
                 }
 			}
             return;
@@ -287,16 +279,12 @@ public class ThikrService extends IntentService  {
                 }
                 mNotificationManager.notify(NOTIFICATION_ID_MORNING_NIGHT_THIKR, mBuilder.build());
 			}else{
-				if (!isInCall()) {
 				sharedPrefs.edit().putString("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_NIGHT_THIKR).apply();
 				data.putInt("ACTION", ThikrMediaPlayerService.MEDIA_PLAYER_PLAYALL);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     this.startForegroundService(new Intent(this, ThikrMediaPlayerService.class).putExtras(data));
                 } else {
                     this.startService(new Intent(this, ThikrMediaPlayerService.class).putExtras(data));
-                }
-                } else {
-                    Log.d(TAG, "Call in progress, skipping night thikr audio");
                 }
 			}
             return;
@@ -383,11 +371,7 @@ public class ThikrService extends IntentService  {
                         Timber.tag(TAG).d("DownloadIntents are " + DownloadIntents.size());
                         if (DownloadIntents.size()==0){
                             Timber.d("calling handlePlayback");
-                            if (!isInCall()) {
-                                handlePlayback(audioRequest);
-                            } else {
-                                Log.d(TAG, "Call in progress, skipping Mulk audio");
-                            }
+                            handlePlayback(audioRequest);
                         }else{
                             Log.d(TAG,"Quran Mulk audio reminder. Need to download files");
                             Intent RecieverIntent_=new Intent(mcontext, QuranThikrDownloadNeeds.class);
@@ -524,11 +508,7 @@ public class ThikrService extends IntentService  {
                         Timber.tag(TAG).d("DownloadIntents are " + DownloadIntents.size());
                         if (DownloadIntents.size()==0){
                             Timber.d("calling handlePlayback");
-                            if (!isInCall()) {
-                                handlePlayback(audioRequest);
-                            } else {
-                                Log.d(TAG, "Call in progress, skipping Kahf audio");
-                            }
+                            handlePlayback(audioRequest);
                         }else{
                             Intent RecieverIntent_=new Intent(mcontext, QuranThikrDownloadNeeds.class);
                             RecieverIntent_.putExtra("sura",start.sura);
@@ -614,7 +594,7 @@ public class ThikrService extends IntentService  {
                 vibrate();
 
             } else {
-                if (reminderType != 1 && !isInCall()) {
+                if (reminderType != 1) {
                     //starting audioservice
                     sharedPrefs.edit().putString("com.alaaeltaweel.thikrallah.datatype", thikrType).apply();
                     data.putInt("ACTION", ThikrMediaPlayerService.MEDIA_PLAYER_PLAY);
