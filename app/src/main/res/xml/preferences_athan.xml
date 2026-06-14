@@ -3,7 +3,6 @@
         android:title="@string/calc_method"
         android:layout="@layout/preference_catagory">
         <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
-
             android:entries="@array/athan_calculation_method"
             android:entryValues="@array/athan_calculation_method_values"
             android:key="calc_method"
@@ -23,6 +22,7 @@
             android:key="adjustment_method"
             android:title="@string/high_latitude_adjustment"/>
     </PreferenceCategory>
+
     <PreferenceCategory
         android:title="@string/athan_type"
         android:layout="@layout/preference_catagory">
@@ -35,94 +35,97 @@
             android:key="foreground_athan_timer"
             android:title="@string/is_foreground_athan_timer" />
 
-    <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
-        android:defaultValue="9"
-        android:entries="@array/athan_notification_types"
-        android:entryValues="@array/athan_notification_types_values"
-        android:key="fajr_reminder_type"
-        android:title="@string/fajr_reminder_type"/>
-    <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
-        android:defaultValue="9"
-        android:entries="@array/athan_notification_types"
-        android:entryValues="@array/athan_notification_types_values"
-        android:key="duhr_reminder_type"
-        android:title="@string/duhr_reminder_type"/>
-    <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
-        android:defaultValue="9"
-        android:entries="@array/athan_notification_types"
-        android:entryValues="@array/athan_notification_types_values"
-        android:key="asr_reminder_type"
-        android:title="@string/asr_reminder_type"/>
-    <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
-        android:defaultValue="9"
-        android:entries="@array/athan_notification_types"
-        android:entryValues="@array/athan_notification_types_values"
-        android:key="maghrib_reminder_type"
-        android:title="@string/maghrib_reminder_type"/>
-    <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
-        android:defaultValue="9"
-        android:entries="@array/athan_notification_types"
-        android:entryValues="@array/athan_notification_types_values"
-        android:key="isha_reminder_type"
-        android:title="@string/isha_reminder_type"/>
-   <PreferenceCategory
-    android:title="@string/pre_athan_reminder"
-    android:layout="@layout/preference_catagory">
+        <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
+            android:defaultValue="9"
+            android:entries="@array/athan_notification_types"
+            android:entryValues="@array/athan_notification_types_values"
+            android:key="fajr_reminder_type"
+            android:title="@string/fajr_reminder_type"/>
+        <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
+            android:defaultValue="9"
+            android:entries="@array/athan_notification_types"
+            android:entryValues="@array/athan_notification_types_values"
+            android:key="duhr_reminder_type"
+            android:title="@string/duhr_reminder_type"/>
+        <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
+            android:defaultValue="9"
+            android:entries="@array/athan_notification_types"
+            android:entryValues="@array/athan_notification_types_values"
+            android:key="asr_reminder_type"
+            android:title="@string/asr_reminder_type"/>
+        <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
+            android:defaultValue="9"
+            android:entries="@array/athan_notification_types"
+            android:entryValues="@array/athan_notification_types_values"
+            android:key="maghrib_reminder_type"
+            android:title="@string/maghrib_reminder_type"/>
+        <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
+            android:defaultValue="9"
+            android:entries="@array/athan_notification_types"
+            android:entryValues="@array/athan_notification_types_values"
+            android:key="isha_reminder_type"
+            android:title="@string/isha_reminder_type"/>
+    </PreferenceCategory>
 
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="pre_athan_fajr_enabled"
-        android:title="@string/pre_athan_fajr_enabled" />
+    <PreferenceCategory
+        android:title="@string/pre_athan_reminder"
+        android:layout="@layout/preference_catagory">
 
-    <EditTextPreference
-        android:defaultValue="15"
-        android:key="pre_athan_fajr_minutes"
-        android:title="@string/pre_athan_minutes"
-        android:inputType="number" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pre_athan_fajr_enabled"
+            android:title="@string/pre_athan_fajr_enabled" />
 
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="pre_athan_duhr_enabled"
-        android:title="@string/pre_athan_duhr_enabled" />
+        <EditTextPreference
+            android:defaultValue="15"
+            android:key="pre_athan_fajr_minutes"
+            android:title="@string/pre_athan_minutes"
+            android:inputType="number" />
 
-    <EditTextPreference
-        android:defaultValue="15"
-        android:key="pre_athan_duhr_minutes"
-        android:title="@string/pre_athan_minutes"
-        android:inputType="number" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pre_athan_duhr_enabled"
+            android:title="@string/pre_athan_duhr_enabled" />
 
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="pre_athan_asr_enabled"
-        android:title="@string/pre_athan_asr_enabled" />
+        <EditTextPreference
+            android:defaultValue="15"
+            android:key="pre_athan_duhr_minutes"
+            android:title="@string/pre_athan_minutes"
+            android:inputType="number" />
 
-    <EditTextPreference
-        android:defaultValue="15"
-        android:key="pre_athan_asr_minutes"
-        android:title="@string/pre_athan_minutes"
-        android:inputType="number" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pre_athan_asr_enabled"
+            android:title="@string/pre_athan_asr_enabled" />
 
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="pre_athan_maghrib_enabled"
-        android:title="@string/pre_athan_maghrib_enabled" />
+        <EditTextPreference
+            android:defaultValue="15"
+            android:key="pre_athan_asr_minutes"
+            android:title="@string/pre_athan_minutes"
+            android:inputType="number" />
 
-    <EditTextPreference
-        android:defaultValue="15"
-        android:key="pre_athan_maghrib_minutes"
-        android:title="@string/pre_athan_minutes"
-        android:inputType="number" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pre_athan_maghrib_enabled"
+            android:title="@string/pre_athan_maghrib_enabled" />
 
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="pre_athan_isha_enabled"
-        android:title="@string/pre_athan_isha_enabled" />
+        <EditTextPreference
+            android:defaultValue="15"
+            android:key="pre_athan_maghrib_minutes"
+            android:title="@string/pre_athan_minutes"
+            android:inputType="number" />
 
-    <EditTextPreference
-        android:defaultValue="15"
-        android:key="pre_athan_isha_minutes"
-        android:title="@string/pre_athan_minutes"
-        android:inputType="number" />
-</PreferenceCategory>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pre_athan_isha_enabled"
+            android:title="@string/pre_athan_isha_enabled" />
+
+        <EditTextPreference
+            android:defaultValue="15"
+            android:key="pre_athan_isha_minutes"
+            android:title="@string/pre_athan_minutes"
+            android:inputType="number" />
+
+    </PreferenceCategory>
 
 </PreferenceScreen>
