@@ -665,4 +665,12 @@
     <string name="choose_manual_location">تحديد الموقع</string>
     <string name="choose_manual_location_message">بما انك لم تسمح للبرنامج بالسماح للوصول للموقع الجغرافي عن طريق الجي بي اس, يرجى تحديد دولتك واقرب مدينه اليك حتى يتم حساب وقت الصلاه واتجاه القبله بشكل صحيح</string>
 
+    <string name="pre_athan_reminder">تنبيه قبل الصلاة</string>
+<string name="pre_athan_fajr_enabled">تنبيه قبل الفجر</string>
+<string name="pre_athan_duhr_enabled">تنبيه قبل الظهر</string>
+<string name="pre_athan_asr_enabled">تنبيه قبل العصر</string>
+<string name="pre_athan_maghrib_enabled">تنبيه قبل المغرب</string>
+<string name="pre_athan_isha_enabled">تنبيه قبل العشاء</string>
+<string name="pre_athan_minutes">عدد الدقائق قبل الصلاة</string>
+    
 </resources>
