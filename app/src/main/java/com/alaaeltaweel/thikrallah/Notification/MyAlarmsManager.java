@@ -93,7 +93,7 @@ public class MyAlarmsManager {
             if (calendar0.after(now)) {
                 setAlarm(calendar0, pendingIntentMulk);
             } else {
-                calendar0.add(Calendar.HOUR, 24);
+                calendar0.add(Calendar.DAY_OF_YEAR, 1);
                 setAlarm(calendar0, pendingIntentMulk);
             }
         } else {
@@ -110,7 +110,7 @@ public class MyAlarmsManager {
             if (calendar0.after(now)) {
                 setAlarm(calendar0, pendingIntentMorningThikr);
             } else {
-                calendar0.add(Calendar.HOUR, 24);
+                calendar0.add(Calendar.DAY_OF_YEAR, 1);
                 setAlarm(calendar0, pendingIntentMorningThikr);
             }
         } else {
@@ -127,7 +127,7 @@ public class MyAlarmsManager {
             if (calendar1.after(now)) {
                 setAlarm(calendar1, pendingIntentNightThikr);
             } else {
-                calendar1.add(Calendar.HOUR, 24);
+                calendar1.add(Calendar.DAY_OF_YEAR, 1);
                 setAlarm(calendar1, pendingIntentNightThikr);
             }
         } else {
@@ -139,9 +139,8 @@ public class MyAlarmsManager {
         if (RemindmeThroughTheDay) {
             alarmMgr.cancel(pendingIntentGeneral);
             Calendar calendar1 = Calendar.getInstance();
-            calendar1.setTime(dat);
-           long lastFired = sharedPrefs.getLong("last_general_thikr_time", System.currentTimeMillis());
-      calendar1.setTimeInMillis(lastFired + (Integer.parseInt(RandomReminderInterval) * 60 * 1000L));
+            long lastFired = sharedPrefs.getLong("last_general_thikr_time", System.currentTimeMillis());
+            calendar1.setTimeInMillis(lastFired + (Integer.parseInt(RandomReminderInterval) * 60 * 1000L));
             this.setAlarm(calendar1, pendingIntentGeneral);
         } else {
             alarmMgr.cancel(pendingIntentGeneral);
@@ -218,7 +217,7 @@ public class MyAlarmsManager {
                     cannonCal.set(Calendar.MINUTE, Integer.parseInt(maghribTime[1]));
                     cannonCal.set(Calendar.SECOND, 0);
                     if (!cannonCal.after(now)) {
-                        cannonCal.add(Calendar.HOUR, 24);
+                        cannonCal.add(Calendar.DAY_OF_YEAR, 1);
                     }
                     setAlarm(cannonCal, pendingCannon);
                     Log.d(TAG, "Cannon alarm set at: " + cannonCal.getTime());
@@ -238,7 +237,7 @@ public class MyAlarmsManager {
                 mesaharatyCal.set(Calendar.MINUTE, Integer.parseInt(mesaharatyTimeParts[1]));
                 mesaharatyCal.set(Calendar.SECOND, 0);
                 if (!mesaharatyCal.after(now)) {
-                    mesaharatyCal.add(Calendar.HOUR, 24);
+                    mesaharatyCal.add(Calendar.DAY_OF_YEAR, 1);
                 }
                 setAlarm(mesaharatyCal, pendingMesaharaty);
                 Log.d(TAG, "Mesaharaty alarm set at: " + mesaharatyCal.getTime());
@@ -267,9 +266,9 @@ public class MyAlarmsManager {
                     alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMilliseconds, pendingIntent);
                     Log.d("MyAlarmsManager", "was able to set exact alarm");
                 } else {
-    Log.d("MyAlarmsManager", "falling back to inexact alarm");
-    alarmMgr.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMilliseconds, pendingIntent);
-           }
+                    Log.d("MyAlarmsManager", "unable to set exact alarm due to permission issue. Requesting permission");
+                    requestExactAlarmPermission();
+                }
             }
         }
     }
@@ -331,7 +330,7 @@ public class MyAlarmsManager {
         if (calendar1.after(now)) {
             alarmmnager.setRepeating(AlarmManager.RTC_WAKEUP, calendar1.getTimeInMillis(), 12 * 60 * 60 * 1000, intent);
         } else {
-            calendar1.add(Calendar.HOUR, 24);
+            calendar1.add(Calendar.DAY_OF_YEAR, 1);
             alarmmnager.setRepeating(AlarmManager.RTC_WAKEUP, calendar1.getTimeInMillis(), 12 * 60 * 60 * 1000, intent);
         }
     }
@@ -350,14 +349,14 @@ public class MyAlarmsManager {
         double latitude = Double.parseDouble(MainActivity.getLatitude(context));
         double longitude = Double.parseDouble(MainActivity.getLongitude(context));
         if (latitude == 0 && longitude == 0) return;
-        updatePrayerAlarms(requestCodeAthan1, "isFajrReminder", 0, MainActivity.DATA_TYPE_ATHAN1);
-        updatePrayerAlarms(requestCodeAthan2, "isDuhrReminder", 2, MainActivity.DATA_TYPE_ATHAN2);
-        updatePrayerAlarms(requestCodeAthan3, "isAsrReminder", 3, MainActivity.DATA_TYPE_ATHAN3);
-        updatePrayerAlarms(requestCodeAthan4, "isMaghribReminder", 5, MainActivity.DATA_TYPE_ATHAN4);
-        updatePrayerAlarms(requestCodeAthan5, "isIshaaReminder", 6, MainActivity.DATA_TYPE_ATHAN5);
+        updatePrayerAlarms(requestCodeAthan1, "isFajrReminder", 0, MainActivity.DATA_TYPE_ATHAN1, "fajr", "الفجر");
+        updatePrayerAlarms(requestCodeAthan2, "isDuhrReminder", 2, MainActivity.DATA_TYPE_ATHAN2, "duhr", "الظهر");
+        updatePrayerAlarms(requestCodeAthan3, "isAsrReminder", 3, MainActivity.DATA_TYPE_ATHAN3, "asr", "العصر");
+        updatePrayerAlarms(requestCodeAthan4, "isMaghribReminder", 5, MainActivity.DATA_TYPE_ATHAN4, "maghrib", "المغرب");
+        updatePrayerAlarms(requestCodeAthan5, "isIshaaReminder", 6, MainActivity.DATA_TYPE_ATHAN5, "isha", "العشاء");
     }
 
-    private void updatePrayerAlarms(int requestCode, String isReminderPreference, int prayerPosition, String datatype) {
+    private void updatePrayerAlarms(int requestCode, String isReminderPreference, int prayerPosition, String datatype, String prayerKey, String prayerArabicName) {
         if (context == null) return;
         PrayTime prayers = PrayTime.instancePrayTime(context);
         prayers.setTimeFormat(PrayTime.TIME_FORMAT_Time24);
@@ -380,12 +379,47 @@ public class MyAlarmsManager {
             calendar0.set(Calendar.SECOND, 0);
             if (calendar0.after(now)) {
                 setAlarm(calendar0, pendingIntentAthan);
+                setPreAthanAlarm((Calendar) calendar0.clone(), prayerKey, prayerArabicName, requestCode);
             } else {
                 calendar0.add(Calendar.DAY_OF_YEAR, 1);
                 setAlarm(calendar0, pendingIntentAthan);
+                setPreAthanAlarm((Calendar) calendar0.clone(), prayerKey, prayerArabicName, requestCode);
             }
         } else {
             alarmMgr.cancel(pendingIntentAthan);
+        }
+    }
+
+    private void setPreAthanAlarm(Calendar prayerTime, String prayerKey, String prayerArabicName, int requestCode) {
+        boolean enabled = sharedPrefs.getBoolean("pre_athan_" + prayerKey + "_enabled", false);
+        Intent preAthanIntent = new Intent(context, ThikrAlarmReceiver.class);
+        preAthanIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", DATA_TYPE_PRE_ATHAN);
+        preAthanIntent.putExtra("prayer_name", prayerArabicName);
+        PendingIntent pendingPreAthan = PendingIntent.getBroadcast(context, requestCode + 300, preAthanIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        if (!enabled) {
+            alarmMgr.cancel(pendingPreAthan);
+            return;
+        }
+
+        int minutes = 15;
+        try {
+            minutes = Integer.parseInt(sharedPrefs.getString("pre_athan_" + prayerKey + "_minutes", "15"));
+        } catch (NumberFormatException e) {
+            minutes = 15;
+        }
+
+        Calendar preAthanCal = (Calendar) prayerTime.clone();
+        preAthanCal.add(Calendar.MINUTE, -minutes);
+
+        Date dat = new Date();
+        Calendar now = Calendar.getInstance();
+        now.setTime(dat);
+
+        if (preAthanCal.after(now)) {
+            setAlarm(preAthanCal, pendingPreAthan);
+        } else {
+            alarmMgr.cancel(pendingPreAthan);
         }
     }
 }
