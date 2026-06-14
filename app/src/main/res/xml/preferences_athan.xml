@@ -123,7 +123,6 @@
         android:key="pre_athan_isha_minutes"
         android:title="@string/pre_athan_minutes"
         android:inputType="number" />
-
 </PreferenceCategory>
 
 </PreferenceScreen>
