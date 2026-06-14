@@ -30,6 +30,9 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import android.speech.tts.TextToSpeech;
+import java.util.Locale;
+
 
 import com.alaaeltaweel.thikrallah.MainActivity;
 
@@ -49,7 +52,7 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
 
         if (data == null) return;
 
-        String dataType = data.getString("com.alaaeltaweel.thikrallah.datatype");
+        String dataType = data.getString("com.alaaeltaweel.thikrallah.datatype", "");
 
         // ✅ تنبيه قبل الصلاة بـ 15 دقيقة
         if (MyAlarmsManager.DATA_TYPE_PRE_ATHAN.equals(dataType)) {
@@ -105,14 +108,28 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
             try {
                 TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
                 if (tm != null && tm.getCallState() != TelephonyManager.CALL_STATE_IDLE) {
-                    Log.d(TAG, "Call in progress, skipping thikr");
-                    return;
+                    Log.d(TAG, "Call in progress, scheduling thikr after 15 min");
+android.app.AlarmManager alarmManager = 
+    (android.app.AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+android.app.PendingIntent pendingIntent = android.app.PendingIntent.getBroadcast(
+    context,
+    dataType.hashCode() + 9999,
+    new Intent(context, ThikrAlarmReceiver.class).putExtras(data),
+    android.app.PendingIntent.FLAG_UPDATE_CURRENT | 
+    android.app.PendingIntent.FLAG_IMMUTABLE);
+alarmManager.setExactAndAllowWhileIdle(
+    android.app.AlarmManager.RTC_WAKEUP,
+    System.currentTimeMillis() + (15 * 60 * 1000),
+    pendingIntent);
+return;
                 }
             } catch (SecurityException e) {
                 Log.d(TAG, "Cannot check call state, proceeding");
             }
 
             // باقي التنبيهات تشتغل عادي
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .edit().putLong("last_general_thikr_time", System.currentTimeMillis()).apply();
             data.putBoolean("isUserAction", false);
             Intent intent2 = new Intent(context, ThikrService.class).putExtras(data);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -125,7 +142,7 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
         }
     }
 
-    // ✅ notification قبل الصلاة بـ 15 دقيقة
+    // ✅ notification + صوت قبل الصلاة
     private void showPreAthanNotification(Context context, String prayerName) {
         String channelId = "pre_athan_reminder";
         NotificationManager notificationManager =
@@ -145,12 +162,28 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle("اقترب وقت صلاة " + prayerName)
-                .setContentText("تبقى 15 دقيقة على صلاة " + prayerName)
+                .setContentText("اقترب وقت صلاة " + prayerName)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent);
 
         notificationManager.notify(prayerName.hashCode(), builder.build());
+
+        speakPreAthan(context, prayerName);
+    }
+
+    // ✅ نطق الجملة بصوت الجهاز
+    private void speakPreAthan(Context context, String prayerName) {
+        final String textToSpeak = "اقتربت صلاة " + prayerName;
+        final TextToSpeech[] ttsHolder = new TextToSpeech[1];
+        ttsHolder[0] = new TextToSpeech(context, status -> {
+            if (status == TextToSpeech.SUCCESS) {
+                ttsHolder[0].setLanguage(new Locale("ar"));
+                ttsHolder[0].speak(textToSpeak, TextToSpeech.QUEUE_FLUSH, null, "pre_athan_tts");
+            } else {
+                Log.d("ThikrAlarmReceiver", "TTS init failed");
+            }
+        });
     }
 
     private boolean isAthanType(String dataType) {
