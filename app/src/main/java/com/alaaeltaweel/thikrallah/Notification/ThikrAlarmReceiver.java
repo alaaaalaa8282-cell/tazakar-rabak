@@ -1,4 +1,3 @@
-
 package com.alaaeltaweel.thikrallah.Notification;
 
 import android.app.NotificationChannel;
@@ -8,10 +7,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import java.util.Calendar;
+import android.graphics.Color;
+import android.media.AudioAttributes;
+import android.media.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -20,29 +21,28 @@ import androidx.core.app.NotificationCompat;
 import com.alaaeltaweel.thikrallah.MainActivity;
 import com.alaaeltaweel.thikrallah.R;
 
+import java.util.Calendar;
+
 public class ThikrAlarmReceiver extends BroadcastReceiver {
     String TAG = "ThikrAlarmReceiver";
-    private static final String ALARM_ACTION = "com.alaaeltaweel.thikrallah.Notification.ThikrAlarmReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "onReceive called");
-
+        Log.d(TAG, "onrecieve called");
         Bundle data = intent.getExtras();
         if (data == null) return;
 
         String dataType = data.getString("com.alaaeltaweel.thikrallah.datatype", "");
 
-        // ✅ تنبيه قبل الصلاة بـ 15 دقيقة
+        // 1. تنبيه قبل الصلاة بـ 15 دقيقة (الأصوات المحملة)
         if (MyAlarmsManager.DATA_TYPE_PRE_ATHAN.equals(dataType)) {
             String prayerName = data.getString("prayer_name", "الصلاة");
             showPreAthanNotification(context, prayerName);
             return;
         }
 
-        // لو الأذان افتح شاشة الأذان
+        // 2. تنبيه الأذان (يفتح شاشة الأذان الكاملة)
         if (isAthanType(dataType)) {
-            // ✅ منع تكرار الأذان في نفس اليوم
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             long lastAthanTime = prefs.getLong("last_athan_time_" + dataType, 0);
             long nowMs = System.currentTimeMillis();
@@ -57,7 +57,6 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
             }
             prefs.edit().putLong("last_athan_time_" + dataType, nowMs).apply();
 
-            // ✅ تحقق من وجود مكالمة وابعت الحالة للشاشة
             boolean isInCall = false;
             try {
                 TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -77,80 +76,110 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
             context.startActivity(athanIntent);
 
         } else {
-            // ✅ الأذكار العادية — لا تشتغل أثناء المكالمات ويتم تأجيلها بأمان
-            boolean isInCall = false;
+            // 3. ✅ الأذكار العادية (تم تعديلها لتشتغل مباشرة هنا بدون الـ Service المسببة للكراش)
             try {
                 TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
                 if (tm != null && tm.getCallState() != TelephonyManager.CALL_STATE_IDLE) {
-                    isInCall = true;
-                }
-            } catch (SecurityException e) {
-                Log.d(TAG, "Cannot check call state, proceeding as normal");
-            }
-
-            if (isInCall) {
-                Log.d(TAG, "Call in progress, scheduling thikr after 15 min");
-                try {
+                    Log.d(TAG, "Call in progress, scheduling thikr after 15 min");
                     android.app.AlarmManager alarmManager = 
                         (android.app.AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                    
-                    // ✅ تم الإصلاح: تحديد الـ Action والكلاس معاً لضمان إيقاظ التنبيه بعد 15 دقيقة بنجاح
-                    Intent rescheduleIntent = new Intent(ALARM_ACTION);
-                    rescheduleIntent.setClass(context, ThikrAlarmReceiver.class);
-                    rescheduleIntent.putExtras(data);
-
                     android.app.PendingIntent pendingIntent = android.app.PendingIntent.getBroadcast(
                         context,
                         dataType.hashCode() + 9999,
-                        rescheduleIntent,
-                        android.app.PendingIntent.FLAG_UPDATE_CURRENT | android.app.PendingIntent.FLAG_IMMUTABLE);
-                    
-                    if (alarmManager != null) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            alarmManager.setExactAndAllowWhileIdle(
-                                android.app.AlarmManager.RTC_WAKEUP,
-                                System.currentTimeMillis() + (15 * 60 * 1000),
-                                pendingIntent);
-                        } else {
-                            alarmManager.set(
-                                android.app.AlarmManager.RTC_WAKEUP,
-                                System.currentTimeMillis() + (15 * 60 * 1000),
-                                pendingIntent);
-                        }
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "Failed to reschedule thikr during call: " + e.getMessage());
+                        new Intent(context, ThikrAlarmReceiver.class).putExtras(data),
+                        android.app.PendingIntent.FLAG_UPDATE_CURRENT | 
+                        android.app.PendingIntent.FLAG_IMMUTABLE);
+                    alarmManager.setExactAndAllowWhileIdle(
+                        android.app.AlarmManager.RTC_WAKEUP,
+                        System.currentTimeMillis() + (15 * 60 * 1000),
+                        pendingIntent);
+                    return;
                 }
-                return; // إيقاف التنفيذ الحالي حتى ينطلق المنبه الجديد بعد 15 دقيقة
+            } catch (SecurityException e) {
+                Log.d(TAG, "Cannot check call state, proceeding");
             }
 
-            // باقي التنبيهات تشتغل عادي في حالة عدم وجود مكالمة
+            // حفظ وقت آخر ذكر اشتغل
             PreferenceManager.getDefaultSharedPreferences(context)
                     .edit().putLong("last_general_thikr_time", System.currentTimeMillis()).apply();
-            data.putBoolean("isUserAction", false);
-            Intent intent2 = new Intent(context, ThikrService.class).putExtras(data);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Log.d(TAG, "starting foreground service ThikrService");
-                context.startForegroundService(intent2);
-            } else {
-                Log.d(TAG, "starting background service ThikrService");
-                context.startService(intent2);
-            }
+
+            // إرسال إشعار الذكر العادي مباشرة من هنا لضمان عمله 100%
+            showGeneralThikrNotification(context, data);
         }
     }
 
-    // ✅ notification قبل الصلاة بـ 15 دقيقة
-    private void showPreAthanNotification(Context context, String prayerName) {
-        String channelId = "pre_athan_reminder";
+    // ✅ دالة إطلاق إشعار الأذكار العادية مباشرة بدون مشاكل الخلفية
+    private void showGeneralThikrNotification(Context context, Bundle data) {
+        String thikrText = data.getString("thikr_text", "اذكر الله"); // النص الخاص بالذكر القادم
+        String channelId = "general_thikr_channel";
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if (notificationManager == null) return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    channelId, "الأذكار اليومية", NotificationManager.IMPORTANCE_HIGH);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+
+        Intent launchIntent = new Intent(context, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, thikrText.hashCode(),
+                launchIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
+                .setSmallIcon(R.drawable.ic_launcher) // تأكد من وجود الأيقونة
+                .setContentTitle("ذكر الله")
+                .setContentText(thikrText)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent);
+
+        if (notificationManager != null) {
+            notificationManager.notify(thikrText.hashCode(), builder.build());
+        }
+    }
+
+    // ✅ دالة إشعار قبل الأذان بـ 15 دقيقة (الأصوات المخصصة)
+    private void showPreAthanNotification(Context context, String prayerName) {
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        int soundResId = R.raw.pre_dhuhr; 
+        if (prayerName != null) {
+            String lowerPrayer = prayerName.toLowerCase();
+            if (prayerName.contains("الفجر") || lowerPrayer.contains("fajr")) {
+                soundResId = R.raw.pre_fajr;
+            } else if (prayerName.contains("الظهر") || lowerPrayer.contains("dhuhr") || lowerPrayer.contains("zuhr")) {
+                soundResId = R.raw.pre_dhuhr;
+            } else if (prayerName.contains("العصر") || lowerPrayer.contains("asr")) {
+                soundResId = R.raw.pre_asr;
+            } else if (prayerName.contains("المغرب") || lowerPrayer.contains("maghrib")) {
+                soundResId = R.raw.pre_maghrib;
+            } else if (prayerName.contains("العشاء") || lowerPrayer.contains("isha")) {
+                soundResId = R.raw.pre_isha;
+            }
+        }
+
+        Uri soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + soundResId);
+        String channelId = "pre_athan_reminder_channel_" + soundResId;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     channelId, "تنبيه اقتراب الصلاة", NotificationManager.IMPORTANCE_HIGH);
-            notificationManager.createNotificationChannel(channel);
+            
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+            
+            channel.setSound(soundUri, audioAttributes);
+            channel.enableLights(true);
+            channel.setLightColor(Color.GREEN);
+            
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
         }
 
         Intent launchIntent = new Intent(context, MainActivity.class);
@@ -163,10 +192,13 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                 .setContentTitle("اقترب وقت صلاة " + prayerName)
                 .setContentText("تبقى 15 دقيقة على صلاة " + prayerName)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setSound(soundUri)
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent);
 
-        notificationManager.notify(prayerName.hashCode(), builder.build());
+        if (notificationManager != null) {
+            notificationManager.notify(prayerName.hashCode(), builder.build());
+        }
     }
 
     private boolean isAthanType(String dataType) {
@@ -178,5 +210,4 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                dataType.equals(MainActivity.DATA_TYPE_ATHAN5);
     }
 }
-
 
