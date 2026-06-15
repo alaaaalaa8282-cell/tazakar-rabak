@@ -1,6 +1,6 @@
 package com.alaaeltaweel.thikrallah.Notification;
 
-import android.app.Service; // تم التغيير إلى Service عادية
+import android.app.Service;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -17,7 +17,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.IBinder; // مطلوب للـ Service العادية
+import android.os.IBinder;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -56,6 +56,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
@@ -68,7 +70,12 @@ public class ThikrService extends Service {
     private final static int NOTIFICATION_ID_QURAN_THIKR = 400;
     private final static int NOTIFICATION_ID_QURAN_DOWNLOAD_NEEDED = 500;
     private AudioManager am;
-    private Intent calling_intent;
+    
+    // ✅ تم الاستغناء عن المتغير العام calling_intent لمنع مشكلة تداخل البيانات
+    
+    // ✅ تعريف الـ Executor لإنشاء طابور منظم يعمل خلفية تماماً كـ IntentService القديمة
+    private ExecutorService serviceExecutor;
+
     Context mcontext;
     @Inject PageProvider quranPageProvider;
     QuranSettings quransettings;
@@ -82,7 +89,13 @@ public class ThikrService extends Service {
     private static final String DATABASE_BASE_URL = new MadaniPageProvider().getAudioDatabasesBaseUrl();
 
     public ThikrService() {
-        // كونستراكتور فارغ للخدمة العادية
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        // ✅ تهيئة طابور العمل الأحادي الخيط
+        serviceExecutor = Executors.newSingleThreadExecutor();
     }
 
     @Nullable
@@ -102,23 +115,22 @@ public class ThikrService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        // ✅ الأهم: استدعاء الـ Foreground Notification فوراً على الخيط الرئيسي لمنع كراش النظام الذكي
+    public int onStartCommand(final Intent intent, int flags, final int startId) {
+        // ✅ استدعاء الـ Foreground Notification فوراً على الخيط الرئيسي لمنع الكراش
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             showForegroundNotificationan(NOTIFICATION_ID_GENERIC_FOREGROUND);
         }
 
         if (intent != null) {
-            calling_intent = intent;
-            // تشغيل المنطق البرمجي في Thread منفصل يدوي لحماية التطبيق من التجمد (ANR)
-            new Thread(new Runnable() {
+            // ✅ تمرير الـ intent المحلي مباشرة إلى طابور التنفيذ الآمن بالترتيب
+            serviceExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    handleServiceLogic(calling_intent);
-                    // قفل الخدمة بشكل آمن بعد انتهاء معالجة هذا الـ ID المحدد
+                    handleServiceLogic(intent);
+                    // ✅ الإغلاق الآمن مبني على الـ startId الممرر للخيط الحالي لضمان عدم قتل الخدمة مبكراً
                     stopSelf(startId);
                 }
-            }).start();
+            });
         } else {
             stopSelf(startId);
         }
@@ -126,12 +138,10 @@ public class ThikrService extends Service {
         return START_NOT_STICKY;
     }
 
-    // نقل كل منطق دالة onHandleIntent القديمة إلى هنا ليتم معالجته داخل الـ Thread
     private void handleServiceLogic(Intent intent) {
         mcontext = this.getApplicationContext();
         quransettings = QuranSettings.getInstance(mcontext);
         
-        // تحديث كل المنبهات
         Intent boot_reciever = new Intent("com.alaaeltaweel.thikrallah.Notification.ThikrBootReceiver.android.action.broadcast");
         this.sendBroadcast(boot_reciever);
         Log.d(TAG, "handleServiceLogic called");
@@ -175,7 +185,6 @@ public class ThikrService extends Service {
             Log.d(TAG, "filenumber is" + fileNumber);
             int reminderType = Integer.parseInt(sharedPrefs.getString("RemindmeThroughTheDayType", "1"));
             
-            // تشغيل الإشعار العائم (ChatHead)
             if (reminderType == 1 || reminderType == 3) {
                 Intent intentChatHead = new Intent(this.getApplicationContext(), ChatHeadService.class);
                 intentChatHead.putExtra("thikr", thikr.getThikrText());
@@ -374,7 +383,6 @@ public class ThikrService extends Service {
                                 PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                         handleRequiredDownload(pendingIntent, NOTIFICATION_ID_QURAN_DOWNLOAD_NEEDED);
 
-                        // إظهار إشعار سورة الملك
                         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "ThikrService");
                         mBuilder.setContentTitle(this.getString(R.string.my_app_name))
@@ -484,7 +492,6 @@ public class ThikrService extends Service {
                 }
             }
             
-            // تشغيل الـ ChatHead للأذان
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (Settings.canDrawOverlays(this)) {
                     Intent intentChatHead = new Intent(this.getApplicationContext(), ChatHeadService.class);
@@ -898,6 +905,10 @@ public class ThikrService extends Service {
     @Override
     public void onDestroy() {
         Log.d(TAG, "calling on destroy");
+        // ✅ إغلاق الـ Executor بشكل نظيف عند انتهاء دورة حياة الخدمة
+        if (serviceExecutor != null) {
+            serviceExecutor.shutdown();
+        }
         super.onDestroy();
     }
 }
