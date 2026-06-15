@@ -91,7 +91,7 @@ public class MyAlarmsManager {
         boolean Remindmekahf = sharedPrefs.getBoolean("remindMekahf", true);
         boolean Remindmemulk = sharedPrefs.getBoolean("remindMemulk", true);
 
-        // ✅ 1. منبه سورة الملك (تم إرجاع الـ Action وتحديد الكلاس معاً لضمان القبول والـ الدقة)
+        // ✅ 1. منبه سورة الملك
         Intent intentMulk = new Intent(ALARM_ACTION);
         intentMulk.setClass(context, ThikrAlarmReceiver.class);
         intentMulk.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_QURAN_MULK);
@@ -246,7 +246,7 @@ public class MyAlarmsManager {
             if (alarmMgr.canScheduleExactAlarms()) {
                 alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMilliseconds, pendingIntent);
             } else {
-                // ✅ منقذ الخلفية والمكالمات: العمل كمنبه عادي إذا رُفضت الصلاحية مؤقتاً لضمان عدم الموت
+                // ✅ العمل كمنبه عادي إذا رُفضت الصلاحية مؤقتاً لضمان عدم الموت
                 alarmMgr.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMilliseconds, pendingIntent);
                 requestExactAlarmPermission(); 
             }
@@ -279,7 +279,7 @@ public class MyAlarmsManager {
                 .setMessage(this.context.getResources().getString(R.string.exact_alarm_message))
                 .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, i) {
+                    public void onClick(DialogInterface dialogInterface, int i) {
                         Intent intent = new Intent();
                         intent.setAction(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
                         intent.setData(Uri.parse("package:" + context.getPackageName()));
@@ -300,7 +300,6 @@ public class MyAlarmsManager {
         Intent launchIntent = new Intent(context, ThikrBootReceiver.class);
         launchIntent.setAction("com.alaaeltaweel.thikrallah.Notification.ThikrBootReceiver.android.action.broadcast");
         
-        // ✅ تعديل قاتل: تم تحويل الفلاج إلى FLAG_UPDATE_CURRENT بدلاً من ONE_SHOT لضمان إحياء التطبيق ذاتياً للأبد
         PendingIntent intent = PendingIntent.getBroadcast(context, 100, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         Calendar calendar1 = Calendar.getInstance();
