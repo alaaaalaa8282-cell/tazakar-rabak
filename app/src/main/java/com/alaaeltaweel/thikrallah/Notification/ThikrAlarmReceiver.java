@@ -1,70 +1,47 @@
+
 package com.alaaeltaweel.thikrallah.Notification;
 
-
 import android.app.NotificationChannel;
-
 import android.app.NotificationManager;
-
 import android.app.PendingIntent;
-
 import android.content.BroadcastReceiver;
-
 import android.content.Context;
-
 import android.content.Intent;
-
 import android.content.SharedPreferences;
-
 import android.preference.PreferenceManager;
-
 import java.util.Calendar;
-
 import android.os.Build;
-
 import android.os.Bundle;
-
 import android.telephony.TelephonyManager;
-
 import android.util.Log;
-
 
 import androidx.core.app.NotificationCompat;
 
-
 import com.alaaeltaweel.thikrallah.MainActivity;
-
 import com.alaaeltaweel.thikrallah.R;
-
 
 public class ThikrAlarmReceiver extends BroadcastReceiver {
     String TAG = "ThikrAlarmReceiver";
-
+    private static final String ALARM_ACTION = "com.alaaeltaweel.thikrallah.Notification.ThikrAlarmReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
-        Log.d(TAG, "onrecieve called");
+        Log.d(TAG, "onReceive called");
 
         Bundle data = intent.getExtras();
-
         if (data == null) return;
 
         String dataType = data.getString("com.alaaeltaweel.thikrallah.datatype", "");
 
         // ✅ تنبيه قبل الصلاة بـ 15 دقيقة
         if (MyAlarmsManager.DATA_TYPE_PRE_ATHAN.equals(dataType)) {
-
             String prayerName = data.getString("prayer_name", "الصلاة");
-
             showPreAthanNotification(context, prayerName);
-
             return;
-
         }
 
         // لو الأذان افتح شاشة الأذان
         if (isAthanType(dataType)) {
-
             // ✅ منع تكرار الأذان في نفس اليوم
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             long lastAthanTime = prefs.getLong("last_athan_time_" + dataType, 0);
@@ -100,31 +77,54 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
             context.startActivity(athanIntent);
 
         } else {
-
-            // ✅ الأذكار العادية — لا تشتغل أثناء المكالمات
+            // ✅ الأذكار العادية — لا تشتغل أثناء المكالمات ويتم تأجيلها بأمان
+            boolean isInCall = false;
             try {
                 TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
                 if (tm != null && tm.getCallState() != TelephonyManager.CALL_STATE_IDLE) {
-                    Log.d(TAG, "Call in progress, scheduling thikr after 15 min");
-android.app.AlarmManager alarmManager = 
-    (android.app.AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-android.app.PendingIntent pendingIntent = android.app.PendingIntent.getBroadcast(
-    context,
-    dataType.hashCode() + 9999,
-    new Intent(context, ThikrAlarmReceiver.class).putExtras(data),
-    android.app.PendingIntent.FLAG_UPDATE_CURRENT | 
-    android.app.PendingIntent.FLAG_IMMUTABLE);
-alarmManager.setExactAndAllowWhileIdle(
-    android.app.AlarmManager.RTC_WAKEUP,
-    System.currentTimeMillis() + (15 * 60 * 1000),
-    pendingIntent);
-return;
+                    isInCall = true;
                 }
             } catch (SecurityException e) {
-                Log.d(TAG, "Cannot check call state, proceeding");
+                Log.d(TAG, "Cannot check call state, proceeding as normal");
             }
 
-            // باقي التنبيهات تشتغل عادي
+            if (isInCall) {
+                Log.d(TAG, "Call in progress, scheduling thikr after 15 min");
+                try {
+                    android.app.AlarmManager alarmManager = 
+                        (android.app.AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                    
+                    // ✅ تم الإصلاح: تحديد الـ Action والكلاس معاً لضمان إيقاظ التنبيه بعد 15 دقيقة بنجاح
+                    Intent rescheduleIntent = new Intent(ALARM_ACTION);
+                    rescheduleIntent.setClass(context, ThikrAlarmReceiver.class);
+                    rescheduleIntent.putExtras(data);
+
+                    android.app.PendingIntent pendingIntent = android.app.PendingIntent.getBroadcast(
+                        context,
+                        dataType.hashCode() + 9999,
+                        rescheduleIntent,
+                        android.app.PendingIntent.FLAG_UPDATE_CURRENT | android.app.PendingIntent.FLAG_IMMUTABLE);
+                    
+                    if (alarmManager != null) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            alarmManager.setExactAndAllowWhileIdle(
+                                android.app.AlarmManager.RTC_WAKEUP,
+                                System.currentTimeMillis() + (15 * 60 * 1000),
+                                pendingIntent);
+                        } else {
+                            alarmManager.set(
+                                android.app.AlarmManager.RTC_WAKEUP,
+                                System.currentTimeMillis() + (15 * 60 * 1000),
+                                pendingIntent);
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed to reschedule thikr during call: " + e.getMessage());
+                }
+                return; // إيقاف التنفيذ الحالي حتى ينطلق المنبه الجديد بعد 15 دقيقة
+            }
+
+            // باقي التنبيهات تشتغل عادي في حالة عدم وجود مكالمة
             PreferenceManager.getDefaultSharedPreferences(context)
                     .edit().putLong("last_general_thikr_time", System.currentTimeMillis()).apply();
             data.putBoolean("isUserAction", false);
@@ -144,6 +144,8 @@ return;
         String channelId = "pre_athan_reminder";
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (notificationManager == null) return;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
@@ -176,3 +178,5 @@ return;
                dataType.equals(MainActivity.DATA_TYPE_ATHAN5);
     }
 }
+
+
