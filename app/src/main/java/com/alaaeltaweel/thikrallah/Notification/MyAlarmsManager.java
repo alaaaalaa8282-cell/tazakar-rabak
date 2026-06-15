@@ -1,3 +1,4 @@
+
 package com.alaaeltaweel.thikrallah.Notification;
 
 import static android.content.Context.ALARM_SERVICE;
@@ -87,15 +88,14 @@ public class MyAlarmsManager {
         boolean Remindmekahf = sharedPrefs.getBoolean("remindMekahf", true);
         boolean Remindmemulk = sharedPrefs.getBoolean("remindMemulk", true);
 
-        Intent launchIntent = new Intent("com.alaaeltaweel.thikrallah.Notification.ThikrAlarmReceiver");
-        launchIntent.setClass(context, ThikrAlarmReceiver.class);
-
         Date dat = new Date();
         Calendar now = Calendar.getInstance();
         now.setTime(dat);
 
-        // Mulk Reminder
-        PendingIntent pendingIntentMulk = PendingIntent.getBroadcast(context, requestCodeMulkAlarm, launchIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_QURAN_MULK), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        // ✅ 1. منبه سورة الملك (تم إنشاء كائن Intent منفصل لكل ألارم بدلاً من تعديل نفس الكائن)
+        Intent intentMulk = new Intent(context, ThikrAlarmReceiver.class);
+        intentMulk.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_QURAN_MULK);
+        PendingIntent pendingIntentMulk = PendingIntent.getBroadcast(context, requestCodeMulkAlarm, intentMulk, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         if (Remindmemulk) {
             Calendar calendar0 = Calendar.getInstance();
             calendar0.set(Calendar.HOUR_OF_DAY, Integer.parseInt(mulkReminderTime[0]));
@@ -111,8 +111,10 @@ public class MyAlarmsManager {
             alarmMgr.cancel(pendingIntentMulk);
         }
 
-        // Morning Reminder
-        PendingIntent pendingIntentMorningThikr = PendingIntent.getBroadcast(context, requestCodeMorningAlarm, launchIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_DAY_THIKR), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        // ✅ 2. أذكار الصباح (إنشاء Intent مستقل)
+        Intent intentMorning = new Intent(context, ThikrAlarmReceiver.class);
+        intentMorning.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_DAY_THIKR);
+        PendingIntent pendingIntentMorningThikr = PendingIntent.getBroadcast(context, requestCodeMorningAlarm, intentMorning, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         if (remindMeMorningThikr) {
             Calendar calendar0 = Calendar.getInstance();
             calendar0.set(Calendar.HOUR_OF_DAY, Integer.parseInt(MorningReminderTime[0]));
@@ -128,8 +130,10 @@ public class MyAlarmsManager {
             alarmMgr.cancel(pendingIntentMorningThikr);
         }
 
-        // Night Reminder
-        PendingIntent pendingIntentNightThikr = PendingIntent.getBroadcast(context, requestCodeNightAlarm, launchIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_NIGHT_THIKR), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        // ✅ 3. أذكار المساء (إنشاء Intent مستقل)
+        Intent intentNight = new Intent(context, ThikrAlarmReceiver.class);
+        intentNight.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_NIGHT_THIKR);
+        PendingIntent pendingIntentNightThikr = PendingIntent.getBroadcast(context, requestCodeNightAlarm, intentNight, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         if (remindMeNightThikr) {
             Calendar calendar1 = Calendar.getInstance();
             calendar1.set(Calendar.HOUR_OF_DAY, Integer.parseInt(NightReminderTime[0]));
@@ -145,8 +149,10 @@ public class MyAlarmsManager {
             alarmMgr.cancel(pendingIntentNightThikr);
         }
 
-        // Random Reminder
-        PendingIntent pendingIntentGeneral = PendingIntent.getBroadcast(context, requestCodeRandomAlarm, launchIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_GENERAL_THIKR), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        // ✅ 4. التذكير العشوائي خلال اليوم (إنشاء Intent مستقل)
+        Intent intentGeneral = new Intent(context, ThikrAlarmReceiver.class);
+        intentGeneral.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_GENERAL_THIKR);
+        PendingIntent pendingIntentGeneral = PendingIntent.getBroadcast(context, requestCodeRandomAlarm, intentGeneral, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         if (RemindmeThroughTheDay) {
             alarmMgr.cancel(pendingIntentGeneral);
             Calendar calendar1 = Calendar.getInstance();
@@ -157,8 +163,10 @@ public class MyAlarmsManager {
             alarmMgr.cancel(pendingIntentGeneral);
         }
 
-        // Kahf Reminder
-        PendingIntent pendingIntentKahf = PendingIntent.getBroadcast(context, requestCodeKahfAlarm, launchIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_QURAN_KAHF), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        // ✅ 5. سورة الكهف يوم الجمعة (إنشاء Intent مستقل)
+        Intent intentKahf = new Intent(context, ThikrAlarmReceiver.class);
+        intentKahf.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_QURAN_KAHF);
+        PendingIntent pendingIntentKahf = PendingIntent.getBroadcast(context, requestCodeKahfAlarm, intentKahf, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         if (Remindmekahf && Calendar.getInstance().get(Calendar.DAY_OF_MONTH) != sharedPrefs.getInt("lastKahfPlayed", -1)) {
             alarmMgr.cancel(pendingIntentKahf);
             Calendar calendar1 = Calendar.getInstance();
@@ -186,7 +194,7 @@ public class MyAlarmsManager {
     private void updateRamadanAlarms() {
         if (context == null || alarmMgr == null) return;
 
-        // تحقق إن دلوقتي رمضان
+        // تحقق إن الآن رمضان هجرياً
         android.icu.util.IslamicCalendar islamicCalendar = new android.icu.util.IslamicCalendar();
         int hijriMonth = islamicCalendar.get(android.icu.util.Calendar.MONTH);
         boolean isRamadan = (hijriMonth == 8);
@@ -238,7 +246,7 @@ public class MyAlarmsManager {
             }
         }
 
-        // ✅ المسحراتي — الوقت اللي يحدده المستخدم
+        // ✅ المسحراتي
         if (mesaharatyEnabled) {
             String mesaharatyTimeStr = sharedPrefs.getString("mesaharaty_time", "03:00");
             try {
@@ -388,14 +396,15 @@ public class MyAlarmsManager {
         boolean isAthanReminder = sharedPrefs.getBoolean(isReminderPreference, true);
         boolean isPreAthanReminder = sharedPrefs.getBoolean("isPreAthanReminder", true);
 
-        Intent launchIntent = new Intent(context, ThikrAlarmReceiver.class);
-
         Date dat = new Date();
         Calendar now = Calendar.getInstance();
         now.setTime(dat);
 
-        // ✅ الأذان
-        PendingIntent pendingIntentAthan = PendingIntent.getBroadcast(context, requestCode, launchIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", datatype), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        // ✅ الأذان (تم إنشاء كائن Intent مستقل لكل صلاة لتجنب دمج أو تجاهل الخصائص)
+        Intent athanIntent = new Intent(context, ThikrAlarmReceiver.class);
+        athanIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", datatype);
+        
+        PendingIntent pendingIntentAthan = PendingIntent.getBroadcast(context, requestCode, athanIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         alarmMgr.cancel(pendingIntentAthan);
         if (isAthanReminder) {
             Calendar calendar0 = Calendar.getInstance();
@@ -410,7 +419,7 @@ public class MyAlarmsManager {
             }
         }
 
-        // ✅ تنبيه قبل الصلاة بـ 15 دقيقة
+        // ✅ تنبيه قبل الصلاة بـ 15 دقيقة (تم استخدام كائن Intent مستقل أيضاً)
         Intent preAthanIntent = new Intent(context, ThikrAlarmReceiver.class);
         preAthanIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", DATA_TYPE_PRE_ATHAN);
         preAthanIntent.putExtra("prayer_name", prayerName);
@@ -435,3 +444,5 @@ public class MyAlarmsManager {
         }
     }
 }
+
+
