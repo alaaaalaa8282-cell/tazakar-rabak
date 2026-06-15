@@ -17,7 +17,6 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.alaaeltaweel.thikrallah.MainActivity;
 import com.alaaeltaweel.thikrallah.R;
@@ -90,7 +89,7 @@ public class MyAlarmsManager {
         boolean Remindmekahf = sharedPrefs.getBoolean("remindMekahf", true);
         boolean Remindmemulk = sharedPrefs.getBoolean("remindMemulk", true);
 
-        // ✅ 1. منبه سورة الملك
+        // ✅ 1. منبه سورة الملك (Intent منفصل ومستقل)
         Intent intentMulk = new Intent(context, ThikrAlarmReceiver.class);
         intentMulk.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_QURAN_MULK);
         PendingIntent pendingIntentMulk = PendingIntent.getBroadcast(context, requestCodeMulkAlarm, intentMulk, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -104,7 +103,7 @@ public class MyAlarmsManager {
             alarmMgr.cancel(pendingIntentMulk);
         }
 
-        // ✅ 2. أذكار الصباح
+        // ✅ 2. أذكار الصباح (Intent منفصل ومستقل)
         Intent intentMorning = new Intent(context, ThikrAlarmReceiver.class);
         intentMorning.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_DAY_THIKR);
         PendingIntent pendingIntentMorningThikr = PendingIntent.getBroadcast(context, requestCodeMorningAlarm, intentMorning, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -118,7 +117,7 @@ public class MyAlarmsManager {
             alarmMgr.cancel(pendingIntentMorningThikr);
         }
 
-        // ✅ 3. أذكار المساء
+        // ✅ 3. أذكار المساء (Intent منفصل ومستقل)
         Intent intentNight = new Intent(context, ThikrAlarmReceiver.class);
         intentNight.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_NIGHT_THIKR);
         PendingIntent pendingIntentNightThikr = PendingIntent.getBroadcast(context, requestCodeNightAlarm, intentNight, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -132,7 +131,7 @@ public class MyAlarmsManager {
             alarmMgr.cancel(pendingIntentNightThikr);
         }
 
-        // ✅ 4. التذكير التلقائي/العشوائي خلال اليوم
+        // ✅ 4. التذكير التلقائي/العشوائي خلال اليوم (Intent منفصل ومستقل)
         Intent intentGeneral = new Intent(context, ThikrAlarmReceiver.class);
         intentGeneral.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_GENERAL_THIKR);
         PendingIntent pendingIntentGeneral = PendingIntent.getBroadcast(context, requestCodeRandomAlarm, intentGeneral, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -146,7 +145,7 @@ public class MyAlarmsManager {
             alarmMgr.cancel(pendingIntentGeneral);
         }
 
-        // ✅ 5. سورة الكهف يوم الجمعة
+        // ✅ 5. سورة الكهف يوم الجمعة (Intent منفصل ومستقل)
         Intent intentKahf = new Intent(context, ThikrAlarmReceiver.class);
         intentKahf.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_QURAN_KAHF);
         PendingIntent pendingIntentKahf = PendingIntent.getBroadcast(context, requestCodeKahfAlarm, intentKahf, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -237,10 +236,10 @@ public class MyAlarmsManager {
     private void setAlarm(Calendar time, PendingIntent pendingIntent) {
         if (context == null || alarmMgr == null) return;
 
-        // ✅ ضمان أن توقيت المنبه دائماً في المستقبل (إذا مر الوقت، يتم جدولته تلقائياً للغد)
+        // ✅ معالجة الوقت لضمان جدولة صحيحة في المستقبل دائماً (حل مشكلة التكرار المزدوج)
         long timeInMilliseconds = time.getTimeInMillis();
         if (timeInMilliseconds <= System.currentTimeMillis()) {
-            timeInMilliseconds += 24 * 60 * 60 * 1000L; // إضافة 24 ساعة
+            timeInMilliseconds += 24 * 60 * 60 * 1000L; // إضافة 24 ساعة لليوم التالي
         }
 
         Log.d(TAG, "Setting Alarm to: " + new Date(timeInMilliseconds).toString());
@@ -249,10 +248,9 @@ public class MyAlarmsManager {
             if (alarmMgr.canScheduleExactAlarms()) {
                 alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMilliseconds, pendingIntent);
             } else {
-                // ⚠️ حل منقذ: إذا لم تتوفر صلاحية المنبه الدقيق، قم بجدولته كمنبه عادي يوقظ الهاتف
-                // بدلاً من تجاهله تماماً وعدم جدولته!
+                // ⚠️ حل حرج: إذا لم تتوفر الصلاحية الدقيقة، جدول المنبه كعادي بدلاً من تجميده تماماً!
                 alarmMgr.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMilliseconds, pendingIntent);
-                requestExactAlarmPermission(); // اطلب الصلاحية من المستخدم بالخلفية
+                requestExactAlarmPermission(); 
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // أندرويد 6 إلى 11
             alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMilliseconds, pendingIntent);
@@ -354,7 +352,7 @@ public class MyAlarmsManager {
         boolean isAthanReminder = sharedPrefs.getBoolean(isReminderPreference, true);
         boolean isPreAthanReminder = sharedPrefs.getBoolean("isPreAthanReminder", true);
 
-        // ✅ الأذان
+        // ✅ الأذان (كل صلاة بـ Intent مستقل نظيف لعدم خلط البيانات)
         Intent athanIntent = new Intent(context, ThikrAlarmReceiver.class);
         athanIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", datatype);
         
@@ -369,7 +367,7 @@ public class MyAlarmsManager {
             setAlarm(calendar0, pendingIntentAthan);
         }
 
-        // ✅ تنبيه قبل الصلاة بـ 15 دقيقة
+        // ✅ تنبيه قبل الصلاة بـ 15 دقيقة (Intent مستقل)
         Intent preAthanIntent = new Intent(context, ThikrAlarmReceiver.class);
         preAthanIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", DATA_TYPE_PRE_ATHAN);
         preAthanIntent.putExtra("prayer_name", prayerName);
@@ -382,11 +380,12 @@ public class MyAlarmsManager {
             calendarPre.set(Calendar.HOUR_OF_DAY, Integer.parseInt(prayerTimes[prayerPosition].split(":", 3)[0]));
             calendarPre.set(Calendar.MINUTE, Integer.parseInt(prayerTimes[prayerPosition].split(":", 3)[1]));
             calendarPre.set(Calendar.SECOND, 0);
-            calendarPre.add(Calendar.MINUTE, -15); // ✅ 15 دقيقة قبل الصلاة
+            calendarPre.add(Calendar.MINUTE, -15); 
 
             setAlarm(calendarPre, pendingIntentPreAthan);
-            Log.d(TAG, "pre-athan reminder set for " + prayerName + " at " + calendarPre.getTime());
         }
     }
 }
+
+
 
