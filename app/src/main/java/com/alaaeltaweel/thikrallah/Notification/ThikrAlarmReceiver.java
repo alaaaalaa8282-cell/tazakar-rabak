@@ -30,9 +30,6 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
-import android.speech.tts.TextToSpeech;
-import java.util.Locale;
-
 
 import com.alaaeltaweel.thikrallah.MainActivity;
 
@@ -142,7 +139,7 @@ return;
         }
     }
 
-    // ✅ notification + صوت قبل الصلاة
+    // ✅ notification قبل الصلاة بـ 15 دقيقة
     private void showPreAthanNotification(Context context, String prayerName) {
         String channelId = "pre_athan_reminder";
         NotificationManager notificationManager =
@@ -162,28 +159,12 @@ return;
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle("اقترب وقت صلاة " + prayerName)
-                .setContentText("اقترب وقت صلاة " + prayerName)
+                .setContentText("تبقى 15 دقيقة على صلاة " + prayerName)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent);
 
         notificationManager.notify(prayerName.hashCode(), builder.build());
-
-        speakPreAthan(context, prayerName);
-    }
-
-    // ✅ نطق الجملة بصوت الجهاز
-    private void speakPreAthan(Context context, String prayerName) {
-        final String textToSpeak = "اقتربت صلاة " + prayerName;
-        final TextToSpeech[] ttsHolder = new TextToSpeech[1];
-        ttsHolder[0] = new TextToSpeech(context, status -> {
-            if (status == TextToSpeech.SUCCESS) {
-                ttsHolder[0].setLanguage(new Locale("ar"));
-                ttsHolder[0].speak(textToSpeak, TextToSpeech.QUEUE_FLUSH, null, "pre_athan_tts");
-            } else {
-                Log.d("ThikrAlarmReceiver", "TTS init failed");
-            }
-        });
     }
 
     private boolean isAthanType(String dataType) {
