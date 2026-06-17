@@ -31,6 +31,8 @@
 
     <string name="autostart">تفعيل التشغل الذاتي</string>
     <string name="autostart_message">الرجاء السماح لبرنامجنا بالعمل بالخلفية حتى لو كان البرنامج مغلقا حتى يشتغل البرنامج بشكل صحيح.</string>
+    <string name="battery_manual_title">مهم لضمان عمل الأذان في وقته</string>
+    <string name="battery_manual_message">على بعض الأجهزة (مثل Infinix و Tecno)، يحتاج التطبيق إذن إضافي يدوي حتى يعمل الأذان والتذكيرات في وقتها بدون تأخير. الرجاء الدخول إلى صفحة إعدادات التطبيق التي ستفتح الآن، ثم: 1) اختر Battery واختر No restrictions أو Unrestricted، 2) اختر Permissions وفعّل Background activity إن وجد. هذه الخطوة مهمة جدًا وتُطلب مرة واحدة فقط.</string>
     <string name="athan_timer_notifiaction" translatable="false">Prayer Time Remaining</string>
     <string name="remember_notification" translatable="false">Remembrance of Allah</string>
     <string name="floating_notification" translatable="false">Remember Allah Floating Reminders</string>
@@ -665,12 +667,4 @@
     <string name="choose_manual_location">تحديد الموقع</string>
     <string name="choose_manual_location_message">بما انك لم تسمح للبرنامج بالسماح للوصول للموقع الجغرافي عن طريق الجي بي اس, يرجى تحديد دولتك واقرب مدينه اليك حتى يتم حساب وقت الصلاه واتجاه القبله بشكل صحيح</string>
 
-    <string name="pre_athan_reminder">تنبيه قبل الصلاة</string>
-<string name="pre_athan_fajr_enabled">تنبيه قبل الفجر</string>
-<string name="pre_athan_duhr_enabled">تنبيه قبل الظهر</string>
-<string name="pre_athan_asr_enabled">تنبيه قبل العصر</string>
-<string name="pre_athan_maghrib_enabled">تنبيه قبل المغرب</string>
-<string name="pre_athan_isha_enabled">تنبيه قبل العشاء</string>
-<string name="pre_athan_minutes">عدد الدقائق قبل الصلاة</string>
-    
 </resources>
