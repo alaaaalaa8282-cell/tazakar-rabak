@@ -1,30 +1,44 @@
 package com.alaaeltaweel.thikrallah.Notification;
 
+
 import android.app.NotificationChannel;
+
 import android.app.NotificationManager;
+
 import android.app.PendingIntent;
+
 import android.content.BroadcastReceiver;
+
 import android.content.Context;
+
 import android.content.Intent;
+
 import android.content.SharedPreferences;
-import android.graphics.Color; // ✅ تم إضافتها لضبط لون إضاءة الإشعار
-import android.media.AudioAttributes; // ✅ تم إضافتها لضبط خصائص الصوت للقناة
-import android.net.Uri; // ✅ تم إضافتها للتعامل مع روابط الملفات الصوتية
-import android.os.Build;
-import android.os.Bundle;
+
 import android.preference.PreferenceManager;
-import android.telephony.TelephonyManager;
-import android.util.Log;
-
-import androidx.core.app.NotificationCompat;
-
-import com.alaaeltaweel.thikrallah.MainActivity;
-import com.alaaeltaweel.thikrallah.R;
 
 import java.util.Calendar;
 
+import android.os.Build;
+
+import android.os.Bundle;
+
+import android.telephony.TelephonyManager;
+
+import android.util.Log;
+
+
+import androidx.core.app.NotificationCompat;
+
+
+import com.alaaeltaweel.thikrallah.MainActivity;
+
+import com.alaaeltaweel.thikrallah.R;
+
+
 public class ThikrAlarmReceiver extends BroadcastReceiver {
     String TAG = "ThikrAlarmReceiver";
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -35,7 +49,7 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
 
         if (data == null) return;
 
-        String dataType = data.getString("com.alaaeltaweel.thikrallah.datatype", "");
+        String dataType = data.getString("com.alaaeltaweel.thikrallah.datatype");
 
         // ✅ تنبيه قبل الصلاة بـ 15 دقيقة
         if (MyAlarmsManager.DATA_TYPE_PRE_ATHAN.equals(dataType)) {
@@ -92,27 +106,25 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                 TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
                 if (tm != null && tm.getCallState() != TelephonyManager.CALL_STATE_IDLE) {
                     Log.d(TAG, "Call in progress, scheduling thikr after 15 min");
-                    android.app.AlarmManager alarmManager = 
-                        (android.app.AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                    android.app.PendingIntent pendingIntent = android.app.PendingIntent.getBroadcast(
-                        context,
-                        dataType.hashCode() + 9999,
-                        new Intent(context, ThikrAlarmReceiver.class).putExtras(data),
-                        android.app.PendingIntent.FLAG_UPDATE_CURRENT | 
-                        android.app.PendingIntent.FLAG_IMMUTABLE);
-                    alarmManager.setExactAndAllowWhileIdle(
-                        android.app.AlarmManager.RTC_WAKEUP,
-                        System.currentTimeMillis() + (15 * 60 * 1000),
-                        pendingIntent);
-                    return;
+android.app.AlarmManager alarmManager = 
+    (android.app.AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+android.app.PendingIntent pendingIntent = android.app.PendingIntent.getBroadcast(
+    context,
+    dataType.hashCode() + 9999,
+    new Intent(context, ThikrAlarmReceiver.class).putExtras(data),
+    android.app.PendingIntent.FLAG_UPDATE_CURRENT | 
+    android.app.PendingIntent.FLAG_IMMUTABLE);
+alarmManager.setExactAndAllowWhileIdle(
+    android.app.AlarmManager.RTC_WAKEUP,
+    System.currentTimeMillis() + (15 * 60 * 1000),
+    pendingIntent);
+return;
                 }
             } catch (SecurityException e) {
                 Log.d(TAG, "Cannot check call state, proceeding");
             }
 
             // باقي التنبيهات تشتغل عادي
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .edit().putLong("last_general_thikr_time", System.currentTimeMillis()).apply();
             data.putBoolean("isUserAction", false);
             Intent intent2 = new Intent(context, ThikrService.class).putExtras(data);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -125,52 +137,16 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
         }
     }
 
-    // ✅ دالة الإشعار المعدلة بالكامل لتشغيل أصوات الـ mp3 من مجلد raw بناءً على اسم الصلاة
+    // ✅ notification قبل الصلاة بـ 15 دقيقة
     private void showPreAthanNotification(Context context, String prayerName) {
+        String channelId = "pre_athan_reminder";
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        // 1. تحديد ملف الصوت المناسب من مجلد raw بناءً على النص القادم (يدعم العربية والإنجليزية)
-        int soundResId = R.raw.pre_dhuhr; // القيمة الافتراضية للظهر
-        
-        if (prayerName != null) {
-            String lowerPrayer = prayerName.toLowerCase();
-            if (prayerName.contains("الفجر") || lowerPrayer.contains("fajr")) {
-                soundResId = R.raw.pre_fajr;
-            } else if (prayerName.contains("الظهر") || lowerPrayer.contains("dhuhr") || lowerPrayer.contains("zuhr")) {
-                soundResId = R.raw.pre_dhuhr;
-            } else if (prayerName.contains("العصر") || lowerPrayer.contains("asr")) {
-                soundResId = R.raw.pre_asr;
-            } else if (prayerName.contains("المغرب") || lowerPrayer.contains("maghrib")) {
-                soundResId = R.raw.pre_maghrib;
-            } else if (prayerName.contains("العشاء") || lowerPrayer.contains("isha")) {
-                soundResId = R.raw.pre_isha;
-            }
-        }
-
-        // 2. إنشاء الـ Uri الخاص بالملف الصوتي المختار
-        Uri soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + soundResId);
-
-        // 3. توليد معرف قناة فريد بناءً على الصوت لمنع كاش النظام وتثبيت نغمة واحدة لكل الصلوات
-        String channelId = "pre_athan_reminder_channel_" + soundResId;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     channelId, "تنبيه اقتراب الصلاة", NotificationManager.IMPORTANCE_HIGH);
-            
-            // تهيئة إعدادات تشغيل الصوت داخل القناة لأجهزة أندرويد الحديثة
-            AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                    .build();
-            
-            channel.setSound(soundUri, audioAttributes);
-            channel.enableLights(true);
-            channel.setLightColor(Color.GREEN);
-            
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
-            }
+            notificationManager.createNotificationChannel(channel);
         }
 
         Intent launchIntent = new Intent(context, MainActivity.class);
@@ -183,13 +159,10 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                 .setContentTitle("اقترب وقت صلاة " + prayerName)
                 .setContentText("تبقى 15 دقيقة على صلاة " + prayerName)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setSound(soundUri) // دعم إضافي لإصدارات أندرويد القديمة (7 وأقل)
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent);
 
-        if (notificationManager != null) {
-            notificationManager.notify(prayerName.hashCode(), builder.build());
-        }
+        notificationManager.notify(prayerName.hashCode(), builder.build());
     }
 
     private boolean isAthanType(String dataType) {
@@ -201,4 +174,3 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                dataType.equals(MainActivity.DATA_TYPE_ATHAN5);
     }
 }
-
