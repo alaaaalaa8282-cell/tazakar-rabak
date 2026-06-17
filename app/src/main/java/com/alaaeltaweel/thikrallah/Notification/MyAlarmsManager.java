@@ -257,8 +257,7 @@ public class MyAlarmsManager {
             }
         }
     }
-    }
-
+    
     @SuppressLint("NewApi")
     private void setAlarm(Calendar time, PendingIntent pendingIntent) {
         Long timeInMilliseconds = getFutureTimeIfTimeInPast(time.getTimeInMillis());
