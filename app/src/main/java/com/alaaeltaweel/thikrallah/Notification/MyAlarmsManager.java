@@ -45,10 +45,10 @@ public class MyAlarmsManager {
     public static final int requestCodePreAthan4 = 203;
     public static final int requestCodePreAthan5 = 204;
 
-    // ✅ رمضان
+     // ✅ رمضان
     public static final int requestCodeCannon = 300;
     public static final int requestCodeMesaharaty = 301;
-
+    
     // ✅ الـ datatype للتنبيه قبل الصلاة
     public static final String DATA_TYPE_PRE_ATHAN = "pre_athan";
 
@@ -178,7 +178,7 @@ public class MyAlarmsManager {
 
         updateAllPrayerAlarms();
 
-        // ✅ جدولة المدفع والمسحراتي في رمضان
+         // ✅ جدولة المدفع والمسحراتي في رمضان
         updateRamadanAlarms();
     }
 
@@ -256,6 +256,7 @@ public class MyAlarmsManager {
                 Log.e(TAG, "Error setting mesaharaty alarm: " + e.getMessage());
             }
         }
+    }
     }
 
     @SuppressLint("NewApi")
