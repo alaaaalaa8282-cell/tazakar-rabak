@@ -110,7 +110,11 @@ public class MainActivity extends AppCompatActivity implements MainInterface, Lo
             new Intent().setComponent(new ComponentName("com.vivo.permissionmanager", "com.vivo.permissionmanager.activity.BgStartUpManagerActivity")),
             new Intent().setComponent(new ComponentName("com.samsung.android.lool", "com.samsung.android.sm.ui.battery.BatteryActivity")),
             new Intent().setComponent(new ComponentName("com.htc.pitroad", "com.htc.pitroad.landingpage.activity.LandingPageActivity")),
-            new Intent().setComponent(new ComponentName("com.asus.mobilemanager", "com.asus.mobilemanager.MainActivity"))};
+            new Intent().setComponent(new ComponentName("com.asus.mobilemanager", "com.asus.mobilemanager.MainActivity")),
+            // ✅ Infinix / Tecno / Itel (Transsion - XOS)
+            new Intent().setComponent(new ComponentName("com.transsion.phonemanager", "com.transsion.phonemanager.ui.activity.PowerSecondActivity")),
+            new Intent().setComponent(new ComponentName("com.transsion.phonemanager", "com.itel.autobootmanager.ui.AutoBootMgrActivity")),
+            new Intent().setComponent(new ComponentName("com.transsion.phonemanager", "com.transsion.phonemanager.ui.activity.AutoBootManagerActivity"))};
     SharedPreferences mPrefs;
     static final int RC_ENABLE_LOCATION_SETTINGS = 786;
     private Context mcontext;
@@ -604,8 +608,10 @@ public class MainActivity extends AppCompatActivity implements MainInterface, Lo
 
         }
         if (!mPrefs.getBoolean("protected", false)) {
+            boolean foundOemIntent = false;
             for (final Intent intent : POWERMANAGER_INTENTS)
                 if (getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+                    foundOemIntent = true;
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle(this.getResources().getString(R.string.autostart)).setMessage(this.getResources().getString(R.string.autostart_message))
@@ -633,6 +639,35 @@ public class MainActivity extends AppCompatActivity implements MainInterface, Lo
                             .create().show();
                     break;
                 }
+
+            // ✅ لو مفيش intent مباشر بيشتغل (مثل بعض أجهزة Infinix/Tecno حسب نسخة XOS)
+            // نوريله شاشة فيها خطوات يدوية واضحة بدل ما نسيبه بدون أي توضيح
+            if (!foundOemIntent) {
+                AlertDialog.Builder manualBuilder = new AlertDialog.Builder(this);
+                manualBuilder.setTitle(this.getResources().getString(R.string.battery_manual_title))
+                        .setMessage(this.getResources().getString(R.string.battery_manual_message))
+                        .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                mPrefs.edit().putBoolean("protected", true).apply();
+                                try {
+                                    Intent appSettingsIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                    appSettingsIntent.setData(Uri.parse("package:" + getPackageName()));
+                                    startActivity(appSettingsIntent);
+                                } catch (Exception e) {
+                                    Log.d(TAG, "Cannot open app settings: " + e.getMessage());
+                                }
+                            }
+                        })
+                        .setCancelable(false)
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mPrefs.edit().putBoolean("protected", true).apply();
+                            }
+                        })
+                        .create().show();
+            }
         }
 
 
