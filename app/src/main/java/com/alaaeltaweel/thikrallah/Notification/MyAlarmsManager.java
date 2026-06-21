@@ -271,17 +271,27 @@ public class MyAlarmsManager {
             alarmMgr.setExact(AlarmManager.RTC_WAKEUP, timeInMilliseconds, pendingIntent);
         } else {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMilliseconds, pendingIntent);
+                setAlarmClockHighPriority(timeInMilliseconds, pendingIntent);
             } else {
                 if (alarmMgr.canScheduleExactAlarms()) {
-                    alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMilliseconds, pendingIntent);
+                    setAlarmClockHighPriority(timeInMilliseconds, pendingIntent);
                 } else {
                     requestExactAlarmPermission();
                 }
             }
         }
     }
+@SuppressLint("NewApi")
+private void setAlarmClockHighPriority(long timeInMilliseconds, PendingIntent operationIntent) {
+    Intent showIntent = new Intent(context, MainActivity.class);
+    showIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    PendingIntent showPendingIntent = PendingIntent.getActivity(context, 0,
+            showIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
+    AlarmManager.AlarmClockInfo alarmClockInfo =
+            new AlarmManager.AlarmClockInfo(timeInMilliseconds, showPendingIntent);
+    alarmMgr.setAlarmClock(alarmClockInfo, operationIntent);
+}
     private boolean requestExactAlarmPermission() {
         Log.d(TAG, "requestExactAlarmPermission");
         if (!(context instanceof Activity)) {
