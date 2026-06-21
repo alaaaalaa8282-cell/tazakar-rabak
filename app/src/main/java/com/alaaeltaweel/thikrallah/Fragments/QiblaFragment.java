@@ -241,9 +241,16 @@ public class QiblaFragment extends Fragment implements SharedPreferences.OnShare
      * @return number - 0 means north, 90 means east, 270 means west, etc
      *
      */
-    public double calculateQiblaDirection(){
-        double latitude = Double.parseDouble(MainActivity.getLatitude(getContext()));
-        double longitude = Double.parseDouble(MainActivity.getLongitude(getContext()));
+   public double calculateQiblaDirection(){
+        double latitude;
+        double longitude;
+        try {
+            latitude = Double.parseDouble(MainActivity.getLatitude(getContext()));
+            longitude = Double.parseDouble(MainActivity.getLongitude(getContext()));
+        } catch (NumberFormatException | NullPointerException e) {
+            Log.e(TAG, "Invalid location data, keeping last known Qibla", e);
+            return currentQibla;
+        }
         double lng_a = 39.82616111;
         double lat_a = 21.42250833;
         double deg = Math.toDegrees(Math.atan2(Math.sin(Math.toRadians(lng_a-longitude)),
@@ -255,7 +262,6 @@ public class QiblaFragment extends Fragment implements SharedPreferences.OnShare
             return deg+360;
         }
     }
-
     @Override
     public void onDismiss(DialogInterface dialogInterface) {
         //called when location dialog is cancelled
