@@ -147,7 +147,8 @@
             android:key="mesaharaty_time"
             android:title="وقت المسحراتي"
             android:dependency="ramadan_mesaharaty_enabled" />
-
+      </PreferenceCategory>
+    
         <!-- ✅ الوضع الصامت أثناء الصلاة -->
     <PreferenceCategory
         android:title="الوضع الصامت أثناء الصلاة 🔕"
