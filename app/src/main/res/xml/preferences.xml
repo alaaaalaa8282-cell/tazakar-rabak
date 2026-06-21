@@ -148,6 +148,31 @@
             android:title="وقت المسحراتي"
             android:dependency="ramadan_mesaharaty_enabled" />
 
+        <!-- ✅ الوضع الصامت أثناء الصلاة -->
+    <PreferenceCategory
+        android:title="الوضع الصامت أثناء الصلاة 🔕"
+        android:layout="@layout/preference_catagory">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="isSilentModeDuringPrayer"
+            android:title="تفعيل الوضع الصامت وقت الصلاة"
+            android:summary="الموبايل يتحول للاهتزاز تلقائيًا وقت كل صلاة" />
+
+        <EditTextPreference
+            android:defaultValue="15"
+            android:key="silentModeDurationMinutes"
+            android:title="مدة الوضع الصامت (بالدقائق)"
+            android:dependency="isSilentModeDuringPrayer"
+            android:inputType="number" />
+
+        <Preference
+            android:key="open_dnd_access_settings"
+            android:title="منح إذن عدم الإزعاج (DND)"
+            android:summary="مطلوب مرة واحدة عشان الميزة تشتغل، دوس هنا وفعّل التطبيق من القائمة">
+            <intent android:action="android.settings.NOTIFICATION_POLICY_ACCESS_SETTINGS" />
+        </Preference>
+
     </PreferenceCategory>
 
 </PreferenceScreen>
