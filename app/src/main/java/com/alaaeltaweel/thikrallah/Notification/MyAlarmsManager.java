@@ -44,7 +44,19 @@ public class MyAlarmsManager {
     public static final int requestCodePreAthan3 = 202;
     public static final int requestCodePreAthan4 = 203;
     public static final int requestCodePreAthan5 = 204;
-
+    
+   // ✅ الوضع الصامت أثناء الصلاة
+    public static final int requestCodeSilentOn1 = 400;
+    public static final int requestCodeSilentOn2 = 401;
+    public static final int requestCodeSilentOn3 = 402;
+    public static final int requestCodeSilentOn4 = 403;
+    public static final int requestCodeSilentOn5 = 404;
+    public static final int requestCodeSilentOff1 = 410;
+    public static final int requestCodeSilentOff2 = 411;
+    public static final int requestCodeSilentOff3 = 412;
+    public static final int requestCodeSilentOff4 = 413;
+    public static final int requestCodeSilentOff5 = 414;
+    
      // ✅ رمضان
     public static final int requestCodeCannon = 300;
     public static final int requestCodeMesaharaty = 301;
@@ -377,14 +389,14 @@ private void setAlarmClockHighPriority(long timeInMilliseconds, PendingIntent op
         if (latitude == 0 && longitude == 0) {
             return;
         }
-        updatePrayerAlarms(requestCodeAthan1, requestCodePreAthan1, "isFajrReminder", 0, MainActivity.DATA_TYPE_ATHAN1, "الفجر");
-        updatePrayerAlarms(requestCodeAthan2, requestCodePreAthan2, "isDuhrReminder", 2, MainActivity.DATA_TYPE_ATHAN2, "الظهر");
-        updatePrayerAlarms(requestCodeAthan3, requestCodePreAthan3, "isAsrReminder", 3, MainActivity.DATA_TYPE_ATHAN3, "العصر");
-        updatePrayerAlarms(requestCodeAthan4, requestCodePreAthan4, "isMaghribReminder", 5, MainActivity.DATA_TYPE_ATHAN4, "المغرب");
-        updatePrayerAlarms(requestCodeAthan5, requestCodePreAthan5, "isIshaaReminder", 6, MainActivity.DATA_TYPE_ATHAN5, "العشاء");
+        updatePrayerAlarms(requestCodeAthan1, requestCodePreAthan1, requestCodeSilentOn1, requestCodeSilentOff1, "isFajrReminder", 0, MainActivity.DATA_TYPE_ATHAN1, "الفجر");
+        updatePrayerAlarms(requestCodeAthan2, requestCodePreAthan2, requestCodeSilentOn2, requestCodeSilentOff2, "isDuhrReminder", 2, MainActivity.DATA_TYPE_ATHAN2, "الظهر");
+        updatePrayerAlarms(requestCodeAthan3, requestCodePreAthan3, requestCodeSilentOn3, requestCodeSilentOff3, "isAsrReminder", 3, MainActivity.DATA_TYPE_ATHAN3, "العصر");
+        updatePrayerAlarms(requestCodeAthan4, requestCodePreAthan4, requestCodeSilentOn4, requestCodeSilentOff4, "isMaghribReminder", 5, MainActivity.DATA_TYPE_ATHAN4, "المغرب");
+        updatePrayerAlarms(requestCodeAthan5, requestCodePreAthan5, requestCodeSilentOn5, requestCodeSilentOff5, "isIshaaReminder", 6, MainActivity.DATA_TYPE_ATHAN5, "العشاء");
     }
 
-    private void updatePrayerAlarms(int requestCode, int preRequestCode, String isReminderPreference, int prayerPosition, String datatype, String prayerName) {
+    private void updatePrayerAlarms(int requestCode, int preRequestCode, int silentOnCode, int silentOffCode, String isReminderPreference, int prayerPosition, String datatype, String prayerName) {
         if (context == null) {
             return;
         }
@@ -442,6 +454,36 @@ private void setAlarmClockHighPriority(long timeInMilliseconds, PendingIntent op
                 calendarPre.add(Calendar.HOUR, 24);
                 setAlarm(calendarPre, pendingIntentPreAthan);
             }
+        }
+        // ✅ الوضع الصامت أثناء الصلاة
+        boolean isSilentModeEnabled = sharedPrefs.getBoolean("isSilentModeDuringPrayer", false);
+        int silentDurationMinutes = Integer.parseInt(sharedPrefs.getString("silentModeDurationMinutes", "15"));
+
+        Intent silentOnIntent = new Intent(context, SilentModeReceiver.class);
+        silentOnIntent.setAction(SilentModeReceiver.ACTION_SILENT_ON);
+        PendingIntent pendingSilentOn = PendingIntent.getBroadcast(context, silentOnCode, silentOnIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        alarmMgr.cancel(pendingSilentOn);
+
+        Intent silentOffIntent = new Intent(context, SilentModeReceiver.class);
+        silentOffIntent.setAction(SilentModeReceiver.ACTION_SILENT_OFF);
+        PendingIntent pendingSilentOff = PendingIntent.getBroadcast(context, silentOffCode, silentOffIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        alarmMgr.cancel(pendingSilentOff);
+
+        if (isAthanReminder && isSilentModeEnabled) {
+            Calendar calendarSilentOn = Calendar.getInstance();
+            calendarSilentOn.set(Calendar.HOUR_OF_DAY, Integer.parseInt(prayerTimes[prayerPosition].split(":", 3)[0]));
+            calendarSilentOn.set(Calendar.MINUTE, Integer.parseInt(prayerTimes[prayerPosition].split(":", 3)[1]));
+            calendarSilentOn.set(Calendar.SECOND, 0);
+            if (!calendarSilentOn.after(now)) {
+                calendarSilentOn.add(Calendar.HOUR, 24);
+            }
+            setAlarm(calendarSilentOn, pendingSilentOn);
+
+            Calendar calendarSilentOff = (Calendar) calendarSilentOn.clone();
+            calendarSilentOff.add(Calendar.MINUTE, silentDurationMinutes);
+            setAlarm(calendarSilentOff, pendingSilentOff);
+
+            Log.d(TAG, "Silent window for " + prayerName + ": " + calendarSilentOn.getTime() + " -> " + calendarSilentOff.getTime());
         }
     }
 }
