@@ -192,6 +192,19 @@
             </intent-filter>
         </receiver>
 
+        <!-- ✅ شبكة أمان: إعادة التأكد من الـ alarms عند تغيّر حالة البطارية/الشحن -->
+        <receiver
+            android:name="com.alaaeltaweel.thikrallah.Notification.BatteryStateReceiver"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+                <action android:name="android.os.action.POWER_SAVE_MODE_CHANGED" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
      <service
     android:name="com.alaaeltaweel.thikrallah.Notification.RamadanSoundService"
     android:enabled="true"
