@@ -44,6 +44,10 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         Log.d(TAG, "onrecieve called");
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = pm.newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK, "tazakar:ThikrReceiverWakeLock");
+        wakeLock.acquire(30 * 1000L);
 
         Bundle data = intent.getExtras();
 
@@ -139,7 +143,9 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                 context.startService(intent2);
             }
         }
+        if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
     }
+    
 private void showPreAthanNotification(Context context, String prayerKey) {
     // تحويل الـ key لاسم عربي للعرض
     String prayerNameAr;
