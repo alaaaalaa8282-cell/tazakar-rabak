@@ -368,6 +368,15 @@ private void setAlarmClockHighPriority(long timeInMilliseconds, PendingIntent op
         } else {
             calendar1.add(Calendar.HOUR, 24);
             alarmmnager.setRepeating(AlarmManager.RTC_WAKEUP, calendar1.getTimeInMillis(), 12 * 60 * 60 * 1000, intent);
+       // ✅ Watchdog — يعيد تشغيل AthanTimerService لو مات
+        Intent watchdogIntent = new Intent(context, ThikrBootReceiver.class);
+        watchdogIntent.putExtra("isWatchdog", true);
+        PendingIntent watchdogPending = PendingIntent.getBroadcast(
+            context, 9999, watchdogIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        alarmmnager.setRepeating(AlarmManager.RTC_WAKEUP,
+            System.currentTimeMillis() + (60 * 60 * 1000),
+            60 * 60 * 1000, watchdogPending);
         }
     }
 
