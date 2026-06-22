@@ -140,34 +140,56 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
             }
         }
     }
-
-    // ✅ notification قبل الصلاة بـ 15 دقيقة
-    private void showPreAthanNotification(Context context, String prayerName) {
-        String channelId = "pre_athan_reminder";
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    channelId, "تنبيه اقتراب الصلاة", NotificationManager.IMPORTANCE_HIGH);
-            notificationManager.createNotificationChannel(channel);
-        }
-
-        Intent launchIntent = new Intent(context, MainActivity.class);
-        launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
-                launchIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.drawable.ic_launcher)
-                .setContentTitle("اقترب وقت صلاة " + prayerName)
-                .setContentText("تبقى 15 دقيقة على صلاة " + prayerName)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true)
-                .setContentIntent(pendingIntent);
-
-        notificationManager.notify(prayerName.hashCode(), builder.build());
+private void showPreAthanNotification(Context context, String prayerKey) {
+    // تحويل الـ key لاسم عربي للعرض
+    String prayerNameAr;
+    int soundRes;
+    switch (prayerKey) {
+        case "fajr":    prayerNameAr = "الفجر";  soundRes = R.raw.pre_fajr;    break;
+        case "dhuhr":   prayerNameAr = "الظهر";  soundRes = R.raw.pre_dhuhr;   break;
+        case "asr":     prayerNameAr = "العصر";  soundRes = R.raw.pre_asr;     break;
+        case "maghrib": prayerNameAr = "المغرب"; soundRes = R.raw.pre_maghrib; break;
+        case "isha":    prayerNameAr = "العشاء"; soundRes = R.raw.pre_isha;    break;
+        default:        prayerNameAr = "الصلاة"; soundRes = R.raw.pre_fajr;    break;
     }
+
+    android.net.Uri soundUri = android.net.Uri.parse(
+        "android.resource://" + context.getPackageName() + "/" + soundRes);
+
+    String channelId = "pre_athan_reminder";
+    NotificationManager notificationManager =
+            (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        NotificationChannel channel = new NotificationChannel(
+                channelId, "تنبيه اقتراب الصلاة", NotificationManager.IMPORTANCE_HIGH);
+        channel.enableVibration(true);
+        channel.setVibrationPattern(new long[]{0, 500, 200, 500});
+        channel.setSound(soundUri,
+            new android.media.AudioAttributes.Builder()
+                .setUsage(android.media.AudioAttributes.USAGE_NOTIFICATION)
+                .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build());
+        notificationManager.createNotificationChannel(channel);
+    }
+
+    Intent launchIntent = new Intent(context, MainActivity.class);
+    launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
+            launchIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+    NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
+            .setSmallIcon(R.drawable.ic_launcher)
+            .setContentTitle("اقترب وقت صلاة " + prayerNameAr)
+            .setContentText("تبقى 15 دقيقة على صلاة " + prayerNameAr)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+            .setVibrate(new long[]{0, 500, 200, 500})
+            .setSound(soundUri)
+            .setContentIntent(pendingIntent);
+
+    notificationManager.notify(prayerKey.hashCode(), builder.build());
+}
 
     private boolean isAthanType(String dataType) {
         if (dataType == null) return false;
