@@ -10,13 +10,24 @@ import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.app.ActivityManager;
+import java.util.List;
 
 public class ThikrBootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (null != intent.getAction()) {
             Log.d("ThikrBootReceiver", "intent called with action" + intent.getAction());
-
+if (intent.getBooleanExtra("isWatchdog", false)) {
+            if (!isServiceRunning(context, AthanTimerService.class)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(new Intent(context, AthanTimerService.class));
+                } else {
+                    context.startService(new Intent(context, AthanTimerService.class));
+                }
+            }
+            return;
+}
             // إعادة جدولة الـ alarms فقط بدون تشغيل الأذان
             if (intent.getAction().equalsIgnoreCase(AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED)
                 || intent.getAction().equalsIgnoreCase(Intent.ACTION_TIME_CHANGED)
@@ -54,6 +65,17 @@ public class ThikrBootReceiver extends BroadcastReceiver {
                     }
                 }
             }
+        }
+        private boolean isServiceRunning(Context context, Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningServiceInfo> services = manager.getRunningServices(Integer.MAX_VALUE);
+        if (services == null) return false;
+        for (ActivityManager.RunningServiceInfo service : services) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
         }
     }
 }
