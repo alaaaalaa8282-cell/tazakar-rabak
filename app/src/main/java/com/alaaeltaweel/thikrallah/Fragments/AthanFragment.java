@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import androidx.appcompat.widget.SwitchCompat;
 import android.widget.TextView;
 import net.time4j.*;
@@ -57,6 +59,10 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
     private SwitchCompat asr_switch;
     private SwitchCompat maghrib_switch;
     private SwitchCompat ishaa_switch;
+   // ── التنبيه قبل الأذان ──
+    private LinearLayout preAthanRow1, preAthanRow2, preAthanRow3, preAthanRow4, preAthanRow5;
+    private EditText preAthanMinutes1, preAthanMinutes2, preAthanMinutes3, preAthanMinutes4, preAthanMinutes5;
+    private CheckBox preAthanCheck1, preAthanCheck2, preAthanCheck3, preAthanCheck4, preAthanCheck5;
     private SharedPreferences mPrefs;
     private SharedPreferences.OnSharedPreferenceChangeListener prefListener;
     private CheckBox is_Manual_Location;
@@ -166,6 +172,32 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
         maghrib_switch = view.findViewById(R.id.switch4);
         ishaa_switch   = view.findViewById(R.id.switch5);
 
+// ── ربط views التنبيه قبل الأذان ──
+        preAthanRow1 = view.findViewById(R.id.pre_athan_row1);
+        preAthanRow2 = view.findViewById(R.id.pre_athan_row2);
+        preAthanRow3 = view.findViewById(R.id.pre_athan_row3);
+        preAthanRow4 = view.findViewById(R.id.pre_athan_row4);
+        preAthanRow5 = view.findViewById(R.id.pre_athan_row5);
+
+        preAthanMinutes1 = view.findViewById(R.id.pre_athan_minutes1);
+        preAthanMinutes2 = view.findViewById(R.id.pre_athan_minutes2);
+        preAthanMinutes3 = view.findViewById(R.id.pre_athan_minutes3);
+        preAthanMinutes4 = view.findViewById(R.id.pre_athan_minutes4);
+        preAthanMinutes5 = view.findViewById(R.id.pre_athan_minutes5);
+
+        preAthanCheck1 = view.findViewById(R.id.pre_athan_check1);
+        preAthanCheck2 = view.findViewById(R.id.pre_athan_check2);
+        preAthanCheck3 = view.findViewById(R.id.pre_athan_check3);
+        preAthanCheck4 = view.findViewById(R.id.pre_athan_check4);
+        preAthanCheck5 = view.findViewById(R.id.pre_athan_check5);
+
+        // ── تحميل القيم المحفوظة ──
+        setupPreAthan(fajr_switch,    preAthanRow1, preAthanCheck1, preAthanMinutes1, "fajr");
+        setupPreAthan(duhr_switch,    preAthanRow2, preAthanCheck2, preAthanMinutes2, "dhuhr");
+        setupPreAthan(asr_switch,     preAthanRow3, preAthanCheck3, preAthanMinutes3, "asr");
+        setupPreAthan(maghrib_switch, preAthanRow4, preAthanCheck4, preAthanMinutes4, "maghrib");
+        setupPreAthan(ishaa_switch,   preAthanRow5, preAthanCheck5, preAthanMinutes5, "isha");
+        
         fajr_switch.setChecked(mPrefs.getBoolean("isFajrReminder", true));
         duhr_switch.setChecked(mPrefs.getBoolean("isDuhrReminder", true));
         asr_switch.setChecked(mPrefs.getBoolean("isAsrReminder", true));
@@ -402,4 +434,39 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
             is_Manual_Location.setChecked(isLocationManual);
         }
     }
+    private void setupPreAthan(SwitchCompat prayerSwitch, LinearLayout row,
+                                CheckBox check, EditText minutes, String key) {
+        // تحميل القيم المحفوظة
+        boolean reminderOn = mPrefs.getBoolean("isPreAthanReminder_" + key, true);
+        String mins = mPrefs.getString("preAthanMinutes_" + key, "15");
+        check.setChecked(reminderOn);
+        minutes.setText(mins);
+
+        // إظهار/إخفاء الصف حسب حالة السويتش
+        row.setVisibility(prayerSwitch.isChecked() ? View.VISIBLE : View.GONE);
+
+        // لما السويتش يتغير
+        prayerSwitch.addOnCheckedChangeListener((button, isChecked) ->
+            row.setVisibility(isChecked ? View.VISIBLE : View.GONE));
+
+        // لما الـ checkbox يتغير
+        check.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            mPrefs.edit().putBoolean("isPreAthanReminder_" + key, isChecked).apply();
+            updateAthanAlarms();
+        });
+
+        // لما المستخدم يغير الدقايق
+        minutes.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                String val = minutes.getText().toString().trim();
+                if (val.isEmpty() || Integer.parseInt(val) < 1) {
+                    minutes.setText("15");
+                    val = "15";
+                }
+                mPrefs.edit().putString("preAthanMinutes_" + key, val).apply();
+                updateAthanAlarms();
+            }
+        });
+    }
 }
+
