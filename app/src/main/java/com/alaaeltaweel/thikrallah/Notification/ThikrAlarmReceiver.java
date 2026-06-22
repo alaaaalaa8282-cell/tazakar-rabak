@@ -100,28 +100,32 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
             context.startActivity(athanIntent);
 
         } else {
-
-            // ✅ الأذكار العادية — لا تشتغل أثناء المكالمات
+            
+         // ✅ الأذكار العادية — لا تشتغل أثناء المكالمات
+            boolean isInCallForThikr = false;
             try {
                 TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
                 if (tm != null && tm.getCallState() != TelephonyManager.CALL_STATE_IDLE) {
-                    Log.d(TAG, "Call in progress, scheduling thikr after 15 min");
-android.app.AlarmManager alarmManager = 
-    (android.app.AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-android.app.PendingIntent pendingIntent = android.app.PendingIntent.getBroadcast(
-    context,
-    dataType.hashCode() + 9999,
-    new Intent(context, ThikrAlarmReceiver.class).putExtras(data),
-    android.app.PendingIntent.FLAG_UPDATE_CURRENT | 
-    android.app.PendingIntent.FLAG_IMMUTABLE);
-alarmManager.setExactAndAllowWhileIdle(
-    android.app.AlarmManager.RTC_WAKEUP,
-    System.currentTimeMillis() + (15 * 60 * 1000),
-    pendingIntent);
-return;
+                    isInCallForThikr = true;
                 }
             } catch (SecurityException e) {
-                Log.d(TAG, "Cannot check call state, proceeding");
+                Log.d(TAG, "Cannot check call state");
+            }
+            if (isInCallForThikr) {
+                Log.d(TAG, "Call in progress, scheduling thikr after 15 min");
+                android.app.AlarmManager alarmManager =
+                    (android.app.AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                android.app.PendingIntent pendingIntent = android.app.PendingIntent.getBroadcast(
+                    context,
+                    dataType.hashCode() + 9999,
+                    new Intent(context, ThikrAlarmReceiver.class).putExtras(data),
+                    android.app.PendingIntent.FLAG_UPDATE_CURRENT |
+                    android.app.PendingIntent.FLAG_IMMUTABLE);
+                alarmManager.setExactAndAllowWhileIdle(
+                    android.app.AlarmManager.RTC_WAKEUP,
+                    System.currentTimeMillis() + (15 * 60 * 1000),
+                    pendingIntent);
+                return;
             }
 
             // باقي التنبيهات تشتغل عادي
