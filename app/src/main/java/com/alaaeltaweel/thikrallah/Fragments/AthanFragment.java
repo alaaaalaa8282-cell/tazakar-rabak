@@ -446,7 +446,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
         row.setVisibility(prayerSwitch.isChecked() ? View.VISIBLE : View.GONE);
 
         // لما السويتش يتغير
-        prayerSwitch.addOnCheckedChangeListener((button, isChecked) ->
+        prayerSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
             row.setVisibility(isChecked ? View.VISIBLE : View.GONE));
 
         // لما الـ checkbox يتغير
