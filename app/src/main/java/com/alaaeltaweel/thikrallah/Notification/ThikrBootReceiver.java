@@ -65,7 +65,10 @@ if (intent.getBooleanExtra("isWatchdog", false)) {
                     }
                 }
             }
-        private boolean isServiceRunning(Context context, Class<?> serviceClass) {
+        }
+    }
+
+    private boolean isServiceRunning(Context context, Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningServiceInfo> services = manager.getRunningServices(Integer.MAX_VALUE);
         if (services == null) return false;
@@ -75,6 +78,5 @@ if (intent.getBooleanExtra("isWatchdog", false)) {
             }
         }
         return false;
-        }
     }
 }
