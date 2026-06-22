@@ -408,7 +408,7 @@ private void setAlarmClockHighPriority(long timeInMilliseconds, PendingIntent op
             return;
         }
         boolean isAthanReminder = sharedPrefs.getBoolean(isReminderPreference, true);
-        boolean isPreAthanReminder = sharedPrefs.getBoolean("isPreAthanReminder", true);
+        boolean isPreAthanReminder = sharedPrefs.getBoolean("isPreAthanReminder_" + prayerName, true);
 
         Intent launchIntent = new Intent(context, ThikrAlarmReceiver.class);
 
@@ -445,7 +445,14 @@ private void setAlarmClockHighPriority(long timeInMilliseconds, PendingIntent op
             calendarPre.set(Calendar.HOUR_OF_DAY, Integer.parseInt(prayerTimes[prayerPosition].split(":", 3)[0]));
             calendarPre.set(Calendar.MINUTE, Integer.parseInt(prayerTimes[prayerPosition].split(":", 3)[1]));
             calendarPre.set(Calendar.SECOND, 0);
-            calendarPre.add(Calendar.MINUTE, -15); // ✅ 15 دقيقة قبل الصلاة
+            int preAthanMinutes;
+try {
+    preAthanMinutes = Integer.parseInt(sharedPrefs.getString("preAthanMinutes_" + prayerName, "15"));
+    if (preAthanMinutes < 1) preAthanMinutes = 15;
+} catch (NumberFormatException e) {
+    preAthanMinutes = 15;
+}
+calendarPre.add(Calendar.MINUTE, -preAthanMinutes);
 
             if (calendarPre.after(now)) {
                 setAlarm(calendarPre, pendingIntentPreAthan);
