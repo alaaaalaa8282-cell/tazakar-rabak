@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.os.PowerManager;
 
 import androidx.core.app.NotificationCompat;
 
@@ -35,7 +36,8 @@ public class AthanTimerService extends Service {
 	private Context mContext;
 	boolean isStarted = false;
 	private Timer timer;
-
+    private PowerManager.WakeLock wakeLock;
+	
     public static final int JOB_ID = 0x01;
 
 	@Override
@@ -44,33 +46,38 @@ public class AthanTimerService extends Service {
 	}
 
 	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
         mContext = this;
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
         boolean isTimer = sharedPrefs.getBoolean("foreground_athan_timer", true);
-		Timber.tag(TAG).d("istimer is " + isTimer);
-		initNotification();
-		if (isTimer) {
-			if (!isStarted) {
-				Timber.tag(TAG).d(TAG + "started");
-				if (timer != null) {
-					timer.cancel();
-					timer = null;
-				}
-				timer = new Timer();
+        Timber.tag(TAG).d("istimer is " + isTimer);
+        initNotification();
+        if (isTimer) {
+            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            if (wakeLock == null || !wakeLock.isHeld()) {
+                wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "tazakar:AthanTimerWakeLock");
+                wakeLock.acquire(12 * 60 * 60 * 1000L);
+            }
+            if (!isStarted) {
+                Timber.tag(TAG).d(TAG + "started");
+                if (timer != null) {
+                    timer.cancel();
+                    timer = null;
+                }
+                timer = new Timer();
                 isStarted = true;
                 timer.scheduleAtFixedRate(new TimerTask() {
                     @Override
                     public void run() {
                         initNotification();
-					}
-				}, 0, 1000);
-			}
-		} else {
-			this.stopSelf();
-		}
-		return START_STICKY;
-	}
+                    }
+                }, 0, 60 * 1000);
+            }
+        } else {
+            this.stopSelf();
+        }
+        return START_STICKY;
+    }
 
 	SharedPreferences sharedPrefs;
 
@@ -81,6 +88,10 @@ public class AthanTimerService extends Service {
 			timer = null;
 		}
 		isStarted = false;
+		if (wakeLock != null && wakeLock.isHeld()) {
+            wakeLock.release();
+            wakeLock = null;
+		}
 		super.onDestroy();
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.cancel(NOTIFICATION_ID);
@@ -215,8 +226,11 @@ public class AthanTimerService extends Service {
 
 		minutesText = minutes + " " + getResources().getString(R.string.minute);
 
-		long seconds = (min % 60) / 1 + 1;
-String secondsText = seconds + " " + getResources().getString(R.string.second);
-return hoursText + " " + minutesText + " " + secondsText + " " + getResources().getString(R.string.until) + " " + prayerName;
+		if (hours == 0 && minutes <= 1) {
+            long seconds = (min % 60) + 1;
+            String secondsText = seconds + " " + getResources().getString(R.string.second);
+            return secondsText + " " + getResources().getString(R.string.until) + " " + prayerName;
+        }
+        return hoursText + minutesText + " " + getResources().getString(R.string.until) + " " + prayerName;
 	}
 	}
