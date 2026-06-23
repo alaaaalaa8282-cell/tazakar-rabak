@@ -398,11 +398,11 @@ private void setAlarmClockHighPriority(long timeInMilliseconds, PendingIntent op
         if (latitude == 0 && longitude == 0) {
             return;
         }
-        updatePrayerAlarms(requestCodeAthan1, requestCodePreAthan1, requestCodeSilentOn1, requestCodeSilentOff1, "isFajrReminder", 0, MainActivity.DATA_TYPE_ATHAN1, "الفجر");
-        updatePrayerAlarms(requestCodeAthan2, requestCodePreAthan2, requestCodeSilentOn2, requestCodeSilentOff2, "isDuhrReminder", 2, MainActivity.DATA_TYPE_ATHAN2, "الظهر");
-        updatePrayerAlarms(requestCodeAthan3, requestCodePreAthan3, requestCodeSilentOn3, requestCodeSilentOff3, "isAsrReminder", 3, MainActivity.DATA_TYPE_ATHAN3, "العصر");
-        updatePrayerAlarms(requestCodeAthan4, requestCodePreAthan4, requestCodeSilentOn4, requestCodeSilentOff4, "isMaghribReminder", 5, MainActivity.DATA_TYPE_ATHAN4, "المغرب");
-        updatePrayerAlarms(requestCodeAthan5, requestCodePreAthan5, requestCodeSilentOn5, requestCodeSilentOff5, "isIshaaReminder", 6, MainActivity.DATA_TYPE_ATHAN5, "العشاء");
+        updatePrayerAlarms(requestCodeAthan1, requestCodePreAthan1, requestCodeSilentOn1, requestCodeSilentOff1, "isFajrReminder", 0, MainActivity.DATA_TYPE_ATHAN1, "fajr");
+updatePrayerAlarms(requestCodeAthan2, requestCodePreAthan2, requestCodeSilentOn2, requestCodeSilentOff2, "isDuhrReminder", 2, MainActivity.DATA_TYPE_ATHAN2, "dhuhr");
+updatePrayerAlarms(requestCodeAthan3, requestCodePreAthan3, requestCodeSilentOn3, requestCodeSilentOff3, "isAsrReminder", 3, MainActivity.DATA_TYPE_ATHAN3, "asr");
+updatePrayerAlarms(requestCodeAthan4, requestCodePreAthan4, requestCodeSilentOn4, requestCodeSilentOff4, "isMaghribReminder", 5, MainActivity.DATA_TYPE_ATHAN4, "maghrib");
+updatePrayerAlarms(requestCodeAthan5, requestCodePreAthan5, requestCodeSilentOn5, requestCodeSilentOff5, "isIshaaReminder", 6, MainActivity.DATA_TYPE_ATHAN5, "isha");
     }
 
     private void updatePrayerAlarms(int requestCode, int preRequestCode, int silentOnCode, int silentOffCode, String isReminderPreference, int prayerPosition, String datatype, String prayerName) {
