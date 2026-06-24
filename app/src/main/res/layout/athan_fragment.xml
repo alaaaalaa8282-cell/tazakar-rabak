@@ -121,6 +121,53 @@
                         android:layout_height="wrap_content"
                         android:checked="true" />
                 </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/iqama_row1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingTop="8dp"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:text="إقامة بعدها بـ"
+                        android:textColor="#AAAAAA"
+                        android:textSize="13sp" />
+                    <EditText
+                        android:id="@+id/iqama_minutes1"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="4dp"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:maxLength="3"
+                        android:text="10"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="دقيقة"
+                        android:textColor="#AAAAAA"
+                        android:textSize="13sp" />
+                    <CheckBox
+                        android:id="@+id/iqama_check1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false" />
+                    <Spinner
+                        android:id="@+id/iqama_sound1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:entries="@array/iqama_sounds" />
+                </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -242,6 +289,53 @@
                         android:layout_height="wrap_content"
                         android:checked="true" />
                 </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/iqama_row2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingTop="8dp"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:text="إقامة بعدها بـ"
+                        android:textColor="#AAAAAA"
+                        android:textSize="13sp" />
+                    <EditText
+                        android:id="@+id/iqama_minutes2"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="4dp"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:maxLength="3"
+                        android:text="10"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="دقيقة"
+                        android:textColor="#AAAAAA"
+                        android:textSize="13sp" />
+                    <CheckBox
+                        android:id="@+id/iqama_check2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false" />
+                    <Spinner
+                        android:id="@+id/iqama_sound2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:entries="@array/iqama_sounds" />
+                </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
         
@@ -328,6 +422,53 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/iqama_row3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingTop="8dp"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:text="إقامة بعدها بـ"
+                        android:textColor="#AAAAAA"
+                        android:textSize="13sp" />
+                    <EditText
+                        android:id="@+id/iqama_minutes3"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="4dp"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:maxLength="3"
+                        android:text="10"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="دقيقة"
+                        android:textColor="#AAAAAA"
+                        android:textSize="13sp" />
+                    <CheckBox
+                        android:id="@+id/iqama_check3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false" />
+                    <Spinner
+                        android:id="@+id/iqama_sound3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:entries="@array/iqama_sounds" />
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -416,6 +557,53 @@
                         android:layout_height="wrap_content"
                         android:checked="true" />
                 </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/iqama_row4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingTop="8dp"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:text="إقامة بعدها بـ"
+                        android:textColor="#AAAAAA"
+                        android:textSize="13sp" />
+                    <EditText
+                        android:id="@+id/iqama_minutes4"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="4dp"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:maxLength="3"
+                        android:text="10"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="دقيقة"
+                        android:textColor="#AAAAAA"
+                        android:textSize="13sp" />
+                    <CheckBox
+                        android:id="@+id/iqama_check4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false" />
+                    <Spinner
+                        android:id="@+id/iqama_sound4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:entries="@array/iqama_sounds" />
+                </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -502,6 +690,53 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/iqama_row5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingTop="8dp"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:text="إقامة بعدها بـ"
+                        android:textColor="#AAAAAA"
+                        android:textSize="13sp" />
+                    <EditText
+                        android:id="@+id/iqama_minutes5"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="4dp"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:maxLength="3"
+                        android:text="10"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="دقيقة"
+                        android:textColor="#AAAAAA"
+                        android:textSize="13sp" />
+                    <CheckBox
+                        android:id="@+id/iqama_check5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false" />
+                    <Spinner
+                        android:id="@+id/iqama_sound5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:entries="@array/iqama_sounds" />
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
