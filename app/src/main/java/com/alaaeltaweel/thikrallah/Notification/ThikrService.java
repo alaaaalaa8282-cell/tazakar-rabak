@@ -139,7 +139,11 @@ public class ThikrService extends IntentService  {
 		thikrType=data.getString("com.alaaeltaweel.thikrallah.datatype");
 		if (thikrType.equals(MainActivity.DATA_TYPE_GENERAL_THIKR)){
             MyDBHelper db = new MyDBHelper(this);
-            UserThikr thikr=db.getRandomThikr();
+            ArrayList<UserThikr> allThikrs = db.getAllEnabledThikrs();
+if (allThikrs == null || allThikrs.isEmpty()) return;
+int currentIndex = sharedPrefs.getInt("thikr_current_index", 0) % allThikrs.size();
+UserThikr thikr = allThikrs.get(currentIndex);
+sharedPrefs.edit().putInt("thikr_current_index", currentIndex + 1).apply();
             if (thikr==null){
                 return;
             }
@@ -191,8 +195,16 @@ public class ThikrService extends IntentService  {
                     this.startService(new Intent(this, ThikrMediaPlayerService.class).putExtras(data));
                 }
                 } else {
-                    Log.d(TAG, "Call in progress, skipping general thikr audio");
-                }
+    Log.d(TAG, "Call in progress, rescheduling thikr in 5 min");
+    android.app.AlarmManager am = (android.app.AlarmManager) getSystemService(Context.ALARM_SERVICE);
+    Intent retry = new Intent(getApplicationContext(), ThikrAlarmReceiver.class);
+    retry.putExtras(data);
+    android.app.PendingIntent pi = android.app.PendingIntent.getBroadcast(
+        getApplicationContext(), 7777, retry,
+        android.app.PendingIntent.FLAG_UPDATE_CURRENT | android.app.PendingIntent.FLAG_IMMUTABLE);
+    am.setExactAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP,
+        System.currentTimeMillis() + (5 * 60 * 1000), pi);
+} 
 			}
             return;
 
