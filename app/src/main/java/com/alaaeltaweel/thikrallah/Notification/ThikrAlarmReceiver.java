@@ -66,6 +66,13 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
 
         }
 
+        // ✅ الإقامة
+        if ("iqama".equals(dataType)) {
+            String prayerName = data.getString("prayer_name", "fajr");
+            int soundChoice = data.getInt("iqama_sound", 1);
+            playIqamaSound(context, soundChoice);
+            return;
+        }
         // لو الأذان افتح شاشة الأذان
         if (isAthanType(dataType)) {
 
@@ -204,5 +211,21 @@ private void showPreAthanNotification(Context context, String prayerKey) {
                dataType.equals(MainActivity.DATA_TYPE_ATHAN3) ||
                dataType.equals(MainActivity.DATA_TYPE_ATHAN4) ||
                dataType.equals(MainActivity.DATA_TYPE_ATHAN5);
+    }
+    private void playIqamaSound(Context context, int soundChoice) {
+        int soundRes;
+        switch (soundChoice) {
+            case 2:  soundRes = R.raw.iqama_2; break;
+            case 3:  soundRes = R.raw.iqama_3; break;
+            default: soundRes = R.raw.iqama_1; break;
+        }
+        android.media.MediaPlayer mp = android.media.MediaPlayer.create(context, soundRes);
+        if (mp != null) {
+            mp.setAudioAttributes(new android.media.AudioAttributes.Builder()
+                .setUsage(android.media.AudioAttributes.USAGE_ALARM)
+                .build());
+            mp.start();
+            mp.setOnCompletionListener(android.media.MediaPlayer::release);
+        }
     }
 }
