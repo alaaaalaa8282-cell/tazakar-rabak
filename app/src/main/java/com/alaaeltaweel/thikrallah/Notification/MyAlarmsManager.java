@@ -56,12 +56,7 @@ public class MyAlarmsManager {
     public static final int requestCodeSilentOff3 = 412;
     public static final int requestCodeSilentOff4 = 413;
     public static final int requestCodeSilentOff5 = 414;
-    // ✅ الإقامة
-    public static final int requestCodeIqama1 = 500;
-    public static final int requestCodeIqama2 = 501;
-    public static final int requestCodeIqama3 = 502;
-    public static final int requestCodeIqama4 = 503;
-    public static final int requestCodeIqama5 = 504;
+    
      // ✅ رمضان
     public static final int requestCodeCannon = 300;
     public static final int requestCodeMesaharaty = 301;
@@ -403,13 +398,14 @@ private void setAlarmClockHighPriority(long timeInMilliseconds, PendingIntent op
         if (latitude == 0 && longitude == 0) {
             return;
         }
- updatePrayerAlarms(requestCodeAthan1, requestCodePreAthan1, requestCodeSilentOn1, requestCodeSilentOff1, requestCodeIqama1, "isFajrReminder", 0, MainActivity.DATA_TYPE_ATHAN1, "fajr");
-        updatePrayerAlarms(requestCodeAthan2, requestCodePreAthan2, requestCodeSilentOn2, requestCodeSilentOff2, requestCodeIqama2, "isDuhrReminder", 2, MainActivity.DATA_TYPE_ATHAN2, "dhuhr");
-        updatePrayerAlarms(requestCodeAthan3, requestCodePreAthan3, requestCodeSilentOn3, requestCodeSilentOff3, requestCodeIqama3, "isAsrReminder", 3, MainActivity.DATA_TYPE_ATHAN3, "asr");
-        updatePrayerAlarms(requestCodeAthan4, requestCodePreAthan4, requestCodeSilentOn4, requestCodeSilentOff4, requestCodeIqama4, "isMaghribReminder", 5, MainActivity.DATA_TYPE_ATHAN4, "maghrib");
-        updatePrayerAlarms(requestCodeAthan5, requestCodePreAthan5, requestCodeSilentOn5, requestCodeSilentOff5, requestCodeIqama5, "isIshaaReminder", 6, MainActivity.DATA_TYPE_ATHAN5, "isha");
+        updatePrayerAlarms(requestCodeAthan1, requestCodePreAthan1, requestCodeSilentOn1, requestCodeSilentOff1, "isFajrReminder", 0, MainActivity.DATA_TYPE_ATHAN1, "fajr");
+updatePrayerAlarms(requestCodeAthan2, requestCodePreAthan2, requestCodeSilentOn2, requestCodeSilentOff2, "isDuhrReminder", 2, MainActivity.DATA_TYPE_ATHAN2, "dhuhr");
+updatePrayerAlarms(requestCodeAthan3, requestCodePreAthan3, requestCodeSilentOn3, requestCodeSilentOff3, "isAsrReminder", 3, MainActivity.DATA_TYPE_ATHAN3, "asr");
+updatePrayerAlarms(requestCodeAthan4, requestCodePreAthan4, requestCodeSilentOn4, requestCodeSilentOff4, "isMaghribReminder", 5, MainActivity.DATA_TYPE_ATHAN4, "maghrib");
+updatePrayerAlarms(requestCodeAthan5, requestCodePreAthan5, requestCodeSilentOn5, requestCodeSilentOff5, "isIshaaReminder", 6, MainActivity.DATA_TYPE_ATHAN5, "isha");
     }
-private void updatePrayerAlarms(int requestCode, int preRequestCode, int silentOnCode, int silentOffCode, int iqamaCode, String isReminderPreference, int prayerPosition, String datatype, String prayerName) {
+
+    private void updatePrayerAlarms(int requestCode, int preRequestCode, int silentOnCode, int silentOffCode, String isReminderPreference, int prayerPosition, String datatype, String prayerName) {
         if (context == null) {
             return;
         }
@@ -504,35 +500,6 @@ calendarPre.add(Calendar.MINUTE, -preAthanMinutes);
             setAlarm(calendarSilentOff, pendingSilentOff);
 
             Log.d(TAG, "Silent window for " + prayerName + ": " + calendarSilentOn.getTime() + " -> " + calendarSilentOff.getTime());
-        }
-    // ✅ الإقامة
-        boolean isIqamaEnabled = sharedPrefs.getBoolean("isIqamaReminder_" + prayerName, false);
-        int iqamaSound = Integer.parseInt(sharedPrefs.getString("iqamaSoundChoice_" + prayerName, "1"));
-
-        Intent iqamaIntent = new Intent(context, ThikrAlarmReceiver.class);
-        iqamaIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", "iqama");
-        iqamaIntent.putExtra("prayer_name", prayerName);
-        iqamaIntent.putExtra("iqama_sound", iqamaSound);
-        PendingIntent pendingIqama = PendingIntent.getBroadcast(context, iqamaCode, iqamaIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        alarmMgr.cancel(pendingIqama);
-
-        if (isAthanReminder && isIqamaEnabled) {
-            int iqamaMinutes;
-            try {
-                iqamaMinutes = Integer.parseInt(sharedPrefs.getString("iqamaMinutes_" + prayerName, "10"));
-                if (iqamaMinutes < 1) iqamaMinutes = 10;
-            } catch (NumberFormatException e) {
-                iqamaMinutes = 10;
-            }
-            Calendar calendarIqama = Calendar.getInstance();
-            calendarIqama.set(Calendar.HOUR_OF_DAY, Integer.parseInt(prayerTimes[prayerPosition].split(":", 3)[0]));
-            calendarIqama.set(Calendar.MINUTE, Integer.parseInt(prayerTimes[prayerPosition].split(":", 3)[1]));
-            calendarIqama.set(Calendar.SECOND, 0);
-            calendarIqama.add(Calendar.MINUTE, iqamaMinutes);
-            if (!calendarIqama.after(now)) calendarIqama.add(Calendar.HOUR, 24);
-            setAlarm(calendarIqama, pendingIqama);
-            Log.d(TAG, "Iqama set for " + prayerName + " at " + calendarIqama.getTime());
         }
     }
 }
