@@ -504,8 +504,12 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
         int soundChoice = mPrefs.getInt("iqamaSoundChoice_" + key, 0);
         check.setChecked(iqamaOn);
         minutes.setText(mins);
-        sound.setSelection(soundChoice);
         row.setVisibility(prayerSwitch.isChecked() ? View.VISIBLE : View.GONE);
+
+        // ✅ نضيف الـ listener الأول عشان نمنع الحفظ أثناء setSelection
+        sound.setOnItemSelectedListener(null);
+        sound.setSelection(soundChoice);
+
         check.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mPrefs.edit().putBoolean("isIqamaReminder_" + key, isChecked).apply();
             updateAthanAlarms();
@@ -521,7 +525,9 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
                 updateAthanAlarms();
             }
         });
-        sound.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+
+        // ✅ نضيف الـ listener بعد setSelection بـ post عشان ميتشغلش أثناء التهيئة
+        sound.post(() -> sound.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(android.widget.AdapterView<?> parent, android.view.View v, int position, long id) {
                 mPrefs.edit().putInt("iqamaSoundChoice_" + key, position + 1).apply();
@@ -529,7 +535,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
             }
             @Override
             public void onNothingSelected(android.widget.AdapterView<?> parent) {}
-        });
+        }));
     }
 }
 
