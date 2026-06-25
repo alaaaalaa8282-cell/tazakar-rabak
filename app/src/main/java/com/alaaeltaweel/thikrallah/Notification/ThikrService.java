@@ -87,15 +87,56 @@ public class ThikrService extends IntentService  {
 
 	// ✅ التحقق من وجود مكالمة هاتفية
     private boolean isInCall() {
-        try {
-            TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            return tm != null && tm.getCallState() != TelephonyManager.CALL_STATE_IDLE;
-        } catch (SecurityException e) {
-            Log.d(TAG, "READ_PHONE_STATE permission not granted, assuming no call");
-            return false;
+    try {
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (tm != null && tm.getCallState() != TelephonyManager.CALL_STATE_IDLE) {
+            return true;
         }
+        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        if (am != null && am.getMode() == AudioManager.MODE_IN_COMMUNICATION) {
+            return true;
+        }
+        return false;
+    } catch (SecurityException e) {
+        Log.d(TAG, "READ_PHONE_STATE permission not granted, assuming no call");
+        return false;
+    }
+}
+private PhoneStateListener phoneStateListener;
+    private boolean pendingThikrAfterCall = false;
+
+    private void registerCallListener() {
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (tm == null) return;
+        phoneStateListener = new PhoneStateListener() {
+            @Override
+            public void onCallStateChanged(int state, String phoneNumber) {
+                if (state == TelephonyManager.CALL_STATE_IDLE && pendingThikrAfterCall) {
+                    pendingThikrAfterCall = false;
+                    android.app.AlarmManager alarmMgr =
+                        (android.app.AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                    Intent retry = new Intent(getApplicationContext(), ThikrAlarmReceiver.class);
+                    if (calling_intent != null && calling_intent.getExtras() != null) {
+                        retry.putExtras(calling_intent.getExtras());
+                    }
+                    android.app.PendingIntent pi = android.app.PendingIntent.getBroadcast(
+                        getApplicationContext(), 7777, retry,
+                        android.app.PendingIntent.FLAG_UPDATE_CURRENT | android.app.PendingIntent.FLAG_IMMUTABLE);
+                    alarmMgr.setExactAndAllowWhileIdle(
+                        android.app.AlarmManager.RTC_WAKEUP,
+                        System.currentTimeMillis() + 3000, pi);
+                }
+            }
+        };
+        tm.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
+    private void unregisterCallListener() {
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (tm != null && phoneStateListener != null) {
+            tm.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
+        }
+	}
 	@Override
 	protected void onHandleIntent(Intent intent) {
 
@@ -105,6 +146,7 @@ public class ThikrService extends IntentService  {
         }
 
         calling_intent=intent;
+		registerCallListener();
         mcontext=this.getApplicationContext();
         quransettings=QuranSettings.getInstance(mcontext);
         //update all alarms
@@ -195,20 +237,11 @@ sharedPrefs.edit().putInt("thikr_current_index", currentIndex + 1).apply();
                     this.startService(new Intent(this, ThikrMediaPlayerService.class).putExtras(data));
                 }
                 } else {
-    Log.d(TAG, "Call in progress, rescheduling thikr in 5 min");
-    android.app.AlarmManager am = (android.app.AlarmManager) getSystemService(Context.ALARM_SERVICE);
-    Intent retry = new Intent(getApplicationContext(), ThikrAlarmReceiver.class);
-    retry.putExtras(data);
-    android.app.PendingIntent pi = android.app.PendingIntent.getBroadcast(
-        getApplicationContext(), 7777, retry,
-        android.app.PendingIntent.FLAG_UPDATE_CURRENT | android.app.PendingIntent.FLAG_IMMUTABLE);
-    am.setExactAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP,
-        System.currentTimeMillis() + (5 * 60 * 1000), pi);
-} 
+            Log.d(TAG, "Call in progress, will resume after call ends");
+            pendingThikrAfterCall = true;
+        }
 			}
             return;
-
-
 
 		}
 		if (thikrType.equals(MainActivity.DATA_TYPE_DAY_THIKR)){
