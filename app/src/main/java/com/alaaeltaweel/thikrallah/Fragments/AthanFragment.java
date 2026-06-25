@@ -175,7 +175,12 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
         asr_switch     = view.findViewById(R.id.switch3);
         maghrib_switch = view.findViewById(R.id.switch4);
         ishaa_switch   = view.findViewById(R.id.switch5);
-
+        fajr_switch.setChecked(mPrefs.getBoolean("isFajrReminder", true));
+        duhr_switch.setChecked(mPrefs.getBoolean("isDuhrReminder", true));
+        asr_switch.setChecked(mPrefs.getBoolean("isAsrReminder", true));
+        maghrib_switch.setChecked(mPrefs.getBoolean("isMaghribReminder", true));
+        ishaa_switch.setChecked(mPrefs.getBoolean("isIshaaReminder", true));
+        
 // ── ربط views التنبيه قبل الأذان ──
         preAthanRow1 = view.findViewById(R.id.pre_athan_row1);
         preAthanRow2 = view.findViewById(R.id.pre_athan_row2);
@@ -227,11 +232,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
         setupIqama(asr_switch,     iqamaRow3, iqamaCheck3, iqamaMinutes3, iqamaSound3, "asr");
         setupIqama(maghrib_switch, iqamaRow4, iqamaCheck4, iqamaMinutes4, iqamaSound4, "maghrib");
         setupIqama(ishaa_switch,   iqamaRow5, iqamaCheck5, iqamaMinutes5, iqamaSound5, "isha");
-        fajr_switch.setChecked(mPrefs.getBoolean("isFajrReminder", true));
-        duhr_switch.setChecked(mPrefs.getBoolean("isDuhrReminder", true));
-        asr_switch.setChecked(mPrefs.getBoolean("isAsrReminder", true));
-        maghrib_switch.setChecked(mPrefs.getBoolean("isMaghribReminder", true));
-        ishaa_switch.setChecked(mPrefs.getBoolean("isIshaaReminder", true));
+       
 
         fajr_switch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mPrefs.edit().putBoolean("isFajrReminder", isChecked).apply();
