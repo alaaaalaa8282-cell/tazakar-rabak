@@ -177,8 +177,8 @@ private PhoneStateListener phoneStateListener;
 
         //AthanTimerService.enqueueWork(this.getApplicationContext(), new Intent(this.getApplicationContext(),AthanTimerService.class));
         am = (AudioManager) this.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+    	Bundle data=intent.getExtras();
 		if (data == null) return;
-		Bundle data=intent.getExtras();
 		String thikrType="";
 		thikrType=data.getString("com.alaaeltaweel.thikrallah.datatype", "");
 		if (thikrType.equals(MainActivity.DATA_TYPE_GENERAL_THIKR)){
@@ -397,7 +397,7 @@ sharedPrefs.edit().putInt("thikr_current_index", currentIndex + 1).apply();
                 SuraAyah start = new SuraAyah(67, 1);
                 SuraAyah end = new SuraAyah(67, 30);
                 List<QariItem> qlist = getQariList(this);
-				int reminderType=Integer.parseInt(sharedPrefs.getString("remindMeDayThikrType", "1"));
+				reminderType=Integer.parseInt(sharedPrefs.getString("remindMeDayThikrType", "1"));
                 int qari_num=Integer.parseInt(sharedPrefs.getString("quran_readers_name","11"));
                 QariItem qari=qlist.get(qari_num);
 
