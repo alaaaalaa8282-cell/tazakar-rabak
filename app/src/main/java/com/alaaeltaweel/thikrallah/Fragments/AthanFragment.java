@@ -41,6 +41,7 @@ import com.alaaeltaweel.thikrallah.Utilities.PrayTime;
 
 import java.util.Calendar;
 
+import android.widget.Spinner;
 
 public class AthanFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener, View.OnClickListener, DialogInterface.OnDismissListener {
 
@@ -67,7 +68,10 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
     private SharedPreferences.OnSharedPreferenceChangeListener prefListener;
     private CheckBox is_Manual_Location;
     private TextView currentLocation;
-
+   private LinearLayout iqamaRow1, iqamaRow2, iqamaRow3, iqamaRow4, iqamaRow5;
+    private EditText iqamaMinutes1, iqamaMinutes2, iqamaMinutes3, iqamaMinutes4, iqamaMinutes5;
+    private CheckBox iqamaCheck1, iqamaCheck2, iqamaCheck3, iqamaCheck4, iqamaCheck5;
+    private Spinner iqamaSound1, iqamaSound2, iqamaSound3, iqamaSound4, iqamaSound5;
     // ── العداد التنازلي ──
     private TextView countdownTimerView;
     private CountDownTimer countdownTimer;
