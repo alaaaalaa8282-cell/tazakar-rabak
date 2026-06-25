@@ -161,12 +161,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="false" />
-                    <Spinner
+                    <RadioGroup
                         android:id="@+id/iqama_sound1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:entries="@array/iqama_sounds" />
+                        android:orientation="horizontal">
+                        <RadioButton android:id="@+id/iqama_sound1_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" android:textColor="#FFFFFF" android:checked="true"/>
+                        <RadioButton android:id="@+id/iqama_sound1_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" android:textColor="#FFFFFF"/>
+                        <RadioButton android:id="@+id/iqama_sound1_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" android:textColor="#FFFFFF"/>
+                    </RadioGroup>
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -329,12 +333,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="false" />
-                    <Spinner
+                    <RadioGroup
                         android:id="@+id/iqama_sound2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:entries="@array/iqama_sounds" />
+                        android:orientation="horizontal">
+                        <RadioButton android:id="@+id/iqama_sound1_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" android:textColor="#FFFFFF" android:checked="true"/>
+                        <RadioButton android:id="@+id/iqama_sound1_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" android:textColor="#FFFFFF"/>
+                        <RadioButton android:id="@+id/iqama_sound1_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" android:textColor="#FFFFFF"/>
+                    </RadioGroup>
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -463,12 +471,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="false" />
-                    <Spinner
+                    <RadioGroup
                         android:id="@+id/iqama_sound3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:entries="@array/iqama_sounds" />
+                        android:orientation="horizontal">
+                        <RadioButton android:id="@+id/iqama_sound1_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" android:textColor="#FFFFFF" android:checked="true"/>
+                        <RadioButton android:id="@+id/iqama_sound1_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" android:textColor="#FFFFFF"/>
+                        <RadioButton android:id="@+id/iqama_sound1_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" android:textColor="#FFFFFF"/>
+                    </RadioGroup>
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -597,12 +609,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="false" />
-                    <Spinner
+                    <RadioGroup
                         android:id="@+id/iqama_sound4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:entries="@array/iqama_sounds" />
+                        android:orientation="horizontal">
+                        <RadioButton android:id="@+id/iqama_sound1_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" android:textColor="#FFFFFF" android:checked="true"/>
+                        <RadioButton android:id="@+id/iqama_sound1_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" android:textColor="#FFFFFF"/>
+                        <RadioButton android:id="@+id/iqama_sound1_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" android:textColor="#FFFFFF"/>
+                    </RadioGroup>
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -731,12 +747,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="false" />
-                    <Spinner
+                    <RadioGroup
                         android:id="@+id/iqama_sound5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:entries="@array/iqama_sounds" />
+                        android:orientation="horizontal">
+                        <RadioButton android:id="@+id/iqama_sound1_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" android:textColor="#FFFFFF" android:checked="true"/>
+                        <RadioButton android:id="@+id/iqama_sound1_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" android:textColor="#FFFFFF"/>
+                        <RadioButton android:id="@+id/iqama_sound1_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" android:textColor="#FFFFFF"/>
+                    </RadioGroup>
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
