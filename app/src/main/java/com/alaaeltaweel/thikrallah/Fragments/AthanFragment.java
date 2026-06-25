@@ -498,17 +498,18 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
         });
     }
     private void setupIqama(SwitchCompat prayerSwitch, LinearLayout row,
-                             CheckBox check, EditText minutes, Spinner sound, String key) {
+                             CheckBox check, EditText minutes, RadioGroup sound, String key) {
         boolean iqamaOn = mPrefs.getBoolean("isIqamaReminder_" + key, false);
         String mins = mPrefs.getString("iqamaMinutes_" + key, "10");
-        int soundChoice = mPrefs.getInt("iqamaSoundChoice_" + key, 0);
+        int soundChoice = mPrefs.getInt("iqamaSoundChoice_" + key, 1);
         check.setChecked(iqamaOn);
         minutes.setText(mins);
         row.setVisibility(prayerSwitch.isChecked() ? View.VISIBLE : View.GONE);
 
-        // ✅ نضيف الـ listener الأول عشان نمنع الحفظ أثناء setSelection
-        sound.setOnItemSelectedListener(null);
-        sound.setSelection(soundChoice);
+        // تحديد الـ RadioButton المحفوظ
+        int checkedId = sound.getChildAt(soundChoice - 1) != null ?
+            sound.getChildAt(soundChoice - 1).getId() : sound.getChildAt(0).getId();
+        sound.check(checkedId);
 
         check.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mPrefs.edit().putBoolean("isIqamaReminder_" + key, isChecked).apply();
@@ -525,17 +526,17 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
                 updateAthanAlarms();
             }
         });
-
-        // ✅ نضيف الـ listener بعد setSelection بـ post عشان ميتشغلش أثناء التهيئة
-        sound.post(() -> sound.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(android.widget.AdapterView<?> parent, android.view.View v, int position, long id) {
-                mPrefs.edit().putInt("iqamaSoundChoice_" + key, position + 1).apply();
-                updateAthanAlarms();
+        sound.setOnCheckedChangeListener((group, checkedIdNew) -> {
+            int position = 1;
+            for (int i = 0; i < group.getChildCount(); i++) {
+                if (group.getChildAt(i).getId() == checkedIdNew) {
+                    position = i + 1;
+                    break;
+                }
             }
-            @Override
-            public void onNothingSelected(android.widget.AdapterView<?> parent) {}
-        }));
+            mPrefs.edit().putInt("iqamaSoundChoice_" + key, position).apply();
+            updateAthanAlarms();
+        });
     }
 }
 
