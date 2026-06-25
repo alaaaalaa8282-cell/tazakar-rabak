@@ -197,7 +197,32 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
         setupPreAthan(asr_switch,     preAthanRow3, preAthanCheck3, preAthanMinutes3, "asr");
         setupPreAthan(maghrib_switch, preAthanRow4, preAthanCheck4, preAthanMinutes4, "maghrib");
         setupPreAthan(ishaa_switch,   preAthanRow5, preAthanCheck5, preAthanMinutes5, "isha");
-        
+     
+        iqamaRow1 = view.findViewById(R.id.iqama_row1);
+        iqamaRow2 = view.findViewById(R.id.iqama_row2);
+        iqamaRow3 = view.findViewById(R.id.iqama_row3);
+        iqamaRow4 = view.findViewById(R.id.iqama_row4);
+        iqamaRow5 = view.findViewById(R.id.iqama_row5);
+        iqamaMinutes1 = view.findViewById(R.id.iqama_minutes1);
+        iqamaMinutes2 = view.findViewById(R.id.iqama_minutes2);
+        iqamaMinutes3 = view.findViewById(R.id.iqama_minutes3);
+        iqamaMinutes4 = view.findViewById(R.id.iqama_minutes4);
+        iqamaMinutes5 = view.findViewById(R.id.iqama_minutes5);
+        iqamaCheck1 = view.findViewById(R.id.iqama_check1);
+        iqamaCheck2 = view.findViewById(R.id.iqama_check2);
+        iqamaCheck3 = view.findViewById(R.id.iqama_check3);
+        iqamaCheck4 = view.findViewById(R.id.iqama_check4);
+        iqamaCheck5 = view.findViewById(R.id.iqama_check5);
+        iqamaSound1 = view.findViewById(R.id.iqama_sound1);
+        iqamaSound2 = view.findViewById(R.id.iqama_sound2);
+        iqamaSound3 = view.findViewById(R.id.iqama_sound3);
+        iqamaSound4 = view.findViewById(R.id.iqama_sound4);
+        iqamaSound5 = view.findViewById(R.id.iqama_sound5);
+        setupIqama(fajr_switch,    iqamaRow1, iqamaCheck1, iqamaMinutes1, iqamaSound1, "fajr");
+        setupIqama(duhr_switch,    iqamaRow2, iqamaCheck2, iqamaMinutes2, iqamaSound2, "dhuhr");
+        setupIqama(asr_switch,     iqamaRow3, iqamaCheck3, iqamaMinutes3, iqamaSound3, "asr");
+        setupIqama(maghrib_switch, iqamaRow4, iqamaCheck4, iqamaMinutes4, iqamaSound4, "maghrib");
+        setupIqama(ishaa_switch,   iqamaRow5, iqamaCheck5, iqamaMinutes5, iqamaSound5, "isha");
         fajr_switch.setChecked(mPrefs.getBoolean("isFajrReminder", true));
         duhr_switch.setChecked(mPrefs.getBoolean("isDuhrReminder", true));
         asr_switch.setChecked(mPrefs.getBoolean("isAsrReminder", true));
@@ -468,5 +493,40 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
             }
         });
     }
+    private void setupIqama(SwitchCompat prayerSwitch, LinearLayout row,
+                             CheckBox check, EditText minutes, Spinner sound, String key) {
+        boolean iqamaOn = mPrefs.getBoolean("isIqamaReminder_" + key, false);
+        String mins = mPrefs.getString("iqamaMinutes_" + key, "10");
+        int soundChoice = mPrefs.getInt("iqamaSoundChoice_" + key, 0);
+        check.setChecked(iqamaOn);
+        minutes.setText(mins);
+        sound.setSelection(soundChoice);
+        row.setVisibility(prayerSwitch.isChecked() ? View.VISIBLE : View.GONE);
+        check.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            mPrefs.edit().putBoolean("isIqamaReminder_" + key, isChecked).apply();
+            updateAthanAlarms();
+        });
+        minutes.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                String val = minutes.getText().toString().trim();
+                if (val.isEmpty() || Integer.parseInt(val) < 1) {
+                    minutes.setText("10");
+                    val = "10";
+                }
+                mPrefs.edit().putString("iqamaMinutes_" + key, val).apply();
+                updateAthanAlarms();
+            }
+        });
+        sound.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, android.view.View v, int position, long id) {
+                mPrefs.edit().putInt("iqamaSoundChoice_" + key, position + 1).apply();
+                updateAthanAlarms();
+            }
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+        });
+    }
 }
+
 
