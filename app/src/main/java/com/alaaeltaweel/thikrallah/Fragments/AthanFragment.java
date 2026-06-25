@@ -70,7 +70,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
     private TextView currentLocation;
    private LinearLayout iqamaRow1, iqamaRow2, iqamaRow3, iqamaRow4, iqamaRow5;
     private EditText iqamaMinutes1, iqamaMinutes2, iqamaMinutes3, iqamaMinutes4, iqamaMinutes5;
-    private CheckBox iqamaCheck1, iqamaCheck2, iqamaCheck3, iqamaCheck4, iqamaCheck5;
+    private SwitchCompat iqamaCheck1, iqamaCheck2, iqamaCheck3, iqamaCheck4, iqamaCheck5;
     private RadioGroup iqamaSound1, iqamaSound2, iqamaSound3, iqamaSound4, iqamaSound5;
     // ── العداد التنازلي ──
     private TextView countdownTimerView;
@@ -465,7 +465,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
         }
     }
     private void setupPreAthan(SwitchCompat prayerSwitch, LinearLayout row,
-                                CheckBox check, EditText minutes, String key) {
+                                SwitchCompat check, EditText minutes, String key) {
         // تحميل القيم المحفوظة
         boolean reminderOn = mPrefs.getBoolean("isPreAthanReminder_" + key, true);
         String mins = mPrefs.getString("preAthanMinutes_" + key, "15");
@@ -499,7 +499,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
         });
     }
     private void setupIqama(SwitchCompat prayerSwitch, LinearLayout row,
-                             CheckBox check, EditText minutes, RadioGroup sound, String key) {
+                             SwitchCompat check, EditText minutes, RadioGroup sound, String key) {
         boolean iqamaOn = mPrefs.getBoolean("isIqamaReminder_" + key, false);
         String mins = mPrefs.getString("iqamaMinutes_" + key, "10");
         int soundChoice = mPrefs.getInt("iqamaSoundChoice_" + key, 1);
