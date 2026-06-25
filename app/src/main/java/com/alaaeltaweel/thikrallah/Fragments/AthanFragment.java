@@ -502,14 +502,14 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
                              CheckBox check, EditText minutes, RadioGroup sound, String key) {
         boolean iqamaOn = mPrefs.getBoolean("isIqamaReminder_" + key, false);
         String mins = mPrefs.getString("iqamaMinutes_" + key, "10");
-        int soundChoice = mPrefs.getInt("iqamaSoundChoice_" + key, 1);
+        int soundChoice = Math.max(1, mPrefs.getInt("iqamaSoundChoice_" + key, 1));
         check.setChecked(iqamaOn);
         minutes.setText(mins);
         row.setVisibility(prayerSwitch.isChecked() ? View.VISIBLE : View.GONE);
 
         // تحديد الـ RadioButton المحفوظ
         int checkedId = sound.getChildAt(soundChoice - 1) != null ?
-            sound.getChildAt(soundChoice - 1).getId() : sound.getChildAt(0).getId();
+    sound.getChildAt(soundChoice - 1).getId() : sound.getChildAt(0).getId();
         sound.check(checkedId);
 
         check.setOnCheckedChangeListener((buttonView, isChecked) -> {
