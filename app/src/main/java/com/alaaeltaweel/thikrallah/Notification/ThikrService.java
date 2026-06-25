@@ -177,9 +177,10 @@ private PhoneStateListener phoneStateListener;
 
         //AthanTimerService.enqueueWork(this.getApplicationContext(), new Intent(this.getApplicationContext(),AthanTimerService.class));
         am = (AudioManager) this.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+		if (data == null) return;
 		Bundle data=intent.getExtras();
 		String thikrType="";
-		thikrType=data.getString("com.alaaeltaweel.thikrallah.datatype");
+		thikrType=data.getString("com.alaaeltaweel.thikrallah.datatype", "");
 		if (thikrType.equals(MainActivity.DATA_TYPE_GENERAL_THIKR)){
             MyDBHelper db = new MyDBHelper(this);
             ArrayList<UserThikr> allThikrs = db.getAllEnabledThikrs();
@@ -246,7 +247,7 @@ sharedPrefs.edit().putInt("thikr_current_index", currentIndex + 1).apply();
 
 		}
 		if (thikrType.equals(MainActivity.DATA_TYPE_DAY_THIKR)){
-			int reminderType=Integer.parseInt(sharedPrefs.getString("remindMeDayThikrType", "1"));
+			int reminderType; try { reminderType=Integer.parseInt(sharedPrefs.getString("remindMeDayThikrType", "1")); } catch (NumberFormatException e) { reminderType=1; }
 			if (reminderType==1){
 				NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 				NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
@@ -298,7 +299,7 @@ sharedPrefs.edit().putInt("thikr_current_index", currentIndex + 1).apply();
             return;
 		}
 		if (thikrType.equals(MainActivity.DATA_TYPE_NIGHT_THIKR)){
-			int reminderType=Integer.parseInt(sharedPrefs.getString("remindMeNightThikrType", "1"));
+			int reminderType; try { reminderType=Integer.parseInt(sharedPrefs.getString("remindMeNightThikrType", "1")); } catch (NumberFormatException e) { reminderType=1; }
 			if (reminderType==1){
 				NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 				NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
@@ -351,7 +352,7 @@ sharedPrefs.edit().putInt("thikr_current_index", currentIndex + 1).apply();
 		}
         if (thikrType.equals(MainActivity.DATA_TYPE_QURAN_MULK)){
             Log.d(TAG,"Quran Mulk reminder");
-            int reminderType=Integer.parseInt(sharedPrefs.getString("remindMemulkType", "1"));
+           int reminderType; try { reminderType=Integer.parseInt(sharedPrefs.getString("remindMemulkType", "1")); } catch (NumberFormatException e) { reminderType=1; }
             if (reminderType==1){
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
@@ -396,6 +397,7 @@ sharedPrefs.edit().putInt("thikr_current_index", currentIndex + 1).apply();
                 SuraAyah start = new SuraAyah(67, 1);
                 SuraAyah end = new SuraAyah(67, 30);
                 List<QariItem> qlist = getQariList(this);
+				int reminderType=Integer.parseInt(sharedPrefs.getString("remindMeDayThikrType", "1"));
                 int qari_num=Integer.parseInt(sharedPrefs.getString("quran_readers_name","11"));
                 QariItem qari=qlist.get(qari_num);
 
