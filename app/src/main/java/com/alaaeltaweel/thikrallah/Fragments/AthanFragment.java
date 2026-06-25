@@ -41,7 +41,6 @@ import com.alaaeltaweel.thikrallah.Utilities.PrayTime;
 
 import java.util.Calendar;
 
-import android.widget.RadioGroup;
 
 public class AthanFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener, View.OnClickListener, DialogInterface.OnDismissListener {
 
@@ -68,10 +67,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
     private SharedPreferences.OnSharedPreferenceChangeListener prefListener;
     private CheckBox is_Manual_Location;
     private TextView currentLocation;
-   private LinearLayout iqamaRow1, iqamaRow2, iqamaRow3, iqamaRow4, iqamaRow5;
-    private EditText iqamaMinutes1, iqamaMinutes2, iqamaMinutes3, iqamaMinutes4, iqamaMinutes5;
-    private CheckBox iqamaCheck1, iqamaCheck2, iqamaCheck3, iqamaCheck4, iqamaCheck5;
-    private RadioGroup iqamaSound1, iqamaSound2, iqamaSound3, iqamaSound4, iqamaSound5;
+
     // ── العداد التنازلي ──
     private TextView countdownTimerView;
     private CountDownTimer countdownTimer;
@@ -175,12 +171,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
         asr_switch     = view.findViewById(R.id.switch3);
         maghrib_switch = view.findViewById(R.id.switch4);
         ishaa_switch   = view.findViewById(R.id.switch5);
-        fajr_switch.setChecked(mPrefs.getBoolean("isFajrReminder", true));
-        duhr_switch.setChecked(mPrefs.getBoolean("isDuhrReminder", true));
-        asr_switch.setChecked(mPrefs.getBoolean("isAsrReminder", true));
-        maghrib_switch.setChecked(mPrefs.getBoolean("isMaghribReminder", true));
-        ishaa_switch.setChecked(mPrefs.getBoolean("isIshaaReminder", true));
-        
+
 // ── ربط views التنبيه قبل الأذان ──
         preAthanRow1 = view.findViewById(R.id.pre_athan_row1);
         preAthanRow2 = view.findViewById(R.id.pre_athan_row2);
@@ -206,33 +197,12 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
         setupPreAthan(asr_switch,     preAthanRow3, preAthanCheck3, preAthanMinutes3, "asr");
         setupPreAthan(maghrib_switch, preAthanRow4, preAthanCheck4, preAthanMinutes4, "maghrib");
         setupPreAthan(ishaa_switch,   preAthanRow5, preAthanCheck5, preAthanMinutes5, "isha");
-     
-        iqamaRow1 = view.findViewById(R.id.iqama_row1);
-        iqamaRow2 = view.findViewById(R.id.iqama_row2);
-        iqamaRow3 = view.findViewById(R.id.iqama_row3);
-        iqamaRow4 = view.findViewById(R.id.iqama_row4);
-        iqamaRow5 = view.findViewById(R.id.iqama_row5);
-        iqamaMinutes1 = view.findViewById(R.id.iqama_minutes1);
-        iqamaMinutes2 = view.findViewById(R.id.iqama_minutes2);
-        iqamaMinutes3 = view.findViewById(R.id.iqama_minutes3);
-        iqamaMinutes4 = view.findViewById(R.id.iqama_minutes4);
-        iqamaMinutes5 = view.findViewById(R.id.iqama_minutes5);
-        iqamaCheck1 = view.findViewById(R.id.iqama_check1);
-        iqamaCheck2 = view.findViewById(R.id.iqama_check2);
-        iqamaCheck3 = view.findViewById(R.id.iqama_check3);
-        iqamaCheck4 = view.findViewById(R.id.iqama_check4);
-        iqamaCheck5 = view.findViewById(R.id.iqama_check5);
-        iqamaSound1 = view.findViewById(R.id.iqama_sound1);
-        iqamaSound2 = view.findViewById(R.id.iqama_sound2);
-        iqamaSound3 = view.findViewById(R.id.iqama_sound3);
-        iqamaSound4 = view.findViewById(R.id.iqama_sound4);
-        iqamaSound5 = view.findViewById(R.id.iqama_sound5);
-        setupIqama(fajr_switch,    iqamaRow1, iqamaCheck1, iqamaMinutes1, iqamaSound1, "fajr");
-        setupIqama(duhr_switch,    iqamaRow2, iqamaCheck2, iqamaMinutes2, iqamaSound2, "dhuhr");
-        setupIqama(asr_switch,     iqamaRow3, iqamaCheck3, iqamaMinutes3, iqamaSound3, "asr");
-        setupIqama(maghrib_switch, iqamaRow4, iqamaCheck4, iqamaMinutes4, iqamaSound4, "maghrib");
-        setupIqama(ishaa_switch,   iqamaRow5, iqamaCheck5, iqamaMinutes5, iqamaSound5, "isha");
-       
+        
+        fajr_switch.setChecked(mPrefs.getBoolean("isFajrReminder", true));
+        duhr_switch.setChecked(mPrefs.getBoolean("isDuhrReminder", true));
+        asr_switch.setChecked(mPrefs.getBoolean("isAsrReminder", true));
+        maghrib_switch.setChecked(mPrefs.getBoolean("isMaghribReminder", true));
+        ishaa_switch.setChecked(mPrefs.getBoolean("isIshaaReminder", true));
 
         fajr_switch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mPrefs.edit().putBoolean("isFajrReminder", isChecked).apply();
@@ -498,47 +468,5 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
             }
         });
     }
-    private void setupIqama(SwitchCompat prayerSwitch, LinearLayout row,
-                             CheckBox check, EditText minutes, RadioGroup sound, String key) {
-        boolean iqamaOn = mPrefs.getBoolean("isIqamaReminder_" + key, false);
-        String mins = mPrefs.getString("iqamaMinutes_" + key, "10");
-        int soundChoice = Math.max(1, mPrefs.getInt("iqamaSoundChoice_" + key, 1));
-        check.setChecked(iqamaOn);
-        minutes.setText(mins);
-        row.setVisibility(prayerSwitch.isChecked() ? View.VISIBLE : View.GONE);
-
-        // تحديد الـ RadioButton المحفوظ
-        int checkedId = sound.getChildAt(soundChoice - 1) != null ?
-    sound.getChildAt(soundChoice - 1).getId() : sound.getChildAt(0).getId();
-        sound.check(checkedId);
-
-        check.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            mPrefs.edit().putBoolean("isIqamaReminder_" + key, isChecked).apply();
-            updateAthanAlarms();
-        });
-        minutes.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                String val = minutes.getText().toString().trim();
-                if (val.isEmpty() || Integer.parseInt(val) < 1) {
-                    minutes.setText("10");
-                    val = "10";
-                }
-                mPrefs.edit().putString("iqamaMinutes_" + key, val).apply();
-                updateAthanAlarms();
-            }
-        });
-        sound.setOnCheckedChangeListener((group, checkedIdNew) -> {
-            int position = 1;
-            for (int i = 0; i < group.getChildCount(); i++) {
-                if (group.getChildAt(i).getId() == checkedIdNew) {
-                    position = i + 1;
-                    break;
-                }
-            }
-            mPrefs.edit().putInt("iqamaSoundChoice_" + key, position).apply();
-            updateAthanAlarms();
-        });
-    }
 }
-
 
