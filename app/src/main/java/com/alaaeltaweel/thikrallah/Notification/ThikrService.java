@@ -22,6 +22,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.telephony.PhoneStateListener;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -1246,6 +1247,6 @@ sharedPrefs.edit().putInt("thikr_current_index", currentIndex + 1).apply();
     public void onDestroy(){
 Log.d(TAG,"calling on destroy");
         super.onDestroy();
-
+  unregisterCallListener();
     }
 }
