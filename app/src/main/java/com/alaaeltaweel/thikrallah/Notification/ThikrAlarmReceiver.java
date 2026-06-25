@@ -58,7 +58,8 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
         // ✅ تنبيه قبل الصلاة بـ 15 دقيقة
         if (MyAlarmsManager.DATA_TYPE_PRE_ATHAN.equals(dataType)) {
 
-            String prayerName = data.getString("prayer_name", "الصلاة");
+            String prayerName = data.getString("prayer_name", "fajr");
+           Log.d("ThikrAlarmReceiver", "pre-athan prayer_name: " + prayerName);
 
             showPreAthanNotification(context, prayerName);
 
