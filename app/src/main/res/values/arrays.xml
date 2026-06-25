@@ -11,4 +11,15 @@
         <item>2</item>
         <item>3</item>
     </string-array>
+    <string-array name="iqama_sounds" translatable="false">
+        <item>إقامة 1</item>
+        <item>إقامة 2</item>
+        <item>إقامة 3</item>
+    </string-array>
+
+<integer-array name="iqama_sound_values">
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+</integer-array>
 </resources>
