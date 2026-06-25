@@ -63,7 +63,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
    // ── التنبيه قبل الأذان ──
     private LinearLayout preAthanRow1, preAthanRow2, preAthanRow3, preAthanRow4, preAthanRow5;
     private EditText preAthanMinutes1, preAthanMinutes2, preAthanMinutes3, preAthanMinutes4, preAthanMinutes5;
-    private CheckBox preAthanCheck1, preAthanCheck2, preAthanCheck3, preAthanCheck4, preAthanCheck5;
+    private SwitchCompat preAthanCheck1, preAthanCheck2, preAthanCheck3, preAthanCheck4, preAthanCheck5;
     private SharedPreferences mPrefs;
     private SharedPreferences.OnSharedPreferenceChangeListener prefListener;
     private CheckBox is_Manual_Location;
