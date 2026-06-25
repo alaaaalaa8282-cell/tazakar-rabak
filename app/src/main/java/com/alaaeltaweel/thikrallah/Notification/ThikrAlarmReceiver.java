@@ -219,13 +219,14 @@ private void showPreAthanNotification(Context context, String prayerKey) {
             case 3:  soundRes = R.raw.iqama_3; break;
             default: soundRes = R.raw.iqama_1; break;
         }
-        android.media.MediaPlayer mp = android.media.MediaPlayer.create(context, soundRes);
-        if (mp != null) {
-            mp.setAudioAttributes(new android.media.AudioAttributes.Builder()
-                .setUsage(android.media.AudioAttributes.USAGE_ALARM)
-                .build());
-            mp.start();
-            mp.setOnCompletionListener(android.media.MediaPlayer::release);
+        // ✅ نشغل الصوت في Service مستقل عشان الـ BroadcastReceiver ميقتلوش
+        Intent serviceIntent = new Intent(context, ThikrMediaPlayerService.class);
+        serviceIntent.putExtra("SOUND_RES", soundRes);
+        serviceIntent.putExtra("ACTION", ThikrMediaPlayerService.MEDIA_PLAYER_PLAY);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            context.startForegroundService(serviceIntent);
+        } else {
+            context.startService(serviceIntent);
         }
     }
 }
