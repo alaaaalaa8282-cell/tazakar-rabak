@@ -35,6 +35,7 @@ import com.alaaeltaweel.thikrallah.MainActivity;
 
 import com.alaaeltaweel.thikrallah.R;
 
+import com.alaaeltaweel.thikrallah.Notification.ThikrMediaPlayerService;
 
 public class ThikrAlarmReceiver extends BroadcastReceiver {
     String TAG = "ThikrAlarmReceiver";
