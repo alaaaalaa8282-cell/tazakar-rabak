@@ -497,6 +497,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
                 }
             }
         });
+    }
     private void setupIqama(SwitchCompat prayerSwitch, LinearLayout row,
                              SwitchCompat check, EditText minutes, RadioGroup sound, String key) {
         boolean iqamaOn = mPrefs.getBoolean("isIqamaReminder_" + key, false);
