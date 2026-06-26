@@ -166,6 +166,7 @@
             android:title="مدة الوضع الصامت (بالدقائق)"
             android:dependency="isSilentModeDuringPrayer"
             android:inputType="number" />
+        
       <EditTextPreference
             android:defaultValue="0"
             android:key="silentModeDelayMinutes"
@@ -173,6 +174,7 @@
             android:summary="يبدأ الوضع الصامت بعد الأذان بهذه المدة"
             android:dependency="isSilentModeDuringPrayer"
             android:inputType="number" />
+        
         <Preference
             android:key="open_dnd_access_settings"
             android:title="منح إذن عدم الإزعاج (DND)"
