@@ -493,7 +493,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
                 String val = s.toString().trim();
                 if (!val.isEmpty() && Integer.parseInt(val) >= 1) {
                     mPrefs.edit().putString("preAthanMinutes_" + key, val).apply();
-                    updateAthanAlarms();
+                    new android.os.Handler().postDelayed(() -> updateAthanAlarms(), 300);
                 }
             }
         });
@@ -523,7 +523,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
                 String val = s.toString().trim();
                 if (!val.isEmpty() && Integer.parseInt(val) >= 1) {
                     mPrefs.edit().putString("iqamaMinutes_" + key, val).apply();
-                    updateAthanAlarms();
+                    new android.os.Handler().postDelayed(() -> updateAthanAlarms(), 300);
                 }
             }
         });
