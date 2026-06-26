@@ -479,7 +479,13 @@ calendarPre.add(Calendar.MINUTE, -preAthanMinutes);
         // ✅ الوضع الصامت أثناء الصلاة
         boolean isSilentModeEnabled = sharedPrefs.getBoolean("isSilentModeDuringPrayer", true);
         int silentDurationMinutes = Integer.parseInt(sharedPrefs.getString("silentModeDurationMinutes", "15"));
-        int silentDelayMinutes = 0;
+        int silentDelayMinutes;
+        try {
+            silentDelayMinutes = Integer.parseInt(sharedPrefs.getString("silentModeDelayMinutes", "0"));
+            if (silentDelayMinutes < 0) silentDelayMinutes = 0;
+        } catch (NumberFormatException e) {
+            silentDelayMinutes = 0;
+        }
         
 try { silentDelayMinutes = Integer.parseInt(sharedPrefs.getString("silentModeDelayMinutes", "0")); } catch (NumberFormatException e) {}
         Intent silentOnIntent = new Intent(context, SilentModeReceiver.class);
@@ -501,6 +507,7 @@ try { silentDelayMinutes = Integer.parseInt(sharedPrefs.getString("silentModeDel
             if (!calendarSilentOn.after(now)) {
                 calendarSilentOn.add(Calendar.HOUR, 24);
             }
+            calendarSilentOn.add(Calendar.MINUTE, silentDelayMinutes);
             setAlarm(calendarSilentOn, pendingSilentOn);
 
             Calendar calendarSilentOff = (Calendar) calendarSilentOn.clone();
