@@ -66,7 +66,14 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
             return;
 
         }
-
+    // ✅ الإقامة
+if ("iqama".equals(dataType)) {
+    String prayerName = data.getString("prayer_name", "fajr");
+    int iqamaSound = data.getInt("iqama_sound", 1);
+    showIqamaNotification(context, prayerName, iqamaSound);
+    if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
+    return;
+}
         // لو الأذان افتح شاشة الأذان
         if (isAthanType(dataType)) {
 
@@ -205,5 +212,57 @@ private void showPreAthanNotification(Context context, String prayerKey) {
                dataType.equals(MainActivity.DATA_TYPE_ATHAN3) ||
                dataType.equals(MainActivity.DATA_TYPE_ATHAN4) ||
                dataType.equals(MainActivity.DATA_TYPE_ATHAN5);
+    }
+    private void showIqamaNotification(Context context, String prayerKey, int soundChoice) {
+    String prayerNameAr;
+    switch (prayerKey) {
+        case "fajr":    prayerNameAr = "الفجر";  break;
+        case "dhuhr":   prayerNameAr = "الظهر";  break;
+        case "asr":     prayerNameAr = "العصر";  break;
+        case "maghrib": prayerNameAr = "المغرب"; break;
+        case "isha":    prayerNameAr = "العشاء"; break;
+        default:        prayerNameAr = "الصلاة"; break;
+    }
+
+    int soundRes;
+    switch (soundChoice) {
+        case 2:  soundRes = R.raw.iqama2; break;
+        case 3:  soundRes = R.raw.iqama3; break;
+        default: soundRes = R.raw.iqama1; break;
+    }
+
+    android.net.Uri soundUri = android.net.Uri.parse(
+        "android.resource://" + context.getPackageName() + "/" + soundRes);
+
+    String channelId = "iqama_channel_v1";
+    NotificationManager nm =
+        (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        NotificationChannel channel = new NotificationChannel(
+            channelId, "إقامة الصلاة", NotificationManager.IMPORTANCE_HIGH);
+        channel.setSound(soundUri,
+            new android.media.AudioAttributes.Builder()
+                .setUsage(android.media.AudioAttributes.USAGE_NOTIFICATION)
+                .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build());
+        nm.createNotificationChannel(channel);
+    }
+
+    Intent launchIntent = new Intent(context, MainActivity.class);
+    launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    PendingIntent pi = PendingIntent.getActivity(context, 0,
+        launchIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+    NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
+        .setSmallIcon(R.drawable.ic_launcher)
+        .setContentTitle("إقامة صلاة " + prayerNameAr)
+        .setContentText("حان وقت إقامة الصلاة")
+        .setPriority(NotificationCompat.PRIORITY_HIGH)
+        .setAutoCancel(true)
+        .setSound(soundUri)
+        .setContentIntent(pi);
+
+    nm.notify(("iqama_" + prayerKey).hashCode(), builder.build());
     }
 }
