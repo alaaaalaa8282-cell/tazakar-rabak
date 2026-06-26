@@ -27,7 +27,7 @@ public void onReceive(Context context, Intent intent) {
 
     if (ACTION_SILENT_ON.equals(intent.getAction())) {
         int currentMode = audioManager.getRingerMode();
-        prefs.edit().putInt(PREF_PREVIOUS_RINGER_MODE, currentMode).apply();
+        prefs.edit().putInt(PREF_PREVIOUS_RINGER_MODE, currentMode).commit();
         audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
         Log.d(TAG, "Silent mode ON, previous mode was " + currentMode);
     } else if (ACTION_SILENT_OFF.equals(intent.getAction())) {
