@@ -486,18 +486,17 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
         });
 
         // لما المستخدم يغير الدقايق
-        minutes.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                String val = minutes.getText().toString().trim();
-                if (val.isEmpty() || Integer.parseInt(val) < 1) {
-                    minutes.setText("15");
-                    val = "15";
+        minutes.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void afterTextChanged(android.text.Editable s) {
+                String val = s.toString().trim();
+                if (!val.isEmpty() && Integer.parseInt(val) >= 1) {
+                    mPrefs.edit().putString("preAthanMinutes_" + key, val).apply();
+                    updateAthanAlarms();
                 }
-                mPrefs.edit().putString("preAthanMinutes_" + key, val).apply();
-                updateAthanAlarms();
             }
         });
-    }
     private void setupIqama(SwitchCompat prayerSwitch, LinearLayout row,
                              SwitchCompat check, EditText minutes, RadioGroup sound, String key) {
         boolean iqamaOn = mPrefs.getBoolean("isIqamaReminder_" + key, false);
@@ -515,16 +514,15 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
         check.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mPrefs.edit().putBoolean("isIqamaReminder_" + key, isChecked).apply();
             updateAthanAlarms();
-        });
-        minutes.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                String val = minutes.getText().toString().trim();
-                if (val.isEmpty() || Integer.parseInt(val) < 1) {
-                    minutes.setText("10");
-                    val = "10";
+        });minutes.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void afterTextChanged(android.text.Editable s) {
+                String val = s.toString().trim();
+                if (!val.isEmpty() && Integer.parseInt(val) >= 1) {
+                    mPrefs.edit().putString("iqamaMinutes_" + key, val).apply();
+                    updateAthanAlarms();
                 }
-                mPrefs.edit().putString("iqamaMinutes_" + key, val).apply();
-                updateAthanAlarms();
             }
         });
         sound.setOnCheckedChangeListener((group, checkedIdNew) -> {
