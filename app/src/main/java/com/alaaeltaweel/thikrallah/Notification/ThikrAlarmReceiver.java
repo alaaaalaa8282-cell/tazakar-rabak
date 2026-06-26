@@ -234,7 +234,7 @@ private void showPreAthanNotification(Context context, String prayerKey) {
     android.net.Uri soundUri = android.net.Uri.parse(
         "android.resource://" + context.getPackageName() + "/" + soundRes);
 
-    String channelId = "iqama_channel_v1";
+    String channelId = "iqama_channel_s" + soundChoice;
     NotificationManager nm =
         (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
