@@ -16,31 +16,24 @@ public class SilentModeReceiver extends BroadcastReceiver {
     public static final String PREF_PREVIOUS_RINGER_MODE = "previousRingerModeBeforeSilent";
 
     @Override
-    public void onReceive(Context context, Intent intent) {
-        if (context == null || intent == null || intent.getAction() == null) return;
+public void onReceive(Context context, Intent intent) {
+    if (context == null || intent == null || intent.getAction() == null) return;
 
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        AudioManager audioManager =
-                (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        if (notificationManager == null || audioManager == null) return;
+    AudioManager audioManager =
+        (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+    if (audioManager == null) return;
 
-        if (!notificationManager.isNotificationPolicyAccessGranted()) {
-            Log.d(TAG, "No DND access granted, skipping silent toggle");
-            return;
-        }
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-
-        if (ACTION_SILENT_ON.equals(intent.getAction())) {
-            int currentMode = audioManager.getRingerMode();
-            prefs.edit().putInt(PREF_PREVIOUS_RINGER_MODE, currentMode).apply();
-            audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
-            Log.d(TAG, "Silent mode ON, previous mode was " + currentMode);
-        } else if (ACTION_SILENT_OFF.equals(intent.getAction())) {
-            int previousMode = prefs.getInt(PREF_PREVIOUS_RINGER_MODE, AudioManager.RINGER_MODE_NORMAL);
-            audioManager.setRingerMode(previousMode);
-            Log.d(TAG, "Silent mode OFF, restored mode " + previousMode);
-        }
+    if (ACTION_SILENT_ON.equals(intent.getAction())) {
+        int currentMode = audioManager.getRingerMode();
+        prefs.edit().putInt(PREF_PREVIOUS_RINGER_MODE, currentMode).apply();
+        audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+        Log.d(TAG, "Silent mode ON, previous mode was " + currentMode);
+    } else if (ACTION_SILENT_OFF.equals(intent.getAction())) {
+        int previousMode = prefs.getInt(PREF_PREVIOUS_RINGER_MODE, AudioManager.RINGER_MODE_NORMAL);
+        audioManager.setRingerMode(previousMode);
+        Log.d(TAG, "Silent mode OFF, restored mode " + previousMode);
     }
+}
     }
