@@ -260,6 +260,7 @@ private void showPreAthanNotification(Context context, String prayerKey) {
         .setContentText("حان وقت إقامة الصلاة")
         .setPriority(NotificationCompat.PRIORITY_HIGH)
         .setAutoCancel(true)
+        .setFullScreenIntent(pi, true) 
         .setSound(soundUri)
         .setContentIntent(pi);
 
