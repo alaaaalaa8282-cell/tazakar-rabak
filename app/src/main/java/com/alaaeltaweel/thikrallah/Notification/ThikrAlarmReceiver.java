@@ -170,7 +170,7 @@ private void showPreAthanNotification(Context context, String prayerKey) {
     android.net.Uri soundUri = android.net.Uri.parse(
         "android.resource://" + context.getPackageName() + "/" + soundRes);
 
-    String channelId = "pre_athan_reminder_v3";
+    String channelId = "pre_athan_reminder_" + prayerKey;
     NotificationManager notificationManager =
             (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
