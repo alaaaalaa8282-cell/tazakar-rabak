@@ -201,7 +201,7 @@ private void showPreAthanNotification(Context context, String prayerKey) {
             .setVibrate(new long[]{0, 500, 200, 500})
             .setSound(soundUri)
             .setContentIntent(pendingIntent);
-
+           .setFullScreenIntent(pendingIntent, true) 
     notificationManager.notify(prayerKey.hashCode(), builder.build());
 }
 
