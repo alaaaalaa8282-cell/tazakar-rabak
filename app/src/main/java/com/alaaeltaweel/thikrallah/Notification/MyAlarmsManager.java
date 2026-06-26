@@ -56,7 +56,7 @@ public class MyAlarmsManager {
     public static final int requestCodeSilentOff3 = 412;
     public static final int requestCodeSilentOff4 = 413;
     public static final int requestCodeSilentOff5 = 414;
-  
+     // ✅ الإقامة
     public static final int requestCodeIqama1 = 500;
     public static final int requestCodeIqama2 = 501;
     public static final int requestCodeIqama3 = 502;
@@ -477,7 +477,7 @@ calendarPre.add(Calendar.MINUTE, -preAthanMinutes);
             }
         }
         // ✅ الوضع الصامت أثناء الصلاة
-        boolean isSilentModeEnabled = sharedPrefs.getBoolean("isSilentModeDuringPrayer", false);
+        boolean isSilentModeEnabled = sharedPrefs.getBoolean("isSilentModeDuringPrayer", true);
         int silentDurationMinutes = Integer.parseInt(sharedPrefs.getString("silentModeDurationMinutes", "15"));
 
         Intent silentOnIntent = new Intent(context, SilentModeReceiver.class);
