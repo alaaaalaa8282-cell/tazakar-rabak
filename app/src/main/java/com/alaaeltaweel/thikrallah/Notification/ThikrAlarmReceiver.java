@@ -247,7 +247,9 @@ private void showPreAthanNotification(Context context, String prayerKey) {
                 .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build());
         nm.createNotificationChannel(channel);
+    channel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PUBLIC);
     }
+        
 
     Intent launchIntent = new Intent(context, MainActivity.class);
     launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
