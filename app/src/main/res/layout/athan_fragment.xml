@@ -115,7 +115,7 @@
                         android:text="دقيقة"
                         android:textColor="#AAAAAA"
                         android:textSize="13sp" />
-                    <CheckBox
+                    <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/pre_athan_check1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -310,7 +310,7 @@
                         android:text="دقيقة"
                         android:textColor="#AAAAAA"
                         android:textSize="13sp" />
-                    <CheckBox
+                    <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/pre_athan_check2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -471,7 +471,7 @@
                         android:text="دقيقة"
                         android:textColor="#AAAAAA"
                         android:textSize="13sp" />
-                    <CheckBox
+                    <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/pre_athan_check3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -632,7 +632,7 @@
                         android:text="دقيقة"
                         android:textColor="#AAAAAA"
                         android:textSize="13sp" />
-                    <CheckBox
+                    <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/pre_athan_check4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -793,7 +793,7 @@
                         android:text="دقيقة"
                         android:textColor="#AAAAAA"
                         android:textSize="13sp" />
-                    <CheckBox
+                    <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/pre_athan_check5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
