@@ -363,6 +363,14 @@
 
 <receiver android:name="com.alaaeltaweel.thikrallah.Notification.AthkarReminderReceiver"
     android:exported="false" />
+        <receiver
+    android:name="com.alaaeltaweel.thikrallah.Notification.SilentModeReceiver"
+    android:exported="false">
+    <intent-filter>
+        <action android:name="com.alaaeltaweel.thikrallah.SILENT_ON" />
+        <action android:name="com.alaaeltaweel.thikrallah.SILENT_OFF" />
+    </intent-filter>
+</receiver>
     </application>
 
     <queries>
