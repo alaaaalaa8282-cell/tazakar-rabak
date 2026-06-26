@@ -226,9 +226,9 @@ private void showPreAthanNotification(Context context, String prayerKey) {
 
     int soundRes;
     switch (soundChoice) {
-        case 2:  soundRes = R.raw.iqama2; break;
-        case 3:  soundRes = R.raw.iqama3; break;
-        default: soundRes = R.raw.iqama1; break;
+        case 2:  soundRes = R.raw.iqama_2; break;
+        case 3:  soundRes = R.raw.iqama_3; break;
+        default: soundRes = R.raw.iqama_1; break;
     }
 
     android.net.Uri soundUri = android.net.Uri.parse(
