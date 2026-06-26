@@ -514,7 +514,8 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
         check.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mPrefs.edit().putBoolean("isIqamaReminder_" + key, isChecked).apply();
             updateAthanAlarms();
-        });minutes.addTextChangedListener(new android.text.TextWatcher() {
+        });
+        minutes.addTextChangedListener(new android.text.TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
             @Override public void afterTextChanged(android.text.Editable s) {
