@@ -188,7 +188,7 @@ private void showPreAthanNotification(Context context, String prayerKey) {
     NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_launcher)
             .setContentTitle("اقترب وقت صلاة " + prayerNameAr)
-            .setContentText("تبقى 15 دقيقة على صلاة " + prayerNameAr)
+            .setContentText("تبقى " + PreferenceManager.getDefaultSharedPreferences(context).getString("preAthanMinutes_" + prayerKey, "15") + " دقيقة على صلاة " + prayerNameAr) 
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .setVibrate(new long[]{0, 500, 200, 500})
