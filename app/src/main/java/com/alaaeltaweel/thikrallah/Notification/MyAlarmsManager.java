@@ -486,8 +486,7 @@ calendarPre.add(Calendar.MINUTE, -preAthanMinutes);
         } catch (NumberFormatException e) {
             silentDelayMinutes = 0;
         }
-        
-try { silentDelayMinutes = Integer.parseInt(sharedPrefs.getString("silentModeDelayMinutes", "0")); } catch (NumberFormatException e) {}
+
         Intent silentOnIntent = new Intent(context, SilentModeReceiver.class);
         silentOnIntent.setAction(SilentModeReceiver.ACTION_SILENT_ON);
         PendingIntent pendingSilentOn = PendingIntent.getBroadcast(context, silentOnCode, silentOnIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -507,7 +506,7 @@ try { silentDelayMinutes = Integer.parseInt(sharedPrefs.getString("silentModeDel
             if (!calendarSilentOn.after(now)) {
                 calendarSilentOn.add(Calendar.HOUR, 24);
             }
-            calendarSilentOn.add(Calendar.MINUTE, silentDelayMinutes);
+            
             setAlarm(calendarSilentOn, pendingSilentOn);
 
             Calendar calendarSilentOff = (Calendar) calendarSilentOn.clone();
