@@ -181,7 +181,7 @@ private void showPreAthanNotification(Context context, String prayerKey) {
         channel.setVibrationPattern(new long[]{0, 500, 200, 500});
         channel.setSound(soundUri,
             new android.media.AudioAttributes.Builder()
-                .setUsage(android.media.AudioAttributes.USAGE_NOTIFICATION)
+                .setUsage(android.media.AudioAttributes.USAGE_ALARM)
                 .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build());
         notificationManager.createNotificationChannel(channel);
@@ -244,7 +244,7 @@ private void showPreAthanNotification(Context context, String prayerKey) {
             channelId, "إقامة الصلاة", NotificationManager.IMPORTANCE_HIGH);
         channel.setSound(soundUri,
             new android.media.AudioAttributes.Builder()
-                .setUsage(android.media.AudioAttributes.USAGE_NOTIFICATION)
+                .setUsage(android.media.AudioAttributes.USAGE_ALARM)
                 .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build());
         nm.createNotificationChannel(channel);
