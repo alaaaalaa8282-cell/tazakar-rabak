@@ -244,7 +244,7 @@ public class MyAlarmsManager {
                     Calendar cannonCal = Calendar.getInstance();
                     cannonCal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(maghribTime[0]));
                     cannonCal.set(Calendar.MINUTE, Integer.parseInt(maghribTime[1]));
-                    cannonCal.set(Calendar.SECOND, 0);
+                    cannonCal.add(Calendar.SECOND, -30);
                     if (!cannonCal.after(now)) {
                         cannonCal.add(Calendar.HOUR, 24);
                     }
