@@ -137,6 +137,12 @@ public class PrefsThikrFragment extends PreferenceFragmentCompat implements OnSh
 		}
 		MyAlarmsManager manager=new MyAlarmsManager(this.getActivity().getApplicationContext());
 		manager.UpdateAllApplicableAlarms();
+		Intent serviceIntent = new Intent(this.getActivity(), com.alaaeltaweel.thikrallah.Service.ThikrService.class);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            this.getActivity().startForegroundService(serviceIntent);
+        } else {
+            this.getActivity().startService(serviceIntent);
+		}
 		Preference pref = findPreference(key);
 		updatePrefSummary(pref);
         if (key.equalsIgnoreCase("language")){
