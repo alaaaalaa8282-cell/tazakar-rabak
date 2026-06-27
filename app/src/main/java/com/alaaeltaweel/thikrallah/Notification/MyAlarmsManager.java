@@ -506,11 +506,16 @@ calendarPre.add(Calendar.MINUTE, -preAthanMinutes);
             if (!calendarSilentOn.after(now)) {
                 calendarSilentOn.add(Calendar.HOUR, 24);
             }
-            
             setAlarm(calendarSilentOn, pendingSilentOn);
 
-            Calendar calendarSilentOff = (Calendar) calendarSilentOn.clone();
-            calendarSilentOff.add(Calendar.MINUTE, silentDurationMinutes);
+            Calendar calendarSilentOff = Calendar.getInstance();
+            calendarSilentOff.set(Calendar.HOUR_OF_DAY, Integer.parseInt(prayerTimes[prayerPosition].split(":", 3)[0]));
+            calendarSilentOff.set(Calendar.MINUTE, Integer.parseInt(prayerTimes[prayerPosition].split(":", 3)[1]));
+            calendarSilentOff.set(Calendar.SECOND, 0);
+            calendarSilentOff.add(Calendar.MINUTE, silentDelayMinutes + silentDurationMinutes);
+            if (!calendarSilentOff.after(now)) {
+                calendarSilentOff.add(Calendar.HOUR, 24);
+            }
             setAlarm(calendarSilentOff, pendingSilentOff);
 
             Log.d(TAG, "Silent window for " + prayerName + ": " + calendarSilentOn.getTime() + " -> " + calendarSilentOff.getTime());
