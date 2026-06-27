@@ -46,8 +46,9 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
         Log.d(TAG, "onrecieve called");
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         PowerManager.WakeLock wakeLock = pm.newWakeLock(
-            PowerManager.PARTIAL_WAKE_LOCK, "tazakar:ThikrReceiverWakeLock");
-        wakeLock.acquire(30 * 1000L);
+            PowerManager.WakeLock wakeLock = pm.newWakeLock(
+    PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "tazakar:ThikrReceiverWakeLock");
+        wakeLock.acquire(60 * 1000L);
 
         Bundle data = intent.getExtras();
 
