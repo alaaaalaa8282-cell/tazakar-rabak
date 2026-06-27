@@ -240,7 +240,7 @@ public class MyAlarmsManager {
             String[] times = prayers.getPrayerTimes(context);
             if (times != null && times.length >= 5) {
                 try {
-                    String[] maghribTime = times[4].split(":", 3);
+                    String[] maghribTime = times[5].split(":", 3);
                     Calendar cannonCal = Calendar.getInstance();
                     cannonCal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(maghribTime[0]));
                     cannonCal.set(Calendar.MINUTE, Integer.parseInt(maghribTime[1]));
