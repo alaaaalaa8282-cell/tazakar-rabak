@@ -42,7 +42,9 @@ if (intent.getBooleanExtra("isWatchdog", false)) {
 
                 MyAlarmsManager manager = new MyAlarmsManager(context.getApplicationContext());
                 manager.UpdateAllApplicableAlarms();
-
+              Intent launchIntent = new Intent(context, com.alaaeltaweel.thikrallah.MainActivity.class);
+                launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(launchIntent);
                 // تأخير 5 ثواني عشان الجهاز يكمل الإقلاع
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
                     manager.UpdateAllApplicableAlarms();
