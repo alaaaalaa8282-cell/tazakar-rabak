@@ -537,6 +537,15 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
             }
             mPrefs.edit().putInt("iqamaSoundChoice_" + key, position).apply();
             updateAthanAlarms();
+            int soundRes;
+            switch (position) {
+                case 2: soundRes = R.raw.iqama_2; break;
+                case 3: soundRes = R.raw.iqama_3; break;
+                default: soundRes = R.raw.iqama_1; break;
+            }
+            android.media.MediaPlayer mp = android.media.MediaPlayer.create(getActivity(), soundRes);
+            mp.setOnCompletionListener(android.media.MediaPlayer::release);
+            mp.start();
         });
     }
 }
