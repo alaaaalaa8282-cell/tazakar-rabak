@@ -138,7 +138,7 @@ public class PrefsThikrFragment extends PreferenceFragmentCompat implements OnSh
 		MyAlarmsManager manager=new MyAlarmsManager(this.getActivity().getApplicationContext());
 		manager.UpdateAllApplicableAlarms();
 		if (key.contains("iqamaSoundChoice_")) {
-            int soundChoice = Integer.parseInt(sharedPreferences.getString(key, "1"));
+            int soundChoice = sharedPreferences.getInt(key, 1);
             int soundRes;
             switch (soundChoice) {
                 case 2: soundRes = R.raw.iqama_2; break;
