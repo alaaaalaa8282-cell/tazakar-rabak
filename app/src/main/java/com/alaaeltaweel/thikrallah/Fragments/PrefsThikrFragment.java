@@ -137,6 +137,18 @@ public class PrefsThikrFragment extends PreferenceFragmentCompat implements OnSh
 		}
 		MyAlarmsManager manager=new MyAlarmsManager(this.getActivity().getApplicationContext());
 		manager.UpdateAllApplicableAlarms();
+		if (key.contains("iqamaSoundChoice_")) {
+            int soundChoice = sharedPreferences.getInt(key, 1);
+            int soundRes;
+            switch (soundChoice) {
+                case 2: soundRes = R.raw.iqama_2; break;
+                case 3: soundRes = R.raw.iqama_3; break;
+                default: soundRes = R.raw.iqama_1; break;
+            }
+            android.media.MediaPlayer mp = android.media.MediaPlayer.create(getActivity(), soundRes);
+            mp.setOnCompletionListener(android.media.MediaPlayer::release);
+            mp.start();
+		}
 		Intent serviceIntent = new Intent(this.getActivity(), com.alaaeltaweel.thikrallah.Notification.ThikrAlarmReceiver.class);
         serviceIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", "reload");
         this.getActivity().sendBroadcast(serviceIntent);
