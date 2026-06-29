@@ -115,6 +115,11 @@
         <item>@string/thikr5</item>
         <item>@string/thikr6</item>
         <item>@string/thikr7</item>
+        <item>@string/thikr8</item>
+        <item>@string/thikr9</item>
+        <item>@string/thikr10</item>
+        <item>@string/thikr11</item>
+        <item>@string/thikr12</item>
     </string-array>
 
 
