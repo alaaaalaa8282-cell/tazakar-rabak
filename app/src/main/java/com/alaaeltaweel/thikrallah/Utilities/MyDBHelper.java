@@ -20,7 +20,7 @@ import java.util.Random;
  */
 public class MyDBHelper  extends SQLiteOpenHelper {
     private static final String TAG="MyDBHelper";
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "MyAthkar.db";
     private static final String TEXT_TYPE = " TEXT";
     private static final String COMMA_SEP = ",";
