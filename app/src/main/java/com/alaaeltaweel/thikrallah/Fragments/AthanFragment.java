@@ -498,6 +498,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
             }
         });
     }
+    private android.media.MediaPlayer iqamaPreviewPlayer;
     private void setupIqama(SwitchCompat prayerSwitch, LinearLayout row,
                              SwitchCompat check, EditText minutes, RadioGroup sound, String key) {
         boolean iqamaOn = mPrefs.getBoolean("isIqamaReminder_" + key, false);
@@ -537,15 +538,23 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
             }
             mPrefs.edit().putInt("iqamaSoundChoice_" + key, position).apply();
             updateAthanAlarms();
+            if (iqamaPreviewPlayer != null) {
+                iqamaPreviewPlayer.stop();
+                iqamaPreviewPlayer.release();
+                iqamaPreviewPlayer = null;
+            }
             int soundRes;
             switch (position) {
                 case 2: soundRes = R.raw.iqama_2; break;
                 case 3: soundRes = R.raw.iqama_3; break;
                 default: soundRes = R.raw.iqama_1; break;
             }
-            android.media.MediaPlayer mp = android.media.MediaPlayer.create(getActivity(), soundRes);
-            mp.setOnCompletionListener(android.media.MediaPlayer::release);
-            mp.start();
+            iqamaPreviewPlayer = android.media.MediaPlayer.create(getActivity(), soundRes);
+            iqamaPreviewPlayer.setOnCompletionListener(mp -> {
+                mp.release();
+                iqamaPreviewPlayer = null;
+            });
+            iqamaPreviewPlayer.start();
         });
     }
 }
