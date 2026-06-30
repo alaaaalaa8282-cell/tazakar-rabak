@@ -203,6 +203,8 @@ private void showPreAthanNotification(Context context, String prayerKey) {
             .setSound(soundUri)
             .setContentIntent(pendingIntent)
                 .setFullScreenIntent(pendingIntent, true);
+    PreferenceManager.getDefaultSharedPreferences(context).edit()
+                .putLong("last_pre_athan_play_time", System.currentTimeMillis()).apply();
         notificationManager.notify(prayerKey.hashCode(), builder.build());
 }
 
@@ -267,6 +269,8 @@ private void showPreAthanNotification(Context context, String prayerKey) {
         .setSound(soundUri)
         .setContentIntent(pi);
 
+        PreferenceManager.getDefaultSharedPreferences(context).edit()
+                .putLong("last_iqama_play_time", System.currentTimeMillis()).apply();
     nm.notify(("iqama_" + prayerKey).hashCode(), builder.build());
     }
 }
