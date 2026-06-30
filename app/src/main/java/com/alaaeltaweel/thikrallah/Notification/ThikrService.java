@@ -1226,6 +1226,14 @@ sharedPrefs.edit().putInt("thikr_current_index", currentIndex + 1).apply();
                 }
             }
         }
+		SharedPreferences athanPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+        long lastIqamaTime = athanPrefs.getLong("last_iqama_play_time", 0);
+        long lastPreAthanTime = athanPrefs.getLong("last_pre_athan_play_time", 0);
+        long nowMs = System.currentTimeMillis();
+        if ((nowMs - lastIqamaTime) < 60000 || (nowMs - lastPreAthanTime) < 60000) {
+            Log.d(TAG, "iqama or pre-athan notification playing, delaying thikr");
+            return true;
+		}
         return false;
 	}
 	private Date parseDate(String date) {
