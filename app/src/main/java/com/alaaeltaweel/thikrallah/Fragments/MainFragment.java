@@ -47,7 +47,9 @@ public class MainFragment extends Fragment {
     private TextView textCountdown;
     private TextView textCountdownLabel;
     private LinearLayout layoutSuhoorIftar;
-
+   private TextView textWeather;
+    private TextView textWeatherIcon;
+    
     // ✅ Handler للعداد التنازلي
     private Handler countdownHandler = new Handler();
     private Runnable countdownRunnable;
@@ -99,7 +101,9 @@ public class MainFragment extends Fragment {
         textCountdown      = view.findViewById(R.id.text_countdown);
         textCountdownLabel = view.findViewById(R.id.text_countdown_label);
         layoutSuhoorIftar  = view.findViewById(R.id.layout_suhoor_iftar);
-
+        textWeather     = view.findViewById(R.id.text_weather);
+        textWeatherIcon = view.findViewById(R.id.text_weather_icon);
+        fetchWeather();
         // ✅ ابدأ عرض التاريخ والرمضان
         updateDateAndRamadan();
         startCountdown();
@@ -310,4 +314,47 @@ button_radio.setOnClickListener(v -> {
             }
         }
     }
+private void fetchWeather() {
+        String lat = MainFragment.this.mPrefs.getString("latitude", "0");
+        String lon = MainFragment.this.mPrefs.getString("longitude", "0");
+        String url = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&appid=ee5c1d0597ed9dd634b05d5daeed6cc8&units=metric&lang=ar";
+        new Thread(() -> {
+            try {
+                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) new java.net.URL(url).openConnection();
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
+                java.io.BufferedReader br = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) sb.append(line);
+                org.json.JSONObject json = new org.json.JSONObject(sb.toString());
+                double temp = json.getJSONObject("main").getDouble("temp");
+                String desc = json.getJSONArray("weather").getJSONObject(0).getString("description");
+                String icon = getWeatherIcon(json.getJSONArray("weather").getJSONObject(0).getString("main"));
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        textWeather.setText(Math.round(temp) + "°C  " + desc);
+                        textWeatherIcon.setText(icon);
+                    });
+                }
+            } catch (Exception e) {
+                Log.d(TAG, "Weather error: " + e.getMessage());
+            }
+        }).start();
+    }
+
+    private String getWeatherIcon(String main) {
+        switch (main) {
+            case "Clear": return "☀️";
+            case "Clouds": return "☁️";
+            case "Rain": return "🌧️";
+            case "Thunderstorm": return "⛈️";
+            case "Snow": return "❄️";
+            case "Drizzle": return "🌦️";
+            case "Mist": case "Fog": case "Haze": return "🌫️";
+            default: return "🌤️";
+        }
+    }
 }
+
+
