@@ -103,7 +103,7 @@ public class MainFragment extends Fragment {
         layoutSuhoorIftar  = view.findViewById(R.id.layout_suhoor_iftar);
         textWeather     = view.findViewById(R.id.text_weather);
         textWeatherIcon = view.findViewById(R.id.text_weather_icon);
-        fetchWeather();
+        if (mPrefs != null) fetchWeather();
         // ✅ ابدأ عرض التاريخ والرمضان
         updateDateAndRamadan();
         startCountdown();
