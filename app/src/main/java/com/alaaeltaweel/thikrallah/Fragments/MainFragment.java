@@ -343,10 +343,10 @@ private void fetchWeather() {
                     getActivity().runOnUiThread(() -> {
                         textWeather.setText(Math.round(temp) + "°C  " + desc);
                         textWeatherIcon.setText(icon);
-                        mPrefs.edit()
-                            .putString("cached_weather_text", Math.round(temp) + "°C  " + desc)
-                            .putString("cached_weather_icon", icon)
-                            .apply();
+                        PreferenceManager.getDefaultSharedPreferences(mContext).edit()
+                       .putString("cached_weather_text", Math.round(temp) + "°C  " + desc)
+                       .putString("cached_weather_icon", icon)
+                       .apply();
                     });
                 }
             } catch (Exception e) {
