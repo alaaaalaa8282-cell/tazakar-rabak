@@ -103,7 +103,15 @@ public class MainFragment extends Fragment {
         layoutSuhoorIftar  = view.findViewById(R.id.layout_suhoor_iftar);
         textWeather     = view.findViewById(R.id.text_weather);
         textWeatherIcon = view.findViewById(R.id.text_weather_icon);
-        if (mPrefs != null) fetchWeather();
+        if (mPrefs != null) {
+            String cachedWeather = mPrefs.getString("cached_weather_text", "");
+            String cachedIcon = mPrefs.getString("cached_weather_icon", "🌤️");
+            if (!cachedWeather.isEmpty()) {
+                textWeather.setText(cachedWeather);
+                textWeatherIcon.setText(cachedIcon);
+            }
+            fetchWeather();
+        }
         // ✅ ابدأ عرض التاريخ والرمضان
         updateDateAndRamadan();
         startCountdown();
@@ -335,6 +343,10 @@ private void fetchWeather() {
                     getActivity().runOnUiThread(() -> {
                         textWeather.setText(Math.round(temp) + "°C  " + desc);
                         textWeatherIcon.setText(icon);
+                        mPrefs.edit()
+                            .putString("cached_weather_text", Math.round(temp) + "°C  " + desc)
+                            .putString("cached_weather_icon", icon)
+                            .apply();
                     });
                 }
             } catch (Exception e) {
