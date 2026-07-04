@@ -1,4 +1,4 @@
-Enterpackage com.alaaeltaweel.thikrallah.Widget;
+package com.alaaeltaweel.thikrallah.Widget;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
