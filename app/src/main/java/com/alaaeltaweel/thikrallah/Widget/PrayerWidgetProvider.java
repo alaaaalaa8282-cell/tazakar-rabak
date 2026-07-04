@@ -44,13 +44,7 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
     };
 
     private static final int[] FATHER_IMAGES = {
-        R.drawable.father_bg,
-        R.drawable.father_bg2,
-        R.drawable.father_bg3,
-        R.drawable.father_bg4,
-        R.drawable.father_bg5,
-        R.drawable.father_bg6,
-        R.drawable.father_bg7
+    R.drawable.ic_launcher
     };
 
     @Override
