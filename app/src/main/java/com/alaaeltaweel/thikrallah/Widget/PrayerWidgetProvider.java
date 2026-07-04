@@ -8,13 +8,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
-
-import androidx.preference.PreferenceManager;
 
 import com.alaaeltaweel.thikrallah.R;
 import com.alaaeltaweel.thikrallah.Utilities.PrayTime;
@@ -26,6 +26,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class PrayerWidgetProvider extends AppWidgetProvider {
 
@@ -33,12 +35,9 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
     public static final String ACTION_UPDATE_WIDGET = "com.alaaeltaweel.thikrallah.WIDGET_UPDATE";
     private static final String WEATHER_API_KEY = "ee5c1d0597ed9dd634b05d5daeed6cc8";
 
-    // أسماء الصلوات
     private static final String[] PRAYER_NAMES = {"الفجر", "الظهر", "العصر", "المغرب", "العشاء"};
-    // positions في getPrayerTimes: 0=fajr,1=sunrise,2=dhuhr,3=asr,4=maghrib,5=isha
     private static final int[] PRAYER_POSITIONS = {0, 2, 3, 4, 5};
 
-    // صور الأب بالتناوب
     private static final int[] FATHER_IMAGES = {
         R.drawable.father_bg,
         R.drawable.father_bg2,
@@ -74,11 +73,11 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
     private void updateWidget(Context context, AppWidgetManager appWidgetManager, int widgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_prayer_layout);
 
-        // صورة الأب بالتناوب حسب الدقيقة
+        // صورة الأب بالتناوب
         int imageIndex = (Calendar.getInstance().get(Calendar.MINUTE) / 10) % FATHER_IMAGES.length;
         views.setImageViewResource(R.id.widget_bg_image, FATHER_IMAGES[imageIndex]);
 
-        // Intent لفتح التطبيق عند الضغط
+        // Intent لفتح التطبيق
         Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
         if (launchIntent != null) {
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, launchIntent,
@@ -90,157 +89,115 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
         try {
             PrayTime prayTime = PrayTime.instancePrayTime(context);
             prayTime.setTimeFormat(PrayTime.TIME_FORMAT_Time12);
-            String[] times = prayTime.getPrayerTimes(context);
+            String[] times12 = prayTime.getPrayerTimes(context);
 
-            if (times != null && times.length >= 6) {
-                // عرض أوقات الصلوات الخمس
-                views.setTextViewText(R.id.widget_fajr_time, formatTime(times[0]));
-                views.setTextViewText(R.id.widget_dhuhr_time, formatTime(times[2]));
-                views.setTextViewText(R.id.widget_asr_time, formatTime(times[3]));
-                views.setTextViewText(R.id.widget_maghrib_time, formatTime(times[4]));
-                views.setTextViewText(R.id.widget_isha_time, formatTime(times[5]));
+            prayTime.setTimeFormat(PrayTime.TIME_FORMAT_Time24);
+            String[] times24 = prayTime.getPrayerTimes(context);
 
-                // الصلاة القادمة والعداد
-                setNextPrayerInfo(context, views, times);
+            if (times12 != null && times12.length >= 6) {
+                views.setTextViewText(R.id.widget_fajr_time, times12[0]);
+                views.setTextViewText(R.id.widget_dhuhr_time, times12[2]);
+                views.setTextViewText(R.id.widget_asr_time, times12[3]);
+                views.setTextViewText(R.id.widget_maghrib_time, times12[4]);
+                views.setTextViewText(R.id.widget_isha_time, times12[5]);
+                setNextPrayer(views, times12, times24);
             }
         } catch (Exception e) {
-            Log.e(TAG, "Error getting prayer times", e);
-            views.setTextViewText(R.id.widget_next_prayer_name, "خطأ في الأوقات");
+            Log.e(TAG, "Prayer times error", e);
         }
 
-        // الطقس
-        fetchWeatherAsync(context, appWidgetManager, widgetId, views);
-
         appWidgetManager.updateAppWidget(widgetId, views);
+
+        // الطقس في thread منفصل
+        fetchWeather(context, appWidgetManager, widgetId);
     }
 
-    private void setNextPrayerInfo(Context context, RemoteViews views, String[] times) {
+    private void setNextPrayer(RemoteViews views, String[] times12, String[] times24) {
+        if (times24 == null) return;
         Calendar now = Calendar.getInstance();
-        int currentHour = now.get(Calendar.HOUR_OF_DAY);
-        int currentMinute = now.get(Calendar.MINUTE);
-        int currentTotalMinutes = currentHour * 60 + currentMinute;
+        int currentTotal = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE);
 
-        // أوقات الصلوات الخمس بالدقائق
-        PrayTime prayTime = PrayTime.instancePrayTime(context);
-        prayTime.setTimeFormat(PrayTime.TIME_FORMAT_Time24);
-        String[] times24 = prayTime.getPrayerTimes(context);
+        String nextName = PRAYER_NAMES[0];
+        String nextTime = times12[0];
+        long minutesLeft = 0;
 
-        String nextPrayerName = PRAYER_NAMES[0];
-        String nextPrayerTime = times[0];
-        long minutesUntilNext = 0;
-
-        // إيجاد الصلاة القادمة
         for (int i = 0; i < PRAYER_POSITIONS.length; i++) {
             int pos = PRAYER_POSITIONS[i];
-            if (times24 == null || pos >= times24.length) continue;
+            if (pos >= times24.length) continue;
             String t = times24[pos];
-            if (t == null || t.equals("-----")) continue;
+            if (t == null || t.contains("-")) continue;
             try {
                 String[] parts = t.split(":");
-                int prayerTotal = Integer.parseInt(parts[0]) * 60 + Integer.parseInt(parts[1]);
-                if (prayerTotal > currentTotalMinutes) {
-                    nextPrayerName = PRAYER_NAMES[i];
-                    nextPrayerTime = times[pos];
-                    minutesUntilNext = prayerTotal - currentTotalMinutes;
+                int total = Integer.parseInt(parts[0]) * 60 + Integer.parseInt(parts[1]);
+                if (total > currentTotal) {
+                    nextName = PRAYER_NAMES[i];
+                    nextTime = times12[pos];
+                    minutesLeft = total - currentTotal;
                     break;
                 }
-                // لو كل الصلوات فاتت، الصلاة القادمة هي فجر الغد
-                nextPrayerName = PRAYER_NAMES[0];
-                nextPrayerTime = times[0];
-                String[] fajrParts = times24[0].split(":");
-                int fajrTotal = Integer.parseInt(fajrParts[0]) * 60 + Integer.parseInt(fajrParts[1]);
-                minutesUntilNext = (24 * 60 - currentTotalMinutes) + fajrTotal;
             } catch (Exception ignored) {}
         }
 
-        views.setTextViewText(R.id.widget_next_prayer_name, nextPrayerName);
-        views.setTextViewText(R.id.widget_next_prayer_time, nextPrayerTime);
-
-        // تنسيق العداد
-        long hours = minutesUntilNext / 60;
-        long mins = minutesUntilNext % 60;
-        String countdown = String.format("⏱ %d:%02d ساعة", hours, mins);
-        views.setTextViewText(R.id.widget_countdown, countdown);
+        views.setTextViewText(R.id.widget_next_prayer_name, nextName);
+        views.setTextViewText(R.id.widget_next_prayer_time, nextTime);
+        views.setTextViewText(R.id.widget_countdown,
+            String.format("⏱ %d:%02d ساعة", minutesLeft / 60, minutesLeft % 60));
     }
 
-    private String formatTime(String time) {
-        if (time == null || time.equals("-----")) return "--:--";
-        return time;
-    }
-
-    private void fetchWeatherAsync(Context context, AppWidgetManager appWidgetManager,
-                                    int widgetId, RemoteViews views) {
+    private void fetchWeather(Context context, AppWidgetManager appWidgetManager, int widgetId) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String lat = prefs.getString("latitude", "");
-        String lon = prefs.getString("longitude", "");
+        String lat = prefs.getBoolean("isCustomLocation", false)
+            ? prefs.getString("c_latitude", prefs.getString("latitude", ""))
+            : prefs.getString("latitude", "");
+        String lon = prefs.getBoolean("isCustomLocation", false)
+            ? prefs.getString("c_longitude", prefs.getString("longitude", ""))
+            : prefs.getString("longitude", "");
 
-        // لو في إحداثيات مخصصة
-        if (prefs.getBoolean("isCustomLocation", false)) {
-            lat = prefs.getString("c_latitude", lat);
-            lon = prefs.getString("c_longitude", lon);
-        }
+        if (lat.isEmpty() || lon.isEmpty()) return;
 
-        if (lat.isEmpty() || lon.isEmpty()) {
-            views.setTextViewText(R.id.widget_weather_text, "الموقع غير متاح");
-            return;
-        }
+        final String fLat = lat, fLon = lon;
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
 
-        final String finalLat = lat;
-        final String finalLon = lon;
-
-        new AsyncTask<Void, Void, String[]>() {
-            @Override
-            protected String[] doInBackground(Void... voids) {
-                try {
-                    String urlStr = "https://api.openweathermap.org/data/2.5/weather?lat=" + finalLat
-                            + "&lon=" + finalLon
-                            + "&appid=" + WEATHER_API_KEY
-                            + "&units=metric&lang=ar";
-                    URL url = new URL(urlStr);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setConnectTimeout(5000);
-                    conn.setReadTimeout(5000);
-
-                    BufferedReader reader = new BufferedReader(
-                            new InputStreamReader(conn.getInputStream()));
-                    StringBuilder sb = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) sb.append(line);
-                    reader.close();
-
-                    JSONObject json = new JSONObject(sb.toString());
-                    double temp = json.getJSONObject("main").getDouble("temp");
-                    String description = json.getJSONArray("weather")
-                            .getJSONObject(0).getString("description");
-                    String iconCode = json.getJSONArray("weather")
-                            .getJSONObject(0).getString("icon");
-
-                    return new String[]{
-                            String.format("%.0f°م | %s", temp, description),
-                            getWeatherEmoji(iconCode)
-                    };
-                } catch (Exception e) {
-                    Log.e(TAG, "Weather fetch error", e);
-                    return null;
-                }
+        executor.execute(() -> {
+            String[] result = null;
+            try {
+                String urlStr = "https://api.openweathermap.org/data/2.5/weather?lat=" + fLat
+                    + "&lon=" + fLon + "&appid=" + WEATHER_API_KEY + "&units=metric&lang=ar";
+                HttpURLConnection conn = (HttpURLConnection) new URL(urlStr).openConnection();
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) sb.append(line);
+                reader.close();
+                JSONObject json = new JSONObject(sb.toString());
+                double temp = json.getJSONObject("main").getDouble("temp");
+                String desc = json.getJSONArray("weather").getJSONObject(0).getString("description");
+                String icon = json.getJSONArray("weather").getJSONObject(0).getString("icon");
+                result = new String[]{String.format("%.0f°م | %s", temp, desc), getEmoji(icon)};
+            } catch (Exception e) {
+                Log.e(TAG, "Weather error", e);
             }
 
-            @Override
-            protected void onPostExecute(String[] result) {
-                if (result != null) {
-                    views.setTextViewText(R.id.widget_weather_text, result[0]);
-                    views.setTextViewText(R.id.widget_weather_icon, result[1]);
+            final String[] finalResult = result;
+            handler.post(() -> {
+                RemoteViews v = new RemoteViews(context.getPackageName(), R.layout.widget_prayer_layout);
+                if (finalResult != null) {
+                    v.setTextViewText(R.id.widget_weather_text, finalResult[0]);
+                    v.setTextViewText(R.id.widget_weather_icon, finalResult[1]);
                 } else {
-                    views.setTextViewText(R.id.widget_weather_text, "الطقس غير متاح");
+                    v.setTextViewText(R.id.widget_weather_text, "الطقس غير متاح");
                 }
-                appWidgetManager.updateAppWidget(widgetId, views);
-            }
-        }.execute();
+                appWidgetManager.partiallyUpdateAppWidget(widgetId, v);
+            });
+        });
     }
 
-    private String getWeatherEmoji(String iconCode) {
-        if (iconCode == null) return "🌤";
-        switch (iconCode) {
+    private String getEmoji(String icon) {
+        if (icon == null) return "🌤";
+        switch (icon) {
             case "01d": return "☀️";
             case "01n": return "🌙";
             case "02d": case "02n": return "⛅";
@@ -259,19 +216,15 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
     private void scheduleNextUpdate(Context context) {
         Intent intent = new Intent(context, PrayerWidgetProvider.class);
         intent.setAction(ACTION_UPDATE_WIDGET);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmManager != null) {
-            // تحديث كل دقيقة
-            long nextMinute = SystemClock.elapsedRealtime() + 60 * 1000;
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (am != null) {
+            long next = SystemClock.elapsedRealtime() + 60_000;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                        nextMinute, pendingIntent);
+                am.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, pi);
             } else {
-                alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                        nextMinute, pendingIntent);
+                am.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, pi);
             }
         }
     }
