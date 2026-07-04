@@ -101,7 +101,7 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
 
         // أوقات الصلاة
         try {
-            PrayTime prayTime = PrayTime.instancePrayTime(context);
+            PrayTime prayTime = PrayTime.instancePrayTime(context.getApplicationContext());
             prayTime.setTimeFormat(PrayTime.TIME_FORMAT_Time24);
             String[] times24 = prayTime.getPrayerTimes(context);
             prayTime.setTimeFormat(PrayTime.TIME_FORMAT_Time12);
