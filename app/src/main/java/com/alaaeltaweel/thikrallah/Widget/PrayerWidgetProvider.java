@@ -244,3 +244,4 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
         }
     }
 }
+
