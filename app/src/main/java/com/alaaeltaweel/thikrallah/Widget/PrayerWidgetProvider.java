@@ -43,8 +43,6 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
         "يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"
     };
 
-    
-    };
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
