@@ -169,13 +169,9 @@ public class MyAlarmsManager {
             alarmMgr.cancel(pendingIntentGeneral);
             String[] dayReminderStart = sharedPrefs.getString("daytReminderTime", "8:00").split(":", 3);
 Calendar calendar1 = Calendar.getInstance();
-calendar1.set(Calendar.HOUR_OF_DAY, Integer.parseInt(dayReminderStart[0]));
-calendar1.set(Calendar.MINUTE, Integer.parseInt(dayReminderStart[1]));
-calendar1.set(Calendar.SECOND, 0);
-if (!calendar1.after(now)) {
-    calendar1.add(Calendar.HOUR, 24);
-}
-this.setAlarm(calendar1, pendingIntentGeneral);
+            calendar1.setTime(dat);
+            calendar1.add(Calendar.MINUTE, Integer.parseInt(RandomReminderInterval));
+            this.setAlarm(calendar1, pendingIntentGeneral);
         } else {
             alarmMgr.cancel(pendingIntentGeneral);
         }
