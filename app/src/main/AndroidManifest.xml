@@ -370,9 +370,10 @@
          <intent-filter>
             <action android:name="com.alaaeltaweel.thikrallah.SILENT_ON" />
            <action android:name="com.alaaeltaweel.thikrallah.SILENT_OFF" />
-    </intent-filter>
+</intent-filter>
 </receiver>
-        <receiver android:name=".Widget.PrayerWidgetProvider"
+
+<receiver android:name=".Widget.PrayerWidgetProvider"
     android:exported="true">
     <intent-filter>
         <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
