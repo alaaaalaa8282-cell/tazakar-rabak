@@ -95,22 +95,27 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
 
         // أوقات الصلاة
         try {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            String lat = prefs.getString("latitude", "");
+            String lon = prefs.getString("longitude", "");
+            if (lat.isEmpty() || lon.isEmpty()) {
+                views.setTextViewText(R.id.widget_next_prayer_time, "حدد موقعك أولاً");
+                appWidgetManager.updateAppWidget(widgetId, views);
+                return;
+            }
             PrayTime prayTime = PrayTime.instancePrayTime(context.getApplicationContext());
             prayTime.setTimeFormat(PrayTime.TIME_FORMAT_Time24);
             String[] times24 = prayTime.getPrayerTimes(context);
             prayTime.setTimeFormat(PrayTime.TIME_FORMAT_Time12);
             String[] times12 = prayTime.getPrayerTimes(context);
-
             if (times24 != null && times24.length >= 6) {
                 setNextPrayer(views, times12, times24,
                     now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
             }
         } catch (Exception e) {
             Log.e(TAG, "Prayer times error", e);
+            views.setTextViewText(R.id.widget_next_prayer_time, "خطأ في الحساب");
         }
-
-        appWidgetManager.updateAppWidget(widgetId, views);
-
         // الطقس
         fetchWeather(context, appWidgetManager, widgetId);
     }
