@@ -1,0 +1,191 @@
+here<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="0dp">
+
+    <!-- صورة الأب كخلفية -->
+    <ImageView
+        android:id="@+id/widget_bg_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/father_bg" />
+
+    <!-- طبقة داكنة شفافة فوق الصورة -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#B0000000" />
+
+    <!-- المحتوى -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="12dp">
+
+        <!-- اسم التطبيق / الترحيب -->
+        <TextView
+            android:id="@+id/widget_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="محمد عبد العظيم (اذكر الله)"
+            android:textColor="#D4AF37"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:fontFamily="sans-serif"
+            android:layout_marginBottom="6dp" />
+
+        <!-- فاصل ذهبي -->
+        <View
+            android:layout_width="120dp"
+            android:layout_height="1dp"
+            android:background="#D4AF37"
+            android:layout_marginBottom="8dp" />
+
+        <!-- الصلاة القادمة - العنوان -->
+        <TextView
+            android:id="@+id/widget_next_prayer_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="الصلاة القادمة"
+            android:textColor="#8FA3B1"
+            android:textSize="10sp"
+            android:gravity="center"
+            android:layout_marginBottom="2dp" />
+
+        <!-- اسم الصلاة القادمة -->
+        <TextView
+            android:id="@+id/widget_next_prayer_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="--"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <!-- وقت الصلاة القادمة -->
+        <TextView
+            android:id="@+id/widget_next_prayer_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="--:--"
+            android:textColor="#D4AF37"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="4dp" />
+
+        <!-- العداد التنازلي -->
+        <TextView
+            android:id="@+id/widget_countdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⏱ --:--:--"
+            android:textColor="#C8B88A"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:layout_marginBottom="8dp" />
+
+        <!-- فاصل -->
+        <View
+            android:layout_width="120dp"
+            android:layout_height="1dp"
+            android:background="#44D4AF37"
+            android:layout_marginBottom="8dp" />
+
+        <!-- أوقات الصلوات الخمس -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="8dp">
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+                <TextView android:id="@+id/widget_fajr_time"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="--:--" android:textColor="#FFFFFF" android:textSize="10sp" android:gravity="center"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="الفجر" android:textColor="#8FA3B1" android:textSize="8sp" android:gravity="center"/>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+                <TextView android:id="@+id/widget_dhuhr_time"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="--:--" android:textColor="#FFFFFF" android:textSize="10sp" android:gravity="center"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="الظهر" android:textColor="#8FA3B1" android:textSize="8sp" android:gravity="center"/>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+                <TextView android:id="@+id/widget_asr_time"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="--:--" android:textColor="#FFFFFF" android:textSize="10sp" android:gravity="center"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="العصر" android:textColor="#8FA3B1" android:textSize="8sp" android:gravity="center"/>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+                <TextView android:id="@+id/widget_maghrib_time"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="--:--" android:textColor="#FFFFFF" android:textSize="10sp" android:gravity="center"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="المغرب" android:textColor="#8FA3B1" android:textSize="8sp" android:gravity="center"/>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+                <TextView android:id="@+id/widget_isha_time"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="--:--" android:textColor="#FFFFFF" android:textSize="10sp" android:gravity="center"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="العشاء" android:textColor="#8FA3B1" android:textSize="8sp" android:gravity="center"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- فاصل -->
+        <View
+            android:layout_width="120dp"
+            android:layout_height="1dp"
+            android:background="#44D4AF37"
+            android:layout_marginBottom="8dp" />
+
+        <!-- الطقس -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/widget_weather_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🌤"
+                android:textSize="16sp"
+                android:layout_marginEnd="6dp" />
+
+            <TextView
+                android:id="@+id/widget_weather_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="جاري التحميل..."
+                android:textColor="#C8B88A"
+                android:textSize="11sp"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
