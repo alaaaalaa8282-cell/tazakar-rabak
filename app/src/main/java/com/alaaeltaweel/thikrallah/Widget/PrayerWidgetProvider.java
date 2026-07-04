@@ -43,8 +43,7 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
         "يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"
     };
 
-    private static final int[] FATHER_IMAGES = {
-    R.drawable.ic_launcher
+    
     };
 
     @Override
