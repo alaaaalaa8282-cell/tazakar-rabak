@@ -167,10 +167,15 @@ public class MyAlarmsManager {
         PendingIntent pendingIntentGeneral = PendingIntent.getBroadcast(context, requestCodeRandomAlarm, launchIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_GENERAL_THIKR), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         if (RemindmeThroughTheDay) {
             alarmMgr.cancel(pendingIntentGeneral);
-            Calendar calendar1 = Calendar.getInstance();
-            calendar1.setTime(dat);
-            calendar1.add(Calendar.MINUTE, Integer.parseInt(RandomReminderInterval));
-            this.setAlarm(calendar1, pendingIntentGeneral);
+            String[] dayReminderStart = sharedPrefs.getString("daytReminderTime", "8:00").split(":", 3);
+Calendar calendar1 = Calendar.getInstance();
+calendar1.set(Calendar.HOUR_OF_DAY, Integer.parseInt(dayReminderStart[0]));
+calendar1.set(Calendar.MINUTE, Integer.parseInt(dayReminderStart[1]));
+calendar1.set(Calendar.SECOND, 0);
+if (!calendar1.after(now)) {
+    calendar1.add(Calendar.HOUR, 24);
+}
+this.setAlarm(calendar1, pendingIntentGeneral);
         } else {
             alarmMgr.cancel(pendingIntentGeneral);
         }
