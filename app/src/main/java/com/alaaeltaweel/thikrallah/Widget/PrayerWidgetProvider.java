@@ -71,10 +71,7 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
     private void updateWidget(Context context, AppWidgetManager appWidgetManager, int widgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_prayer_layout);
 
-        // صورة الأب بالتناوب
-        int imageIndex = (Calendar.getInstance().get(Calendar.MINUTE) / 10) % FATHER_IMAGES.length;
-        views.setImageViewResource(R.id.widget_bg_image, FATHER_IMAGES[imageIndex]);
-
+        
         // فتح التطبيق عند الضغط
         Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
         if (launchIntent != null) {
