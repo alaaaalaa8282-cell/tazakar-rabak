@@ -372,6 +372,16 @@
            <action android:name="com.alaaeltaweel.thikrallah.SILENT_OFF" />
     </intent-filter>
 </receiver>
+        <receiver android:name=".Widget.PrayerWidgetProvider"
+    android:exported="true">
+    <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+        <action android:name="com.alaaeltaweel.thikrallah.WIDGET_UPDATE" />
+    </intent-filter>
+    <meta-data
+        android:name="android.appwidget.provider"
+        android:resource="@xml/prayer_widget_info" />
+</receiver>
     </application>
 
     <queries>
