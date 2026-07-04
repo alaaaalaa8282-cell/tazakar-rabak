@@ -243,6 +243,7 @@ sharedPrefs.edit().putInt("thikr_current_index", currentIndex + 1).apply();
             pendingThikrAfterCall = true;
         }
 			}
+            new MyAlarmsManager(this.getApplicationContext()).UpdateAllApplicableAlarms();
             return;
 
 		}
