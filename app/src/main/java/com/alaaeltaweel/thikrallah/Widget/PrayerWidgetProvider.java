@@ -38,6 +38,11 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
     private static final String[] PRAYER_NAMES = {"الفجر", "الظهر", "العصر", "المغرب", "العشاء"};
     private static final int[] PRAYER_POSITIONS = {0, 2, 3, 4, 5};
 
+    private static final String[] MONTHS_AR = {
+        "يناير","فبراير","مارس","أبريل","مايو","يونيو",
+        "يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"
+    };
+
     private static final int[] FATHER_IMAGES = {
         R.drawable.father_bg,
         R.drawable.father_bg2,
@@ -77,30 +82,34 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
         int imageIndex = (Calendar.getInstance().get(Calendar.MINUTE) / 10) % FATHER_IMAGES.length;
         views.setImageViewResource(R.id.widget_bg_image, FATHER_IMAGES[imageIndex]);
 
-        // Intent لفتح التطبيق
+        // فتح التطبيق عند الضغط
         Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
         if (launchIntent != null) {
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, launchIntent,
+            PendingIntent pi = PendingIntent.getActivity(context, 0, launchIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-            views.setOnClickPendingIntent(R.id.widget_bg_image, pendingIntent);
+            views.setOnClickPendingIntent(R.id.widget_bg_image, pi);
         }
+
+        // التاريخ
+        Calendar now = Calendar.getInstance();
+        views.setTextViewText(R.id.widget_date, String.valueOf(now.get(Calendar.DAY_OF_MONTH)));
+        views.setTextViewText(R.id.widget_month, MONTHS_AR[now.get(Calendar.MONTH)]);
+
+        // الساعة
+        views.setTextViewText(R.id.widget_clock,
+            String.format("%02d:%02d", now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE)));
 
         // أوقات الصلاة
         try {
             PrayTime prayTime = PrayTime.instancePrayTime(context);
+            prayTime.setTimeFormat(PrayTime.TIME_FORMAT_Time24);
+            String[] times24 = prayTime.getPrayerTimes(context);
             prayTime.setTimeFormat(PrayTime.TIME_FORMAT_Time12);
             String[] times12 = prayTime.getPrayerTimes(context);
 
-            prayTime.setTimeFormat(PrayTime.TIME_FORMAT_Time24);
-            String[] times24 = prayTime.getPrayerTimes(context);
-
-            if (times12 != null && times12.length >= 6) {
-                views.setTextViewText(R.id.widget_fajr_time, times12[0]);
-                views.setTextViewText(R.id.widget_dhuhr_time, times12[2]);
-                views.setTextViewText(R.id.widget_asr_time, times12[3]);
-                views.setTextViewText(R.id.widget_maghrib_time, times12[4]);
-                views.setTextViewText(R.id.widget_isha_time, times12[5]);
-                setNextPrayer(views, times12, times24);
+            if (times24 != null && times24.length >= 6) {
+                setNextPrayer(views, times12, times24,
+                    now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
             }
         } catch (Exception e) {
             Log.e(TAG, "Prayer times error", e);
@@ -108,18 +117,16 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
 
         appWidgetManager.updateAppWidget(widgetId, views);
 
-        // الطقس في thread منفصل
+        // الطقس
         fetchWeather(context, appWidgetManager, widgetId);
     }
 
-    private void setNextPrayer(RemoteViews views, String[] times12, String[] times24) {
-        if (times24 == null) return;
-        Calendar now = Calendar.getInstance();
-        int currentTotal = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE);
-
+    private void setNextPrayer(RemoteViews views, String[] times12, String[] times24, int hour, int minute) {
+        int currentTotal = hour * 60 + minute;
         String nextName = PRAYER_NAMES[0];
-        String nextTime = times12[0];
+        String nextTime = (times12 != null) ? times12[0] : "--";
         long minutesLeft = 0;
+        boolean found = false;
 
         for (int i = 0; i < PRAYER_POSITIONS.length; i++) {
             int pos = PRAYER_POSITIONS[i];
@@ -131,28 +138,36 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
                 int total = Integer.parseInt(parts[0]) * 60 + Integer.parseInt(parts[1]);
                 if (total > currentTotal) {
                     nextName = PRAYER_NAMES[i];
-                    nextTime = times12[pos];
+                    nextTime = (times12 != null && pos < times12.length) ? times12[pos] : t;
                     minutesLeft = total - currentTotal;
+                    found = true;
                     break;
                 }
             } catch (Exception ignored) {}
         }
 
-        views.setTextViewText(R.id.widget_next_prayer_name, nextName);
-        views.setTextViewText(R.id.widget_next_prayer_time, nextTime);
+        if (!found) {
+            nextName = PRAYER_NAMES[0];
+            nextTime = (times12 != null) ? times12[0] : "--";
+            try {
+                String[] parts = times24[0].split(":");
+                int fajrTotal = Integer.parseInt(parts[0]) * 60 + Integer.parseInt(parts[1]);
+                minutesLeft = (24 * 60 - currentTotal) + fajrTotal;
+            } catch (Exception ignored) {}
+        }
+
+        views.setTextViewText(R.id.widget_next_prayer_time, nextName + " " + nextTime);
         views.setTextViewText(R.id.widget_countdown,
-            String.format("⏱ %d:%02d ساعة", minutesLeft / 60, minutesLeft % 60));
+            String.format("%02d \" %02d ه", minutesLeft % 60, minutesLeft / 60));
     }
 
     private void fetchWeather(Context context, AppWidgetManager appWidgetManager, int widgetId) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String lat = prefs.getBoolean("isCustomLocation", false)
-            ? prefs.getString("c_latitude", prefs.getString("latitude", ""))
-            : prefs.getString("latitude", "");
-        String lon = prefs.getBoolean("isCustomLocation", false)
-            ? prefs.getString("c_longitude", prefs.getString("longitude", ""))
-            : prefs.getString("longitude", "");
-
+        boolean isCustom = prefs.getBoolean("isCustomLocation", false);
+        String lat = isCustom ? prefs.getString("c_latitude", prefs.getString("latitude", ""))
+                              : prefs.getString("latitude", "");
+        String lon = isCustom ? prefs.getString("c_longitude", prefs.getString("longitude", ""))
+                              : prefs.getString("longitude", "");
         if (lat.isEmpty() || lon.isEmpty()) return;
 
         final String fLat = lat, fLon = lon;
@@ -188,7 +203,7 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
                     v.setTextViewText(R.id.widget_weather_text, finalResult[0]);
                     v.setTextViewText(R.id.widget_weather_icon, finalResult[1]);
                 } else {
-                    v.setTextViewText(R.id.widget_weather_text, "الطقس غير متاح");
+                    v.setTextViewText(R.id.widget_weather_text, "غير متاح");
                 }
                 appWidgetManager.partiallyUpdateAppWidget(widgetId, v);
             });
