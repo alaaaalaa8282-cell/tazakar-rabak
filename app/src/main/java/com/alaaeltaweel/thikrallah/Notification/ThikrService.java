@@ -146,7 +146,7 @@ private PhoneStateListener phoneStateListener;
             showForegroundNotificationan(NOTIFICATION_ID_GENERIC_FOREGROUND);
         }
 
-        calling_intent=intent;
+         calling_intent=intent;
 		registerCallListener();
         mcontext=this.getApplicationContext();
         quransettings=QuranSettings.getInstance(mcontext);
