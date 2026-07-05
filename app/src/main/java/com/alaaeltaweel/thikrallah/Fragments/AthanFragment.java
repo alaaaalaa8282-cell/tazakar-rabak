@@ -299,6 +299,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
 
         updateAthanAlarms();
         startCountdown();
+        HijriDate.setText(getHijriDate());
     }
 
     private void updateAthanAlarms() {
