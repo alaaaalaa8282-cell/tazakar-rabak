@@ -65,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="?"
-                android:textSize="11sp"
+                android:textSize="9sp"
                 android:layout_marginEnd="3dp" />
 
             <TextView
@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:text="--"
                 android:textColor="#C8B88A"
-                android:textSize="9sp" />
+                android:textSize="7sp" />
 
         </LinearLayout>
 
