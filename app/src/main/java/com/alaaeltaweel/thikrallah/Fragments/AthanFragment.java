@@ -94,6 +94,9 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
                 currentLocation.setText(MainActivity.getCityCountryLocation(this.getContext()));
             }
         }
+        if (key.equals("hijri_offset")) {
+            HijriDate.setText(getHijriDate());
+        }
     }
 
     @Override
