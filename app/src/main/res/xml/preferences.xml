@@ -183,5 +183,18 @@
         </Preference>
 
     </PreferenceCategory>
+    <PreferenceCategory
+    android:title="إعدادات التاريخ الهجري"
+    android:layout="@layout/preference_catagory">
+
+    <com.alaaeltaweel.thikrallah.Utilities.MyListPreference
+        android:defaultValue="0"
+        android:entries="@array/hijri_offset_entries"
+        android:entryValues="@array/hijri_offset_values"
+        android:key="hijri_offset"
+        android:title="تعديل التاريخ الهجري"
+        android:summary="في حالة اختلاف التاريخ عن الرؤية" />
+
+</PreferenceCategory>
 
 </PreferenceScreen>
