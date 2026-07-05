@@ -43,6 +43,7 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
         "يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"
     };
 
+    private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -67,10 +68,9 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
     }
 
     private void updateWidget(Context context, AppWidgetManager appWidgetManager, int widgetId) {
+        // خطوات سريعة فقط على الـ Main Thread
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_prayer_layout);
 
-        
-        // فتح التطبيق عند الضغط
         Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
         if (launchIntent != null) {
             PendingIntent pi = PendingIntent.getActivity(context, 0, launchIntent,
@@ -78,41 +78,53 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
             views.setOnClickPendingIntent(R.id.widget_bg_image, pi);
         }
 
-        // التاريخ
         Calendar now = Calendar.getInstance();
         views.setTextViewText(R.id.widget_date, String.valueOf(now.get(Calendar.DAY_OF_MONTH)));
         views.setTextViewText(R.id.widget_month, MONTHS_AR[now.get(Calendar.MONTH)]);
-
-        // الساعة
         views.setTextViewText(R.id.widget_clock,
             String.format("%02d:%02d", now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE)));
 
-        // أوقات الصلاة
-        try {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-            String lat = prefs.getString("latitude", "");
-            String lon = prefs.getString("longitude", "");
-            if (lat.isEmpty() || lon.isEmpty()) {
-                views.setTextViewText(R.id.widget_next_prayer_time, "حدد موقعك أولاً");
-                appWidgetManager.updateAppWidget(widgetId, views);
-                return;
-            }
-            PrayTime prayTime = PrayTime.instancePrayTime(context.getApplicationContext());
-            prayTime.setTimeFormat(PrayTime.TIME_FORMAT_Time24);
-            String[] times24 = prayTime.getPrayerTimes(context);
-            prayTime.setTimeFormat(PrayTime.TIME_FORMAT_Time12);
-            String[] times12 = prayTime.getPrayerTimes(context);
-            if (times24 != null && times24.length >= 6) {
-                setNextPrayer(views, times12, times24,
-                    now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Prayer times error", e);
-            views.setTextViewText(R.id.widget_next_prayer_time, "خطأ في الحساب");
-        }
+        // نبعت الشكل الأساسي فوراً عشان الويدجت يظهر بسرعة من غير Timeout
         appWidgetManager.updateAppWidget(widgetId, views);
-        // الطقس
-        fetchWeather(context, appWidgetManager, widgetId);
+
+        // حساب أوقات الصلاة والطقس على خيط تحت
+        final Context appContext = context.getApplicationContext();
+        final Handler handler = new Handler(Looper.getMainLooper());
+
+        EXECUTOR.execute(() -> {
+            RemoteViews prayerViews = new RemoteViews(appContext.getPackageName(), R.layout.widget_prayer_layout);
+            try {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(appContext);
+                String lat = prefs.getString("latitude", "");
+                String lon = prefs.getString("longitude", "");
+                if (lat.isEmpty() || lon.isEmpty()) {
+                    prayerViews.setTextViewText(R.id.widget_next_prayer_time, "حدد موقعك أولاً");
+                } else {
+                    PrayTime prayTime = PrayTime.instancePrayTime(appContext);
+                    prayTime.setTimeFormat(PrayTime.TIME_FORMAT_Time24);
+                    String[] times24 = prayTime.getPrayerTimes(appContext);
+                    prayTime.setTimeFormat(PrayTime.TIME_FORMAT_Time12);
+                    String[] times12 = prayTime.getPrayerTimes(appContext);
+                    if (times24 != null && times24.length >= 6) {
+                        setNextPrayer(prayerViews, times12, times24,
+                            now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Prayer times error", e);
+                prayerViews.setTextViewText(R.id.widget_next_prayer_time, "خطأ في الحساب");
+            }
+
+            handler.post(() -> {
+                try {
+                    appWidgetManager.partiallyUpdateAppWidget(widgetId, prayerViews);
+                } catch (Exception e) {
+                    Log.e(TAG, "partial update (prayer) failed", e);
+                }
+            });
+
+            fetchWeather(appContext, appWidgetManager, widgetId);
+        });
     }
 
     private void setNextPrayer(RemoteViews views, String[] times12, String[] times24, int hour, int minute) {
@@ -164,43 +176,43 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
                               : prefs.getString("longitude", "");
         if (lat.isEmpty() || lon.isEmpty()) return;
 
-        final String fLat = lat, fLon = lon;
-        ExecutorService executor = Executors.newSingleThreadExecutor();
+        String result0 = null, result1 = null;
+        try {
+            String urlStr = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat
+                + "&lon=" + lon + "&appid=" + WEATHER_API_KEY + "&units=metric&lang=ar";
+            HttpURLConnection conn = (HttpURLConnection) new URL(urlStr).openConnection();
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) sb.append(line);
+            reader.close();
+            JSONObject json = new JSONObject(sb.toString());
+            double temp = json.getJSONObject("main").getDouble("temp");
+            String desc = json.getJSONArray("weather").getJSONObject(0).getString("description");
+            String icon = json.getJSONArray("weather").getJSONObject(0).getString("icon");
+            result0 = String.format("%.0f°م | %s", temp, desc);
+            result1 = getEmoji(icon);
+        } catch (Exception e) {
+            Log.e(TAG, "Weather error", e);
+        }
+
+        final String fResult0 = result0, fResult1 = result1;
         Handler handler = new Handler(Looper.getMainLooper());
-
-        executor.execute(() -> {
-            String[] result = null;
-            try {
-                String urlStr = "https://api.openweathermap.org/data/2.5/weather?lat=" + fLat
-                    + "&lon=" + fLon + "&appid=" + WEATHER_API_KEY + "&units=metric&lang=ar";
-                HttpURLConnection conn = (HttpURLConnection) new URL(urlStr).openConnection();
-                conn.setConnectTimeout(5000);
-                conn.setReadTimeout(5000);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) sb.append(line);
-                reader.close();
-                JSONObject json = new JSONObject(sb.toString());
-                double temp = json.getJSONObject("main").getDouble("temp");
-                String desc = json.getJSONArray("weather").getJSONObject(0).getString("description");
-                String icon = json.getJSONArray("weather").getJSONObject(0).getString("icon");
-                result = new String[]{String.format("%.0f°م | %s", temp, desc), getEmoji(icon)};
-            } catch (Exception e) {
-                Log.e(TAG, "Weather error", e);
+        handler.post(() -> {
+            RemoteViews v = new RemoteViews(context.getPackageName(), R.layout.widget_prayer_layout);
+            if (fResult0 != null) {
+                v.setTextViewText(R.id.widget_weather_text, fResult0);
+                v.setTextViewText(R.id.widget_weather_icon, fResult1);
+            } else {
+                v.setTextViewText(R.id.widget_weather_text, "غير متاح");
             }
-
-            final String[] finalResult = result;
-            handler.post(() -> {
-                RemoteViews v = new RemoteViews(context.getPackageName(), R.layout.widget_prayer_layout);
-                if (finalResult != null) {
-                    v.setTextViewText(R.id.widget_weather_text, finalResult[0]);
-                    v.setTextViewText(R.id.widget_weather_icon, finalResult[1]);
-                } else {
-                    v.setTextViewText(R.id.widget_weather_text, "غير متاح");
-                }
+            try {
                 appWidgetManager.partiallyUpdateAppWidget(widgetId, v);
-            });
+            } catch (Exception e) {
+                Log.e(TAG, "partial update (weather) failed", e);
+            }
         });
     }
 
@@ -238,4 +250,3 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
         }
     }
 }
-
