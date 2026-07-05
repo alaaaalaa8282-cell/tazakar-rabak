@@ -112,8 +112,34 @@ if ("iqama".equals(dataType)) {
             context.startActivity(athanIntent);
 
         } else {
-            
+
+            // ✅ إشعار بشاشة كاملة يصحي الموبايل حتى للأذكار العادية
+            Intent wakeIntent = new Intent(context, MainActivity.class);
+            wakeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent wakePendingIntent = PendingIntent.getActivity(
+                    context, dataType.hashCode() + 5555, wakeIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+            String thikrWakeChannelId = "thikr_wake_channel";
+            NotificationManager thikrWakeNm =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel thikrWakeChannel = new NotificationChannel(
+                        thikrWakeChannelId, "تذكير صوتي", NotificationManager.IMPORTANCE_HIGH);
+                thikrWakeChannel.setSound(null, null);
+                thikrWakeNm.createNotificationChannel(thikrWakeChannel);
+            }
+            NotificationCompat.Builder thikrWakeBuilder = new NotificationCompat.Builder(context, thikrWakeChannelId)
+                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setContentTitle("تذكير")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setCategory(NotificationCompat.CATEGORY_ALARM)
+                    .setAutoCancel(true)
+                    .setFullScreenIntent(wakePendingIntent, true);
+            thikrWakeNm.notify(dataType.hashCode() + 5555, thikrWakeBuilder.build());
+
          // ✅ الأذكار العادية — لا تشتغل أثناء المكالمات
+            
             boolean isInCallForThikr = false;
             try {
                 TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
