@@ -448,11 +448,12 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
                         .build()
                         .withCalendarVariant(HijriCalendar.VARIANT_UMALQURA);
 
-        HijriCalendar today =
-                SystemClock.inLocalView().today().transform(
-                        HijriCalendar.class,
-                        HijriCalendar.VARIANT_UMALQURA
-                );
+       int hijriOffset = mPrefs.getInt("hijri_offset", 0);
+HijriCalendar today =
+        SystemClock.inLocalView().today().transform(
+                HijriCalendar.class,
+                HijriCalendar.VARIANT_UMALQURA
+        ).plus(hijriOffset, HijriCalendar.Unit.DAYS);
         return hijriFormat.format(today);
     }
 
