@@ -22,4 +22,15 @@
     <item>2</item>
     <item>3</item>
 </integer-array>
+    <string-array name="hijri_offset_entries">
+    <item>يوم قبل (-1)</item>
+    <item>بدون تعديل (0)</item>
+    <item>يوم بعد (+1)</item>
+</string-array>
+
+<string-array name="hijri_offset_values">
+    <item>-1</item>
+    <item>0</item>
+    <item>1</item>
+</string-array>
 </resources>
