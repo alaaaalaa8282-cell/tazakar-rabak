@@ -79,8 +79,8 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
         }
 
         Calendar now = Calendar.getInstance();
-        views.setTextViewText(R.id.widget_date, String.valueOf(now.get(Calendar.DAY_OF_MONTH)));
-        views.setTextViewText(R.id.widget_month, MONTHS_AR[now.get(Calendar.MONTH)]);
+        views.setTextViewText(R.id.widget_date,
+            now.get(Calendar.DAY_OF_MONTH) + " " + MONTHS_AR[now.get(Calendar.MONTH)]);
         views.setTextViewText(R.id.widget_clock,
             String.format("%02d:%02d", now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE)));
 
