@@ -172,8 +172,10 @@ button_radio.setOnClickListener(v -> {
             String gregorianDate = gregorianFormat.format(new Date());
             textGregorianDate.setText(gregorianDate);
 
-            // التاريخ الهجري
+            // التاريخ الهجري (مع تطبيق تعديل المستخدم hijri_offset)
+            int hijriOffset = Integer.parseInt(mPrefs.getString("hijri_offset", "0"));
             android.icu.util.IslamicCalendar islamicCalendar = new android.icu.util.IslamicCalendar();
+            islamicCalendar.add(android.icu.util.Calendar.DAY_OF_MONTH, hijriOffset);
             int hijriDay   = islamicCalendar.get(android.icu.util.Calendar.DAY_OF_MONTH);
             int hijriMonth = islamicCalendar.get(android.icu.util.Calendar.MONTH);
             int hijriYear  = islamicCalendar.get(android.icu.util.Calendar.YEAR);
