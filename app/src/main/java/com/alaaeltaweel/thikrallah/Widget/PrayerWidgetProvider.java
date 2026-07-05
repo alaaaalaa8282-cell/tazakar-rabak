@@ -110,6 +110,7 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
             Log.e(TAG, "Prayer times error", e);
             views.setTextViewText(R.id.widget_next_prayer_time, "خطأ في الحساب");
         }
+        appWidgetManager.updateAppWidget(widgetId, views);
         // الطقس
         fetchWeather(context, appWidgetManager, widgetId);
     }
