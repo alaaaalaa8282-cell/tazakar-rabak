@@ -458,7 +458,10 @@ HijriCalendar today =
         SystemClock.inLocalView().today().transform(
                 HijriCalendar.class,
                 HijriCalendar.VARIANT_UMALQURA
-        ).plus(hijriOffset, HijriCalendar.Unit.DAYS);
+        );
+if (hijriOffset != 0) {
+    today = today.plus(hijriOffset, HijriCalendar.Unit.DAYS);
+}
         return hijriFormat.format(today);
     }
 
