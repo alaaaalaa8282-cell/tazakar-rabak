@@ -164,7 +164,7 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
 
         views.setTextViewText(R.id.widget_next_prayer_time, nextName + " " + nextTime);
         views.setTextViewText(R.id.widget_countdown,
-            String.format("%02d \" %02d ه", minutesLeft % 60, minutesLeft / 60));
+            String.format("متبقي %02d:%02d", minutesLeft / 60, minutesLeft % 60));
     }
 
     private void fetchWeather(Context context, AppWidgetManager appWidgetManager, int widgetId) {
