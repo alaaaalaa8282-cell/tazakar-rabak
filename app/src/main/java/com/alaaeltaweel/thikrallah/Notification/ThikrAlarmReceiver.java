@@ -33,6 +33,8 @@ import androidx.core.app.NotificationCompat;
 
 import com.alaaeltaweel.thikrallah.MainActivity;
 
+import com.alaaeltaweel.thikrallah.WakeUpActivity;
+
 import com.alaaeltaweel.thikrallah.R;
 
 
