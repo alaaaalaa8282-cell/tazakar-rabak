@@ -5,12 +5,12 @@
 
     <LinearLayout
         android:id="@+id/widget_root"
-        android:layout_width="130dp"
-        android:layout_height="130dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_gravity="center"
         android:orientation="vertical"
         android:gravity="center"
-        android:padding="10dp"
+        android:padding="8dp"
         android:background="@drawable/widget_background">
 
         <TextView
