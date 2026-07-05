@@ -75,7 +75,7 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
         if (launchIntent != null) {
             PendingIntent pi = PendingIntent.getActivity(context, 0, launchIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-            views.setOnClickPendingIntent(R.id.widget_bg_image, pi);
+            views.setOnClickPendingIntent(R.id.widget_root, pi);
         }
 
         Calendar now = Calendar.getInstance();
