@@ -111,7 +111,31 @@ if ("iqama".equals(dataType)) {
             athanIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_CLEAR_TOP |
                     Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            context.startActivity(athanIntent);
+
+            PendingIntent athanFullScreenPendingIntent = PendingIntent.getActivity(
+                    context, dataType.hashCode(), athanIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+            String athanChannelId = "athan_fullscreen_channel";
+            NotificationManager athanNm =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel athanChannel = new NotificationChannel(
+                        athanChannelId, "شاشة الأذان", NotificationManager.IMPORTANCE_HIGH);
+                athanChannel.setSound(null, null);
+                athanNm.createNotificationChannel(athanChannel);
+            }
+
+            NotificationCompat.Builder athanBuilder = new NotificationCompat.Builder(context, athanChannelId)
+                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setContentTitle("حان وقت الأذان")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setCategory(NotificationCompat.CATEGORY_ALARM)
+                    .setAutoCancel(true)
+                    .setFullScreenIntent(athanFullScreenPendingIntent, true)
+                    .setContentIntent(athanFullScreenPendingIntent);
+
+            athanNm.notify(dataType.hashCode(), athanBuilder.build());
 
         } else {
 
