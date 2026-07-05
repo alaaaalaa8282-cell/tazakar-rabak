@@ -212,7 +212,7 @@ button_radio.setOnClickListener(v -> {
                 } else {
                     nextRamadan.set(android.icu.util.Calendar.YEAR, hijriYear);
                 }
-                long diffMs = nextRamadan.getTimeInMillis() - System.currentTimeMillis();
+                long diffMs = nextRamadan.getTimeInMillis() - islamicCalendar.getTimeInMillis();
                 long daysToRamadan = diffMs / (1000 * 60 * 60 * 24);
                 textRamadanInfo.setText("🌙 " + hijriMonths[hijriMonth]);
                 textCountdownLabel.setText("باقي على رمضان");
