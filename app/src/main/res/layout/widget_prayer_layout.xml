@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="8dp"
+    android:padding="18dp"
     android:background="@drawable/widget_background">
 
     <TextView
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:text="05:27"
         android:textColor="#FFFFFF"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:textStyle="bold"
         android:gravity="center" />
 
@@ -24,16 +24,9 @@
         android:layout_height="wrap_content"
         android:text="4 يوليو"
         android:textColor="#D4AF37"
-        android:textSize="8sp"
+        android:textSize="7sp"
         android:gravity="center"
         android:layout_marginTop="1dp" />
-
-    <View
-        android:layout_width="34dp"
-        android:layout_height="1dp"
-        android:background="#55D4AF37"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp" />
 
     <TextView
         android:id="@+id/widget_next_prayer_time"
@@ -41,9 +34,10 @@
         android:layout_height="wrap_content"
         android:text="العصر 06:29"
         android:textColor="#D4AF37"
-        android:textSize="9sp"
+        android:textSize="8sp"
         android:textStyle="bold"
-        android:gravity="center" />
+        android:gravity="center"
+        android:layout_marginTop="3dp" />
 
     <TextView
         android:id="@+id/widget_countdown"
@@ -51,23 +45,22 @@
         android:layout_height="wrap_content"
         android:text="متبقي 00:00"
         android:textColor="#C8B88A"
-        android:textSize="7sp"
-        android:gravity="center"
-        android:layout_marginTop="1dp" />
+        android:textSize="6sp"
+        android:gravity="center" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_marginTop="4dp">
+        android:layout_marginTop="2dp">
 
         <TextView
             android:id="@+id/widget_weather_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="?"
-            android:textSize="9sp"
+            android:textSize="7sp"
             android:layout_marginEnd="2dp" />
 
         <TextView
@@ -76,7 +69,7 @@
             android:layout_height="wrap_content"
             android:text="--"
             android:textColor="#C8B88A"
-            android:textSize="7sp" />
+            android:textSize="6sp" />
 
     </LinearLayout>
 
