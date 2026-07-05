@@ -189,6 +189,9 @@ private void showPreAthanNotification(Context context, String prayerKey) {
     }
 
     Intent launchIntent = new Intent(context, MainActivity.class);
+    Intent wakeIntent = new Intent(context, WakeUpActivity.class);
+    wakeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    context.startActivity(wakeIntent);
     launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
     PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
             launchIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -255,6 +258,9 @@ private void showPreAthanNotification(Context context, String prayerKey) {
         
 
     Intent launchIntent = new Intent(context, MainActivity.class);
+        Intent wakeIntent = new Intent(context, WakeUpActivity.class);
+    wakeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    context.startActivity(wakeIntent);
     launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
     PendingIntent pi = PendingIntent.getActivity(context, 0,
         launchIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
