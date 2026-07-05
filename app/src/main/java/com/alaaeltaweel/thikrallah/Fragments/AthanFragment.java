@@ -448,7 +448,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
                         .build()
                         .withCalendarVariant(HijriCalendar.VARIANT_UMALQURA);
 
-       int hijriOffset = mPrefs.getInt("hijri_offset", 0);
+       int hijriOffset = Integer.parseInt(mPrefs.getString("hijri_offset", "0"));
 HijriCalendar today =
         SystemClock.inLocalView().today().transform(
                 HijriCalendar.class,
