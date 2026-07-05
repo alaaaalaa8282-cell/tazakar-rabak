@@ -409,6 +409,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
         super.onResume();
         PreferenceManager.getDefaultSharedPreferences(this.getContext()).registerOnSharedPreferenceChangeListener(prefListener);
         this.updateprayerTimes();
+        HijriDate.setText(getHijriDate());
     }
 
     @Override
