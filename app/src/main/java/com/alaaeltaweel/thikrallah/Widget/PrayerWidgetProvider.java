@@ -82,8 +82,10 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
         views.setTextViewText(R.id.widget_date,
             now.get(Calendar.DAY_OF_MONTH) + " " + MONTHS_AR[now.get(Calendar.MONTH)]);
         views.setTextViewText(R.id.widget_clock,
-            String.format("%02d:%02d", now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE)));
-
+            String.format("%02d:%02d %s",
+                (now.get(Calendar.HOUR) == 0 ? 12 : now.get(Calendar.HOUR)),
+                now.get(Calendar.MINUTE),
+                (now.get(Calendar.AM_PM) == Calendar.AM ? "ص" : "م")));
         // نبعت الشكل الأساسي فوراً عشان الويدجت يظهر بسرعة من غير Timeout
         appWidgetManager.updateAppWidget(widgetId, views);
 
