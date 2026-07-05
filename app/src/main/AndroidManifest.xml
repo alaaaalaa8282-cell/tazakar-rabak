@@ -383,6 +383,11 @@
         android:name="android.appwidget.provider"
         android:resource="@xml/prayer_widget_info" />
 </receiver>
+        <activity
+    android:name=".WakeUpActivity"
+    android:showOnLockScreen="true"
+    android:turnScreenOn="true"
+    android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     </application>
 
     <queries>
