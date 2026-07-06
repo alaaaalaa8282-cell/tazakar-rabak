@@ -19,6 +19,7 @@ public class WakeUpActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
             );
         }
+        moveTaskToBack(true);
         finish();
     }
   }
