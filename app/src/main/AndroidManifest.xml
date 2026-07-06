@@ -164,7 +164,7 @@
 
         <receiver
             android:name="com.alaaeltaweel.thikrallah.Notification.ThikrAlarmReceiver"
-            android:exported="false" />
+            android:exported="true" />
         <receiver
             android:name="com.alaaeltaweel.thikrallah.Notification.QuranThikrDownloadNeeds"
             android:exported="false" />
