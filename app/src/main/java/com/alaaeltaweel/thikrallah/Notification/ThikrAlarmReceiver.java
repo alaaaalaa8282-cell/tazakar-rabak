@@ -140,8 +140,8 @@ if ("iqama".equals(dataType)) {
         } else {
 
             // ✅ إشعار بشاشة كاملة يصحي الموبايل حتى للأذكار العادية
-            Intent wakeIntent = new Intent(context, MainActivity.class);
-            wakeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            Intent wakeIntent = new Intent(context, WakeUpActivity.class);
+            wakeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             PendingIntent wakePendingIntent = PendingIntent.getActivity(
                     context, dataType.hashCode() + 5555, wakeIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -241,12 +241,14 @@ private void showPreAthanNotification(Context context, String prayerKey) {
     }
 
     Intent launchIntent = new Intent(context, MainActivity.class);
-    Intent wakeIntent = new Intent(context, WakeUpActivity.class);
-    wakeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    context.startActivity(wakeIntent);
     launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
     PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
             launchIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+    Intent wakeIntent = new Intent(context, WakeUpActivity.class);
+    wakeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    PendingIntent wakePendingIntent = PendingIntent.getActivity(context, prayerKey.hashCode() + 7777,
+            wakeIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
     NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_launcher)
@@ -257,7 +259,7 @@ private void showPreAthanNotification(Context context, String prayerKey) {
             .setVibrate(new long[]{0, 500, 200, 500})
             .setSound(soundUri)
             .setContentIntent(pendingIntent)
-                .setFullScreenIntent(pendingIntent, true);
+            .setFullScreenIntent(wakePendingIntent, true);
     PreferenceManager.getDefaultSharedPreferences(context).edit()
                 .putLong("last_pre_athan_play_time", System.currentTimeMillis()).apply();
         notificationManager.notify(prayerKey.hashCode(), builder.build());
@@ -310,12 +312,14 @@ private void showPreAthanNotification(Context context, String prayerKey) {
         
 
     Intent launchIntent = new Intent(context, MainActivity.class);
-        Intent wakeIntent = new Intent(context, WakeUpActivity.class);
-    wakeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    context.startActivity(wakeIntent);
     launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
     PendingIntent pi = PendingIntent.getActivity(context, 0,
         launchIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+    Intent wakeIntent = new Intent(context, WakeUpActivity.class);
+    wakeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    PendingIntent wakePi = PendingIntent.getActivity(context, prayerKey.hashCode() + 8888,
+        wakeIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
     NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
         .setSmallIcon(R.drawable.ic_launcher)
@@ -323,7 +327,7 @@ private void showPreAthanNotification(Context context, String prayerKey) {
         .setContentText("حان وقت إقامة الصلاة")
         .setPriority(NotificationCompat.PRIORITY_HIGH)
         .setAutoCancel(true)
-        .setFullScreenIntent(pi, true) 
+        .setFullScreenIntent(wakePi, true) 
         .setSound(soundUri)
         .setContentIntent(pi);
 
