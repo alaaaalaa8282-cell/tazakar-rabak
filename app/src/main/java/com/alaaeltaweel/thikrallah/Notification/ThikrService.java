@@ -258,7 +258,7 @@ sharedPrefs.edit().putInt("thikr_current_index", currentIndex + 1).apply();
 				.setAutoCancel(true);
                 mBuilder=setVisibilityPublic(mBuilder);
                 Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                mBuilder.setSound(soundUri,AudioManager.STREAM_NOTIFICATION);
+                mBuilder.setSound(soundUri, AudioManager.STREAM_ALARM);
 
 				Intent launchAppIntent = new Intent(this, MainActivity.class);
                 launchAppIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -310,8 +310,7 @@ sharedPrefs.edit().putInt("thikr_current_index", currentIndex + 1).apply();
 				.setAutoCancel(true);
                 mBuilder=setVisibilityPublic(mBuilder);
                 Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                mBuilder.setSound(soundUri,AudioManager.STREAM_NOTIFICATION);
-
+                mBuilder.setSound(soundUri, AudioManager.STREAM_ALARM);
 				Intent launchAppIntent = new Intent(this, MainActivity.class);
                 launchAppIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 launchAppIntent.putExtra("FromNotification",true);
@@ -364,7 +363,7 @@ sharedPrefs.edit().putInt("thikr_current_index", currentIndex + 1).apply();
 
                 mBuilder=setVisibilityPublic(mBuilder);
                 Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                mBuilder.setSound(soundUri,AudioManager.STREAM_NOTIFICATION);
+                mBuilder.setSound(soundUri, AudioManager.STREAM_ALARM);
                 Intent launchAppIntent = new Intent(this, MainActivity.class);
                 launchAppIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 launchAppIntent.putExtra("page", 562);
