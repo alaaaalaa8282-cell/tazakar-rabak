@@ -167,8 +167,34 @@ if ("iqama".equals(dataType)) {
 
             // ✅ التصحية بتحصل هنا بس - في نفس لحظة التشغيل الفعلي، صامتة، وبدون فتح التطبيق
             Intent wakeIntent = new Intent(context, WakeUpActivity.class);
-             wakeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-             context.startActivity(wakeIntent);
+              wakeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            PendingIntent wakePendingIntent = PendingIntent.getActivity(
+                    context, dataType.hashCode() + 5555, wakeIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+            String thikrWakeChannelId = "thikr_wake_channel";
+            final NotificationManager thikrWakeNm =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel thikrWakeChannel = new NotificationChannel(
+                        thikrWakeChannelId, "تصحية شاشة صامتة", NotificationManager.IMPORTANCE_HIGH);
+                thikrWakeChannel.setSound(null, null);
+                thikrWakeChannel.setShowBadge(false);
+                thikrWakeNm.createNotificationChannel(thikrWakeChannel);
+            }
+            final int thikrWakeNotifId = dataType.hashCode() + 5555;
+            NotificationCompat.Builder thikrWakeBuilder = new NotificationCompat.Builder(context, thikrWakeChannelId)
+                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setContentTitle("")
+                    .setContentText("")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setCategory(NotificationCompat.CATEGORY_ALARM)
+                    .setAutoCancel(true)
+                    .setFullScreenIntent(wakePendingIntent, true);
+            thikrWakeNm.notify(thikrWakeNotifId, thikrWakeBuilder.build());
+
+            new android.os.Handler(android.os.Looper.getMainLooper())
+                    .postDelayed(() -> thikrWakeNm.cancel(thikrWakeNotifId), 500);
             // باقي التنبيهات تشتغل عادي
             data.putBoolean("isUserAction", false);
             Intent intent2 = new Intent(context, ThikrService.class).putExtras(data);
