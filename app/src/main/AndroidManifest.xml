@@ -386,7 +386,7 @@
         <activity
     android:name=".WakeUpActivity"
     android:exported="true"
-    android:showOnLockScreen="true"
+    android:showWhenLocked="true"
     android:turnScreenOn="true"
     android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     </application>
