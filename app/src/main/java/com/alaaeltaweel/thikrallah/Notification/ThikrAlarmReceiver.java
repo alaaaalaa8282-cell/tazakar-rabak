@@ -262,7 +262,7 @@ private void showPreAthanNotification(Context context, String prayerKey) {
             .setAutoCancel(true)
             .setVibrate(new long[]{0, 500, 200, 500})
             .setSound(soundUri)
-            
+            .setContentIntent(pendingIntent) 
             .setFullScreenIntent(wakePendingIntent, true);
     PreferenceManager.getDefaultSharedPreferences(context).edit()
                 .putLong("last_pre_athan_play_time", System.currentTimeMillis()).apply();
@@ -333,7 +333,7 @@ private void showPreAthanNotification(Context context, String prayerKey) {
         .setAutoCancel(true)
         .setFullScreenIntent(wakePi, true) 
         .setSound(soundUri)
-        
+        .setContentIntent(pi); 
 
         PreferenceManager.getDefaultSharedPreferences(context).edit()
                 .putLong("last_iqama_play_time", System.currentTimeMillis()).apply();
