@@ -66,7 +66,10 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
             if (ids.length > 0) {
                 scheduleNextUpdate(context);
             }
-    }
+          }
+    }   
+    
+
 
     private void updateWidget(Context context, AppWidgetManager appWidgetManager, int widgetId) {
         // خطوات سريعة فقط على الـ Main Thread
