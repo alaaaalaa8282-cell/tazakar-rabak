@@ -59,12 +59,13 @@ public class PrayerWidgetProvider extends AppWidgetProvider {
         if (ACTION_UPDATE_WIDGET.equals(intent.getAction())) {
             AppWidgetManager manager = AppWidgetManager.getInstance(context);
             ComponentName component = new ComponentName(context, PrayerWidgetProvider.class);
-            int[] ids = manager.getAppWidgetIds(component);
+       int[] ids = manager.getAppWidgetIds(component);
             for (int id : ids) {
                 updateWidget(context, manager, id);
             }
-            scheduleNextUpdate(context);
-        }
+            if (ids.length > 0) {
+                scheduleNextUpdate(context);
+            }
     }
 
     private void updateWidget(Context context, AppWidgetManager appWidgetManager, int widgetId) {
