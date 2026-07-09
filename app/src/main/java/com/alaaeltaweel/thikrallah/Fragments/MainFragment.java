@@ -114,7 +114,8 @@ public class MainFragment extends Fragment {
     if (System.currentTimeMillis() - lastFetch > 60 * 60 * 1000) {
         fetchWeather();
     }
-
+    }
+            
     
         // ✅ ابدأ عرض التاريخ والرمضان
         updateDateAndRamadan();
