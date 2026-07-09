@@ -159,10 +159,10 @@ public class MainFragment extends Fragment {
        startActivityForResult(intent, 0);
        });
     button_radio.setOnClickListener(v -> {
-    Intent intent = new Intent();
-    intent.setClass(v.getContext(), RadioActivity.class);
-    startActivityForResult(intent, 0);
-     });
+            Intent intent = new Intent();
+            intent.setClass(v.getContext(), RadioActivity.class);
+            startActivityForResult(intent, 0);
+        });
         Log.d(TAG, "requestBatteryExclusion");
         requestBatteryExclusion(mContext);
         return view;
