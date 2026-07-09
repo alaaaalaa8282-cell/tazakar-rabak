@@ -104,13 +104,17 @@ public class MainFragment extends Fragment {
         textWeather     = view.findViewById(R.id.text_weather);
         textWeatherIcon = view.findViewById(R.id.text_weather_icon);
         if (mPrefs != null) {
-            String cachedWeather = mPrefs.getString("cached_weather_text", "");
-            String cachedIcon = mPrefs.getString("cached_weather_icon", "🌤️");
-            if (!cachedWeather.isEmpty()) {
-                textWeather.setText(cachedWeather);
-                textWeatherIcon.setText(cachedIcon);
-            }
-            fetchWeather();
+    String cachedWeather = mPrefs.getString("cached_weather_text", "");
+    String cachedIcon = mPrefs.getString("cached_weather_icon", "🌤️");
+    if (!cachedWeather.isEmpty()) {
+        textWeather.setText(cachedWeather);
+        textWeatherIcon.setText(cachedIcon);
+    }
+    long lastFetch = mPrefs.getLong("last_weather_fetch", 0);
+    if (System.currentTimeMillis() - lastFetch > 60 * 60 * 1000) {
+        fetchWeather();
+    }
+
         }
         // ✅ ابدأ عرض التاريخ والرمضان
         updateDateAndRamadan();
@@ -349,6 +353,7 @@ private void fetchWeather() {
                        .putString("cached_weather_text", Math.round(temp) + "°C  " + desc)
                        .putString("cached_weather_icon", icon)
                        .apply();
+                        .putLong("last_weather_fetch", System.currentTimeMillis()) 
                     });
                 }
             } catch (Exception e) {
