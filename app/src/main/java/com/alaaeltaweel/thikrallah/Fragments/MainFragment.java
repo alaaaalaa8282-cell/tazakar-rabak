@@ -158,16 +158,16 @@ public class MainFragment extends Fragment {
        intent.setClass(v.getContext(), PrayerTrackerActivity.class);
        startActivityForResult(intent, 0);
        });
-button_radio.setOnClickListener(v -> {
+    button_radio.setOnClickListener(v -> {
     Intent intent = new Intent();
     intent.setClass(v.getContext(), RadioActivity.class);
     startActivityForResult(intent, 0);
-});
+     });
         Log.d(TAG, "requestBatteryExclusion");
         requestBatteryExclusion(mContext);
         return view;
     }
-} 
+ 
 
 
     // ===================== التاريخ والرمضان =====================
