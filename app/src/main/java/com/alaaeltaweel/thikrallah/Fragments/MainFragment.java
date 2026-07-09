@@ -351,9 +351,9 @@ private void fetchWeather() {
                         textWeatherIcon.setText(icon);
                         PreferenceManager.getDefaultSharedPreferences(mContext).edit()
                        .putString("cached_weather_text", Math.round(temp) + "°C  " + desc)
-                       .putString("cached_weather_icon", icon)
-                       .apply();
-                        .putLong("last_weather_fetch", System.currentTimeMillis()) 
+                .putString("cached_weather_icon", icon)
+                .putLong("last_weather_fetch", System.currentTimeMillis())
+                .apply(); 
                     });
                 }
             } catch (Exception e) {
