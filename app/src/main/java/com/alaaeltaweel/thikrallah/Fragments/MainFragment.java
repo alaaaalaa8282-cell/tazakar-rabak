@@ -47,7 +47,7 @@ public class MainFragment extends Fragment {
     private TextView textCountdown;
     private TextView textCountdownLabel;
     private LinearLayout layoutSuhoorIftar;
-   private TextView textWeather;
+    private TextView textWeather;
     private TextView textWeatherIcon;
     
     // ✅ Handler للعداد التنازلي
