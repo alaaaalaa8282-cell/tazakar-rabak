@@ -115,7 +115,7 @@ public class MainFragment extends Fragment {
         fetchWeather();
     }
 
-        }
+    
         // ✅ ابدأ عرض التاريخ والرمضان
         updateDateAndRamadan();
         startCountdown();
