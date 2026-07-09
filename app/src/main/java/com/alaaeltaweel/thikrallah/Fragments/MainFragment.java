@@ -167,6 +167,8 @@ button_radio.setOnClickListener(v -> {
         requestBatteryExclusion(mContext);
         return view;
     }
+} 
+
 
     // ===================== التاريخ والرمضان =====================
     private void updateDateAndRamadan() {
