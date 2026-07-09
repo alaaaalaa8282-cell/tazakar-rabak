@@ -37,6 +37,7 @@ import com.alaaeltaweel.thikrallah.WakeUpActivity;
 
 import com.alaaeltaweel.thikrallah.R;
 
+import android.media.AudioManager;
 
 public class ThikrAlarmReceiver extends BroadcastReceiver {
     String TAG = "ThikrAlarmReceiver";
