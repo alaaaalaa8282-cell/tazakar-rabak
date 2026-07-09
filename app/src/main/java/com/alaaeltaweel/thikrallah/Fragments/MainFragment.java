@@ -103,7 +103,8 @@ public class MainFragment extends Fragment {
         layoutSuhoorIftar  = view.findViewById(R.id.layout_suhoor_iftar);
         textWeather     = view.findViewById(R.id.text_weather);
         textWeatherIcon = view.findViewById(R.id.text_weather_icon);
-        if (mPrefs != null) {
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+      if (mPrefs != null) {
     String cachedWeather = mPrefs.getString("cached_weather_text", "");
     String cachedIcon = mPrefs.getString("cached_weather_icon", "🌤️");
     if (!cachedWeather.isEmpty()) {
@@ -123,7 +124,7 @@ public class MainFragment extends Fragment {
 
         button_athan.setOnClickListener(v -> mCallback.launchFragment(new AthanFragment(), new Bundle(), "AthanFragment"));
         button_qibla.setOnClickListener(v -> mCallback.launchFragment(new QiblaFragment(), new Bundle(), "QiblaFragment"));
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+        
         button_quran.setOnClickListener(v -> {
             Intent intent = new Intent();
             intent.setClass(v.getContext(), QuranDataActivity.class);
