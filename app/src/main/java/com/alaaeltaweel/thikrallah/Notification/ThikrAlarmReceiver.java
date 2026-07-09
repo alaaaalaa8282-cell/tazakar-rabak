@@ -70,7 +70,7 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
 
         }
     // ✅ الإقامة
-if ("iqama".equals(dataType)) {
+ if ("iqama".equals(dataType)) {
     String prayerName = data.getString("prayer_name", "fajr");
     int iqamaSound = data.getInt("iqama_sound", 1);
     showIqamaNotification(context, prayerName, iqamaSound);
