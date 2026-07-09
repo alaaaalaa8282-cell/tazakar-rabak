@@ -930,8 +930,7 @@ public class ThikrMediaPlayerService extends Service implements OnCompletionList
 
         if (this.getThikrType().equalsIgnoreCase(MainActivity.DATA_TYPE_GENERAL_THIKR)) {
 
-            return AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK;
-
+            return AudioManager.AUDIOFOCUS_GAIN_TRANSIENT;
         }
 
         return AudioManager.AUDIOFOCUS_GAIN;
