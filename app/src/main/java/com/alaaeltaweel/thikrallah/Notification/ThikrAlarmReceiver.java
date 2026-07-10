@@ -133,6 +133,7 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setCategory(NotificationCompat.CATEGORY_ALARM)
                     .setAutoCancel(true)
+                   .setTimeoutAfter(5 * 60 * 1000L) 
                     .setFullScreenIntent(athanFullScreenPendingIntent, true)
                     .setContentIntent(athanFullScreenPendingIntent);
 
@@ -239,6 +240,7 @@ if (audioManager != null) {
             .setContentText("تبقى " + PreferenceManager.getDefaultSharedPreferences(context).getString("preAthanMinutes_" + prayerKey, "15") + " دقيقة على صلاة " + prayerNameAr) 
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
+           .setTimeoutAfter(3 * 60 * 1000L) 
             .setVibrate(new long[]{0, 500, 200, 500})
             .setSound(soundUri)
             .setContentIntent(pendingIntent) 
@@ -317,6 +319,7 @@ if (audioManager != null) {
         .setContentText("حان وقت إقامة الصلاة")
         .setPriority(NotificationCompat.PRIORITY_HIGH)
         .setAutoCancel(true)
+        .setTimeoutAfter(3 * 60 * 1000L) 
         .setFullScreenIntent(wakePi, true) 
         .setSound(soundUri)
         .setContentIntent(pi); 
