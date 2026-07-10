@@ -480,7 +480,8 @@ calendarPre.add(Calendar.MINUTE, -preAthanMinutes);
         // ✅ الوضع الصامت أثناء الصلاة
         boolean isSilentModeEnabled = sharedPrefs.getBoolean("isSilentModeDuringPrayer", true);
         
-        }
+        int silentDurationMinutes = Integer.parseInt(sharedPrefs.getString("silentModeDurationMinutes", "15"));
+        int silentDelayMinutes = 0; try { silentDelayMinutes = Integer.parseInt(sharedPrefs.getString("silentModeDelayMinutes", "0")); } catch (NumberFormatException e) {}
 
         Intent silentOnIntent = new Intent(context, SilentModeReceiver.class);
         silentOnIntent.setAction(SilentModeReceiver.ACTION_SILENT_ON);
@@ -505,7 +506,7 @@ Calendar calendarSilentOn = Calendar.getInstance();
 calendarSilentOn.set(Calendar.HOUR_OF_DAY, Integer.parseInt(prayerTimes[prayerPosition].split(":", 3)[0]));
 calendarSilentOn.set(Calendar.MINUTE, Integer.parseInt(prayerTimes[prayerPosition].split(":", 3)[1]));
 calendarSilentOn.set(Calendar.SECOND, 0);
-calendarSilentOn.add(Calendar.MINUTE, iqamaMinutesForSilent);
+calendarSilentOn.add(Calendar.MINUTE, silentDelayMinutes);
 if (!calendarSilentOn.after(now)) {
     calendarSilentOn.add(Calendar.DAY_OF_YEAR, 1);
 }
