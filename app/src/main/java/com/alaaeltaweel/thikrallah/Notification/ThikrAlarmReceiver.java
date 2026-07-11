@@ -132,7 +132,7 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                     .setContentTitle("حان وقت الأذان")
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setCategory(NotificationCompat.CATEGORY_ALARM)
-                    .setAutoCancel(true)
+                    .setAutoCancel(false)
                     .setFullScreenIntent(athanFullScreenPendingIntent, true)
                     .setContentIntent(athanFullScreenPendingIntent);
 
