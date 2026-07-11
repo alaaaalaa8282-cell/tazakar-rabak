@@ -225,11 +225,9 @@ if (audioManager != null) {
     
     }
 
-    Intent launchIntent = new Intent(context, MainActivity.class);
-    launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-    PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
-            launchIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
+    Intent stopIntent = new Intent("com.alaaeltaweel.thikrallah.STOP_SOUND");
+PendingIntent pendingIntent = PendingIntent.getBroadcast(context, prayerKey.hashCode() + 1111,
+        stopIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     Intent wakeIntent = new Intent(context, WakeUpActivity.class);
     wakeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     PendingIntent wakePendingIntent = PendingIntent.getActivity(context, prayerKey.hashCode() + 7777,
@@ -305,10 +303,9 @@ if (audioManager != null) {
     }
         
 
-    Intent launchIntent = new Intent(context, MainActivity.class);
-    launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-    PendingIntent pi = PendingIntent.getActivity(context, 0,
-        launchIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+    Intent stopIntent = new Intent("com.alaaeltaweel.thikrallah.STOP_SOUND");
+PendingIntent pi = PendingIntent.getBroadcast(context, prayerKey.hashCode() + 2222,
+        stopIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
     Intent wakeIntent = new Intent(context, WakeUpActivity.class);
     wakeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
