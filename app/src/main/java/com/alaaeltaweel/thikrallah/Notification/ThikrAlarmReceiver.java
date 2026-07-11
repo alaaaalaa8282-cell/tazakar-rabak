@@ -133,7 +133,6 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setCategory(NotificationCompat.CATEGORY_ALARM)
                     .setAutoCancel(true)
-                   .setTimeoutAfter(5 * 60 * 1000L) 
                     .setFullScreenIntent(athanFullScreenPendingIntent, true)
                     .setContentIntent(athanFullScreenPendingIntent);
 
