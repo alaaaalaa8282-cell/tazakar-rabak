@@ -220,8 +220,9 @@ if (audioManager != null) {
                 .setUsage(android.media.AudioAttributes.USAGE_ALARM)
                 .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build());
+        channel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         notificationManager.createNotificationChannel(channel);
-    channel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+    
     }
 
     Intent launchIntent = new Intent(context, MainActivity.class);
@@ -298,8 +299,9 @@ if (audioManager != null) {
                 .setUsage(android.media.AudioAttributes.USAGE_ALARM)
                 .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build());
+       channel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         nm.createNotificationChannel(channel);
-    channel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+    
     }
         
 
