@@ -520,7 +520,7 @@ if (!calendarSilentOn.after(now)) {
 }
 setSilentAlarm(calendarSilentOn, pendingSilentOn);
 
-Calendar calendarSilentOff = (Calendar) calendarSilentOn.clone();
+Calendar calendarSilentOff = Calendar.getInstance();
 calendarSilentOff.add(Calendar.MINUTE, silentDurationMinutes);
 setSilentAlarm(calendarSilentOff, pendingSilentOff);
 
