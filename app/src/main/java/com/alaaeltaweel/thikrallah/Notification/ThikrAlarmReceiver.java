@@ -113,10 +113,7 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                     Intent.FLAG_ACTIVITY_CLEAR_TOP |
                     Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-            PendingIntent athanFullScreenPendingIntent = PendingIntent.getActivity(
-                    context, dataType.hashCode(), athanIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
+            
             context.startActivity(athanIntent);
 } else {
 
