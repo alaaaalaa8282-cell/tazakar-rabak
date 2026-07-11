@@ -300,6 +300,14 @@ Calendar calendar1 = Calendar.getInstance();
             }
         }
     }
+    private void setSilentAlarm(Calendar time, PendingIntent pendingIntent) {
+    long timeInMs = getFutureTimeIfTimeInPast(time.getTimeInMillis());
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMs, pendingIntent);
+    } else {
+        alarmMgr.setExact(AlarmManager.RTC_WAKEUP, timeInMs, pendingIntent);
+    }
+    }
 @SuppressLint("NewApi")
 private void setAlarmClockHighPriority(long timeInMilliseconds, PendingIntent operationIntent) {
     Intent showIntent = new Intent(context, MainActivity.class);
@@ -510,11 +518,11 @@ calendarSilentOn.add(Calendar.MINUTE, iqamaMinutesForSilent);
 if (!calendarSilentOn.after(now)) {
     calendarSilentOn.add(Calendar.DAY_OF_YEAR, 1);
 }
-setAlarm(calendarSilentOn, pendingSilentOn);
+setSilentAlarm(calendarSilentOn, pendingSilentOn);
 
 Calendar calendarSilentOff = (Calendar) calendarSilentOn.clone();
 calendarSilentOff.add(Calendar.MINUTE, silentDurationMinutes);
-setAlarm(calendarSilentOff, pendingSilentOff);
+setSilentAlarm(calendarSilentOff, pendingSilentOff);
 
             Log.d(TAG, "Silent window for " + prayerName + ": " + calendarSilentOn.getTime() + " -> " + calendarSilentOff.getTime());
         }
