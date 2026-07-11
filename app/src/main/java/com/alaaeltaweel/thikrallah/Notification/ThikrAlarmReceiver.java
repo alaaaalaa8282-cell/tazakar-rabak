@@ -117,26 +117,7 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                     context, dataType.hashCode(), athanIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-            String athanChannelId = "athan_fullscreen_channel";
-            NotificationManager athanNm =
-                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationChannel athanChannel = new NotificationChannel(
-                        athanChannelId, "شاشة الأذان", NotificationManager.IMPORTANCE_HIGH);
-                athanChannel.setSound(null, null);
-                athanNm.createNotificationChannel(athanChannel);
-            }
-
-            NotificationCompat.Builder athanBuilder = new NotificationCompat.Builder(context, athanChannelId)
-                    .setSmallIcon(R.drawable.ic_launcher)
-                    .setContentTitle("حان وقت الأذان")
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setCategory(NotificationCompat.CATEGORY_ALARM)
-                    .setAutoCancel(false)
-                    .setFullScreenIntent(athanFullScreenPendingIntent, true)
-                    .setContentIntent(athanFullScreenPendingIntent);
-
-            athanNm.notify(dataType.hashCode(), athanBuilder.build());
+            context.startActivity(athanIntent);
 } else {
 
             // ✅ الأذكار العادية — لا تشتغل أثناء المكالمات (فحص المكالمة الأول)
