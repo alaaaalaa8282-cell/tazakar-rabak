@@ -301,7 +301,7 @@ Calendar calendar1 = Calendar.getInstance();
         }
     }
     private void setSilentAlarm(Calendar time, PendingIntent pendingIntent) {
-    long timeInMs = getFutureTimeIfTimeInPast(time.getTimeInMillis());
+    long timeInMs = time.getTimeInMillis();
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMs, pendingIntent);
     } else {
