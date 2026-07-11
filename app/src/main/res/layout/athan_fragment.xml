@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F4F4">
+    android:background="#1B2234">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,12 +16,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:paddingTop="16dp"
-            android:paddingBottom="4dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="8dp"
             android:text=""
-            android:textColor="#2C5F5A"
-            android:textSize="17sp"
-            android:textStyle="bold" />
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+        <View
+            style="@style/Divider"
+            android:id="@+id/divider_1"
+            android:layout_marginBottom="10dp" />
 
         <TextView
             android:id="@+id/countdown_timer"
@@ -30,30 +34,27 @@
             android:layout_gravity="center_horizontal"
             android:paddingBottom="12dp"
             android:text=""
-            android:textColor="#2C5F5A"
-            android:textSize="14sp" />
+            android:textColor="#4dd0c4"
+            android:textSize="16sp" />
 
         <!-- فجر -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="2dp">
+            app:cardBackgroundColor="#2D3548"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <!-- رأس الكارد - اسم الصلاة والوقت والسويتش -->
+                android:orientation="vertical"
+                android:padding="14dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="14dp"
-                    android:background="#2C5F5A">
+                    android:orientation="horizontal">
                     <TextView
                         android:id="@+id/athan_name1"
                         android:layout_width="0dp"
@@ -62,8 +63,7 @@
                         android:gravity="end"
                         android:text="@string/prayer1"
                         android:textColor="#FFFFFF"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textSize="16sp" />
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/switch1"
                         android:layout_width="wrap_content"
@@ -78,21 +78,15 @@
                         android:layout_height="wrap_content"
                         android:text=""
                         android:textColor="#FFFFFF"
-                        android:textSize="15sp"
-                        android:fontFamily="monospace" />
+                        android:textSize="16sp" />
                 </LinearLayout>
-
-                <!-- تنبيه قبل الصلاة -->
                 <LinearLayout
                     android:id="@+id/pre_athan_row1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="6dp"
+                    android:paddingTop="8dp"
                     android:visibility="gone">
                     <TextView
                         android:layout_width="0dp"
@@ -100,7 +94,7 @@
                         android:layout_weight="1"
                         android:gravity="end"
                         android:text="تنبيه قبلها بـ"
-                        android:textColor="#666666"
+                        android:textColor="#AAAAAA"
                         android:textSize="13sp" />
                     <EditText
                         android:id="@+id/pre_athan_minutes1"
@@ -112,14 +106,14 @@
                         android:inputType="number"
                         android:maxLength="3"
                         android:text="15"
-                        android:textColor="#2C5F5A"
+                        android:textColor="#FFFFFF"
                         android:textSize="13sp" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:text="دقيقة"
-                        android:textColor="#666666"
+                        android:textColor="#AAAAAA"
                         android:textSize="13sp" />
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/pre_athan_check1"
@@ -127,31 +121,26 @@
                         android:layout_height="wrap_content"
                         android:checked="true" />
                 </LinearLayout>
-
-                <!-- إقامة -->
-                <LinearLayout
+                                <LinearLayout
                     android:id="@+id/iqama_row1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:paddingBottom="10dp"
+                    android:paddingTop="8dp"
                     android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingTop="6dp">
+                        android:orientation="horizontal">
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
                             android:text="إقامة بعد الأذان بـ"
-                            android:textColor="#666666"
+                            android:textColor="#AAAAAA"
                             android:textSize="13sp" />
                         <EditText
                             android:id="@+id/iqama_minutes1"
@@ -163,14 +152,14 @@
                             android:inputType="number"
                             android:maxLength="3"
                             android:text="10"
-                            android:textColor="#2C5F5A"
+                            android:textColor="#FFFFFF"
                             android:textSize="13sp" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="8dp"
                             android:text="دقيقة"
-                            android:textColor="#666666"
+                            android:textColor="#AAAAAA"
                             android:textSize="13sp" />
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/iqama_check1"
@@ -184,14 +173,14 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingTop="6dp">
+                        android:paddingTop="4dp">
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
                             android:text="صوت الإقامة"
-                            android:textColor="#666666"
+                            android:textColor="#AAAAAA"
                             android:textSize="13sp" />
                         <RadioGroup
                             android:id="@+id/iqama_sound1"
@@ -199,11 +188,12 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:orientation="horizontal">
-                            <RadioButton android:id="@+id/iqama_sound1_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" android:textColor="#2C5F5A" android:checked="true"/>
-                            <RadioButton android:id="@+id/iqama_sound1_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" android:textColor="#2C5F5A"/>
-                            <RadioButton android:id="@+id/iqama_sound1_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" android:textColor="#2C5F5A"/>
+                            <RadioButton android:id="@+id/iqama_sound1_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" android:textColor="#FFFFFF" android:checked="true"/>
+                            <RadioButton android:id="@+id/iqama_sound1_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" android:textColor="#FFFFFF"/>
+                            <RadioButton android:id="@+id/iqama_sound1_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" android:textColor="#FFFFFF"/>
                         </RadioGroup>
                     </LinearLayout>
+
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -213,9 +203,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="2dp">
+            app:cardBackgroundColor="#2D3548"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -229,17 +219,16 @@
                     android:layout_weight="1"
                     android:gravity="end"
                     android:text="@string/sunrise"
-                    android:textColor="#999999"
-                    android:textSize="15sp" />
+                    android:textColor="#AAAAAA"
+                    android:textSize="16sp" />
                 <TextView
                     android:id="@+id/sunrise_timing1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="60dp"
                     android:text=""
-                    android:textColor="#999999"
-                    android:textSize="15sp"
-                    android:fontFamily="monospace" />
+                    android:textColor="#AAAAAA"
+                    android:textSize="16sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -248,20 +237,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="2dp">
+            app:cardBackgroundColor="#2D3548"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="14dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="14dp"
-                    android:background="#2C5F5A">
+                    android:orientation="horizontal">
                     <TextView
                         android:id="@+id/athan_name2"
                         android:layout_width="0dp"
@@ -270,8 +258,7 @@
                         android:gravity="end"
                         android:text="@string/prayer2"
                         android:textColor="#FFFFFF"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textSize="16sp" />
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/switch2"
                         android:layout_width="wrap_content"
@@ -286,8 +273,7 @@
                         android:layout_height="wrap_content"
                         android:text=""
                         android:textColor="#FFFFFF"
-                        android:textSize="15sp"
-                        android:fontFamily="monospace" />
+                        android:textSize="16sp" />
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/pre_athan_row2"
@@ -295,10 +281,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="6dp"
+                    android:paddingTop="8dp"
                     android:visibility="gone">
                     <TextView
                         android:layout_width="0dp"
@@ -306,7 +289,7 @@
                         android:layout_weight="1"
                         android:gravity="end"
                         android:text="تنبيه قبلها بـ"
-                        android:textColor="#666666"
+                        android:textColor="#AAAAAA"
                         android:textSize="13sp" />
                     <EditText
                         android:id="@+id/pre_athan_minutes2"
@@ -318,14 +301,14 @@
                         android:inputType="number"
                         android:maxLength="3"
                         android:text="15"
-                        android:textColor="#2C5F5A"
+                        android:textColor="#FFFFFF"
                         android:textSize="13sp" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:text="دقيقة"
-                        android:textColor="#666666"
+                        android:textColor="#AAAAAA"
                         android:textSize="13sp" />
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/pre_athan_check2"
@@ -333,28 +316,26 @@
                         android:layout_height="wrap_content"
                         android:checked="true" />
                 </LinearLayout>
-                <LinearLayout
+                                <LinearLayout
                     android:id="@+id/iqama_row2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:paddingBottom="10dp"
+                    android:paddingTop="8dp"
                     android:visibility="gone">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingTop="6dp">
+                        android:orientation="horizontal">
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
                             android:text="إقامة بعد الأذان بـ"
-                            android:textColor="#666666"
+                            android:textColor="#AAAAAA"
                             android:textSize="13sp" />
                         <EditText
                             android:id="@+id/iqama_minutes2"
@@ -366,14 +347,14 @@
                             android:inputType="number"
                             android:maxLength="3"
                             android:text="10"
-                            android:textColor="#2C5F5A"
+                            android:textColor="#FFFFFF"
                             android:textSize="13sp" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="8dp"
                             android:text="دقيقة"
-                            android:textColor="#666666"
+                            android:textColor="#AAAAAA"
                             android:textSize="13sp" />
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/iqama_check2"
@@ -381,19 +362,20 @@
                             android:layout_height="wrap_content"
                             android:checked="false" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingTop="6dp">
+                        android:paddingTop="4dp">
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
                             android:text="صوت الإقامة"
-                            android:textColor="#666666"
+                            android:textColor="#AAAAAA"
                             android:textSize="13sp" />
                         <RadioGroup
                             android:id="@+id/iqama_sound2"
@@ -401,34 +383,34 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:orientation="horizontal">
-                            <RadioButton android:id="@+id/iqama_sound2_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" android:textColor="#2C5F5A" android:checked="true"/>
-                            <RadioButton android:id="@+id/iqama_sound2_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" android:textColor="#2C5F5A"/>
-                            <RadioButton android:id="@+id/iqama_sound2_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" android:textColor="#2C5F5A"/>
+                            <RadioButton android:id="@+id/iqama_sound2_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" android:textColor="#FFFFFF" android:checked="true"/>
+                            <RadioButton android:id="@+id/iqama_sound2_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" android:textColor="#FFFFFF"/>
+                            <RadioButton android:id="@+id/iqama_sound2_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" android:textColor="#FFFFFF"/>
                         </RadioGroup>
                     </LinearLayout>
+
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
-        <!-- عصر -->
+        
+<!-- عصر -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="2dp">
+            app:cardBackgroundColor="#2D3548"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="14dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="14dp"
-                    android:background="#2C5F5A">
+                    android:orientation="horizontal">
                     <TextView
                         android:id="@+id/athan_name3"
                         android:layout_width="0dp"
@@ -437,8 +419,7 @@
                         android:gravity="end"
                         android:text="@string/prayer3"
                         android:textColor="#FFFFFF"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textSize="16sp" />
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/switch3"
                         android:layout_width="wrap_content"
@@ -453,8 +434,7 @@
                         android:layout_height="wrap_content"
                         android:text=""
                         android:textColor="#FFFFFF"
-                        android:textSize="15sp"
-                        android:fontFamily="monospace" />
+                        android:textSize="16sp" />
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/pre_athan_row3"
@@ -462,10 +442,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="6dp"
+                    android:paddingTop="8dp"
                     android:visibility="gone">
                     <TextView
                         android:layout_width="0dp"
@@ -473,7 +450,7 @@
                         android:layout_weight="1"
                         android:gravity="end"
                         android:text="تنبيه قبلها بـ"
-                        android:textColor="#666666"
+                        android:textColor="#AAAAAA"
                         android:textSize="13sp" />
                     <EditText
                         android:id="@+id/pre_athan_minutes3"
@@ -485,14 +462,14 @@
                         android:inputType="number"
                         android:maxLength="3"
                         android:text="15"
-                        android:textColor="#2C5F5A"
+                        android:textColor="#FFFFFF"
                         android:textSize="13sp" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:text="دقيقة"
-                        android:textColor="#666666"
+                        android:textColor="#AAAAAA"
                         android:textSize="13sp" />
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/pre_athan_check3"
@@ -500,28 +477,26 @@
                         android:layout_height="wrap_content"
                         android:checked="true" />
                 </LinearLayout>
-                <LinearLayout
+                                <LinearLayout
                     android:id="@+id/iqama_row3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:paddingBottom="10dp"
+                    android:paddingTop="8dp"
                     android:visibility="gone">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingTop="6dp">
+                        android:orientation="horizontal">
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
                             android:text="إقامة بعد الأذان بـ"
-                            android:textColor="#666666"
+                            android:textColor="#AAAAAA"
                             android:textSize="13sp" />
                         <EditText
                             android:id="@+id/iqama_minutes3"
@@ -533,14 +508,14 @@
                             android:inputType="number"
                             android:maxLength="3"
                             android:text="10"
-                            android:textColor="#2C5F5A"
+                            android:textColor="#FFFFFF"
                             android:textSize="13sp" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="8dp"
                             android:text="دقيقة"
-                            android:textColor="#666666"
+                            android:textColor="#AAAAAA"
                             android:textSize="13sp" />
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/iqama_check3"
@@ -548,19 +523,20 @@
                             android:layout_height="wrap_content"
                             android:checked="false" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingTop="6dp">
+                        android:paddingTop="4dp">
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
                             android:text="صوت الإقامة"
-                            android:textColor="#666666"
+                            android:textColor="#AAAAAA"
                             android:textSize="13sp" />
                         <RadioGroup
                             android:id="@+id/iqama_sound3"
@@ -568,11 +544,12 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:orientation="horizontal">
-                            <RadioButton android:id="@+id/iqama_sound3_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" android:textColor="#2C5F5A" android:checked="true"/>
-                            <RadioButton android:id="@+id/iqama_sound3_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" android:textColor="#2C5F5A"/>
-                            <RadioButton android:id="@+id/iqama_sound3_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" android:textColor="#2C5F5A"/>
+                            <RadioButton android:id="@+id/iqama_sound3_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" android:textColor="#FFFFFF" android:checked="true"/>
+                            <RadioButton android:id="@+id/iqama_sound3_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" android:textColor="#FFFFFF"/>
+                            <RadioButton android:id="@+id/iqama_sound3_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" android:textColor="#FFFFFF"/>
                         </RadioGroup>
                     </LinearLayout>
+
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -582,20 +559,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="2dp">
+            app:cardBackgroundColor="#2D3548"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="14dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="14dp"
-                    android:background="#2C5F5A">
+                    android:orientation="horizontal">
                     <TextView
                         android:id="@+id/athan_name4"
                         android:layout_width="0dp"
@@ -604,8 +580,7 @@
                         android:gravity="end"
                         android:text="@string/prayer4"
                         android:textColor="#FFFFFF"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textSize="16sp" />
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/switch4"
                         android:layout_width="wrap_content"
@@ -620,8 +595,7 @@
                         android:layout_height="wrap_content"
                         android:text=""
                         android:textColor="#FFFFFF"
-                        android:textSize="15sp"
-                        android:fontFamily="monospace" />
+                        android:textSize="16sp" />
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/pre_athan_row4"
@@ -629,10 +603,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="6dp"
+                    android:paddingTop="8dp"
                     android:visibility="gone">
                     <TextView
                         android:layout_width="0dp"
@@ -640,7 +611,7 @@
                         android:layout_weight="1"
                         android:gravity="end"
                         android:text="تنبيه قبلها بـ"
-                        android:textColor="#666666"
+                        android:textColor="#AAAAAA"
                         android:textSize="13sp" />
                     <EditText
                         android:id="@+id/pre_athan_minutes4"
@@ -652,14 +623,14 @@
                         android:inputType="number"
                         android:maxLength="3"
                         android:text="15"
-                        android:textColor="#2C5F5A"
+                        android:textColor="#FFFFFF"
                         android:textSize="13sp" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:text="دقيقة"
-                        android:textColor="#666666"
+                        android:textColor="#AAAAAA"
                         android:textSize="13sp" />
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/pre_athan_check4"
@@ -667,28 +638,26 @@
                         android:layout_height="wrap_content"
                         android:checked="true" />
                 </LinearLayout>
-                <LinearLayout
+                                <LinearLayout
                     android:id="@+id/iqama_row4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:paddingBottom="10dp"
+                    android:paddingTop="8dp"
                     android:visibility="gone">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingTop="6dp">
+                        android:orientation="horizontal">
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
                             android:text="إقامة بعد الأذان بـ"
-                            android:textColor="#666666"
+                            android:textColor="#AAAAAA"
                             android:textSize="13sp" />
                         <EditText
                             android:id="@+id/iqama_minutes4"
@@ -700,14 +669,14 @@
                             android:inputType="number"
                             android:maxLength="3"
                             android:text="10"
-                            android:textColor="#2C5F5A"
+                            android:textColor="#FFFFFF"
                             android:textSize="13sp" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="8dp"
                             android:text="دقيقة"
-                            android:textColor="#666666"
+                            android:textColor="#AAAAAA"
                             android:textSize="13sp" />
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/iqama_check4"
@@ -715,19 +684,20 @@
                             android:layout_height="wrap_content"
                             android:checked="false" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingTop="6dp">
+                        android:paddingTop="4dp">
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
                             android:text="صوت الإقامة"
-                            android:textColor="#666666"
+                            android:textColor="#AAAAAA"
                             android:textSize="13sp" />
                         <RadioGroup
                             android:id="@+id/iqama_sound4"
@@ -735,11 +705,12 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:orientation="horizontal">
-                            <RadioButton android:id="@+id/iqama_sound4_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" android:textColor="#2C5F5A" android:checked="true"/>
-                            <RadioButton android:id="@+id/iqama_sound4_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" android:textColor="#2C5F5A"/>
-                            <RadioButton android:id="@+id/iqama_sound4_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" android:textColor="#2C5F5A"/>
+                            <RadioButton android:id="@+id/iqama_sound4_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" android:textColor="#FFFFFF" android:checked="true"/>
+                            <RadioButton android:id="@+id/iqama_sound4_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" android:textColor="#FFFFFF"/>
+                            <RadioButton android:id="@+id/iqama_sound4_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" android:textColor="#FFFFFF"/>
                         </RadioGroup>
                     </LinearLayout>
+
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -749,20 +720,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="2dp">
+            app:cardBackgroundColor="#2D3548"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="14dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="14dp"
-                    android:background="#2C5F5A">
+                    android:orientation="horizontal">
                     <TextView
                         android:id="@+id/athan_name5"
                         android:layout_width="0dp"
@@ -771,8 +741,7 @@
                         android:gravity="end"
                         android:text="@string/prayer5"
                         android:textColor="#FFFFFF"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textSize="16sp" />
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/switch5"
                         android:layout_width="wrap_content"
@@ -787,8 +756,7 @@
                         android:layout_height="wrap_content"
                         android:text=""
                         android:textColor="#FFFFFF"
-                        android:textSize="15sp"
-                        android:fontFamily="monospace" />
+                        android:textSize="16sp" />
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/pre_athan_row5"
@@ -796,10 +764,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="6dp"
+                    android:paddingTop="8dp"
                     android:visibility="gone">
                     <TextView
                         android:layout_width="0dp"
@@ -807,7 +772,7 @@
                         android:layout_weight="1"
                         android:gravity="end"
                         android:text="تنبيه قبلها بـ"
-                        android:textColor="#666666"
+                        android:textColor="#AAAAAA"
                         android:textSize="13sp" />
                     <EditText
                         android:id="@+id/pre_athan_minutes5"
@@ -819,14 +784,14 @@
                         android:inputType="number"
                         android:maxLength="3"
                         android:text="15"
-                        android:textColor="#2C5F5A"
+                        android:textColor="#FFFFFF"
                         android:textSize="13sp" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:text="دقيقة"
-                        android:textColor="#666666"
+                        android:textColor="#AAAAAA"
                         android:textSize="13sp" />
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/pre_athan_check5"
@@ -834,28 +799,26 @@
                         android:layout_height="wrap_content"
                         android:checked="true" />
                 </LinearLayout>
-                <LinearLayout
+                                <LinearLayout
                     android:id="@+id/iqama_row5"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:paddingBottom="10dp"
+                    android:paddingTop="8dp"
                     android:visibility="gone">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingTop="6dp">
+                        android:orientation="horizontal">
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
                             android:text="إقامة بعد الأذان بـ"
-                            android:textColor="#666666"
+                            android:textColor="#AAAAAA"
                             android:textSize="13sp" />
                         <EditText
                             android:id="@+id/iqama_minutes5"
@@ -867,14 +830,14 @@
                             android:inputType="number"
                             android:maxLength="3"
                             android:text="10"
-                            android:textColor="#2C5F5A"
+                            android:textColor="#FFFFFF"
                             android:textSize="13sp" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="8dp"
                             android:text="دقيقة"
-                            android:textColor="#666666"
+                            android:textColor="#AAAAAA"
                             android:textSize="13sp" />
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/iqama_check5"
@@ -882,19 +845,20 @@
                             android:layout_height="wrap_content"
                             android:checked="false" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingTop="6dp">
+                        android:paddingTop="4dp">
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
                             android:text="صوت الإقامة"
-                            android:textColor="#666666"
+                            android:textColor="#AAAAAA"
                             android:textSize="13sp" />
                         <RadioGroup
                             android:id="@+id/iqama_sound5"
@@ -902,11 +866,12 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:orientation="horizontal">
-                            <RadioButton android:id="@+id/iqama_sound5_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" android:textColor="#2C5F5A" android:checked="true"/>
-                            <RadioButton android:id="@+id/iqama_sound5_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" android:textColor="#2C5F5A"/>
-                            <RadioButton android:id="@+id/iqama_sound5_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" android:textColor="#2C5F5A"/>
+                            <RadioButton android:id="@+id/iqama_sound5_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" android:textColor="#FFFFFF" android:checked="true"/>
+                            <RadioButton android:id="@+id/iqama_sound5_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" android:textColor="#FFFFFF"/>
+                            <RadioButton android:id="@+id/iqama_sound5_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" android:textColor="#FFFFFF"/>
                         </RadioGroup>
                     </LinearLayout>
+
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -919,8 +884,8 @@
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
             android:text="@string/current_location"
-            android:textColor="#2C5F5A"
-            android:textSize="15sp" />
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
 
         <View
             style="@style/Divider"
@@ -936,7 +901,7 @@
             android:gravity="center_horizontal"
             android:paddingTop="10dp"
             android:text="@string/location_adjustment"
-            android:textColor="#999999"
+            android:textColor="#AAAAAA"
             android:textSize="14sp" />
 
         <CheckBox
@@ -946,7 +911,7 @@
             android:layout_marginBottom="20dp"
             android:layoutDirection="locale"
             android:text="@string/override_location"
-            android:textColor="#666666" />
+            android:textColor="#AAAAAA" />
 
     </LinearLayout>
 </ScrollView>
