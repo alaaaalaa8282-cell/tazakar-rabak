@@ -34,6 +34,8 @@ public void onReceive(Context context, Intent intent) {
         int previousMode = prefs.getInt(PREF_PREVIOUS_RINGER_MODE, AudioManager.RINGER_MODE_NORMAL);
         audioManager.setRingerMode(previousMode);
         Log.d(TAG, "Silent mode OFF, restored mode " + previousMode);
-    }
+    } else if ("com.alaaeltaweel.thikrallah.STOP_SOUND".equals(intent.getAction())) {
+    audioManager.setStreamVolume(AudioManager.STREAM_ALARM, 0, 0);
+}  
 }
     }
