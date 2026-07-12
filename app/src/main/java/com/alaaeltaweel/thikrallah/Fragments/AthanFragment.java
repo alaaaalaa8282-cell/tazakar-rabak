@@ -97,6 +97,7 @@ public class AthanFragment extends Fragment implements SharedPreferences.OnShare
         if (key.equals("hijri_offset")) {
             HijriDate.setText(getHijriDate());
         }
+  new MyAlarmsManager(getContext()).UpdateAllApplicableAlarms();
     }
 
     @Override
