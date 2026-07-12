@@ -148,6 +148,18 @@
             android:title="وقت المسحراتي"
             android:dependency="ramadan_mesaharaty_enabled" />
       </PreferenceCategory>
+
+    <PreferenceCategory
+    android:title="🤲 الدعاء بعد الأذان"
+    android:layout="@layout/preference_catagory">
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="isDuaAfterAthan"
+        android:title="تفعيل الدعاء بعد الأذان"
+        android:summary="يشغل دعاء الأذان بعد انتهائه" />
+
+</PreferenceCategory>
     
         <!-- ✅ الوضع الصامت أثناء الصلاة -->
     <PreferenceCategory
