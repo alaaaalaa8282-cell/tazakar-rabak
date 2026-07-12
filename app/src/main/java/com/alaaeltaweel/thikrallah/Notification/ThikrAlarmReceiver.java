@@ -26,10 +26,12 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 
 import android.util.Log;
+
 import android.os.PowerManager;
 
 import androidx.core.app.NotificationCompat;
 
+import android.media.MediaPlayer;
 
 import com.alaaeltaweel.thikrallah.MainActivity;
 
