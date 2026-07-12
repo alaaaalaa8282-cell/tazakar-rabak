@@ -115,6 +115,11 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
 
             
             context.startActivity(athanIntent);
+            boolean isDuaEnabled = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("isDuaAfterAthan", false);
+if (isDuaEnabled) {
+    MediaPlayer mp = MediaPlayer.create(context, R.raw.dua_after_athan);
+    if (mp != null) mp.start();
+}
 } else {
 
             // ✅ الأذكار العادية — لا تشتغل أثناء المكالمات (فحص المكالمة الأول)
