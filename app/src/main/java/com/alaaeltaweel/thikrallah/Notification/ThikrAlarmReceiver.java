@@ -120,7 +120,10 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
             boolean isDuaEnabled = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("isDuaAfterAthan", false);
 if (isDuaEnabled) {
     MediaPlayer mp = MediaPlayer.create(context, R.raw.dua_after_athan);
-    if (mp != null) mp.start();
+    if (mp != null) {
+        mp.setOnCompletionListener(MediaPlayer::release);
+        mp.start();
+    }
 }
 } else {
 
