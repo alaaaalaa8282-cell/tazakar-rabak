@@ -495,43 +495,56 @@ try {
 } catch (NumberFormatException e) {
     silentDurationMinutes = 15;
 }
+
         
+Intent silentOnIntent = new Intent(context, SilentModeReceiver.class);
+silentOnIntent.setAction(SilentModeReceiver.ACTION_SILENT_ON);
+PendingIntent pendingSilentOn = PendingIntent.getBroadcast(context, silentOnCode, silentOnIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        Intent silentOnIntent = new Intent(context, SilentModeReceiver.class);
-        silentOnIntent.setAction(SilentModeReceiver.ACTION_SILENT_ON);
-        PendingIntent pendingSilentOn = PendingIntent.getBroadcast(context, silentOnCode, silentOnIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+Intent silentOffIntent = new Intent(context, SilentModeReceiver.class);
+silentOffIntent.setAction(SilentModeReceiver.ACTION_SILENT_OFF);
+PendingIntent pendingSilentOff = PendingIntent.getBroadcast(context, silentOffCode, silentOffIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+if (isAthanReminder && isSilentModeEnabled) {
+    int iqamaMinutesForSilent;
+    try {
+        iqamaMinutesForSilent = Integer.parseInt(sharedPrefs.getString("iqamaMinutes_" + prayerName, "10"));
+        if (iqamaMinutesForSilent < 1) iqamaMinutesForSilent = 10;
+    } catch (NumberFormatException e) {
+        iqamaMinutesForSilent = 10;
+    }
+
+    Calendar calendarSilentOnToday = Calendar.getInstance();
+    calendarSilentOnToday.set(Calendar.HOUR_OF_DAY, Integer.parseInt(prayerTimes[prayerPosition].split(":", 3)[0]));
+    calendarSilentOnToday.set(Calendar.MINUTE, Integer.parseInt(prayerTimes[prayerPosition].split(":", 3)[1]));
+    calendarSilentOnToday.set(Calendar.SECOND, 0);
+    calendarSilentOnToday.add(Calendar.MINUTE, iqamaMinutesForSilent);
+
+    Calendar calendarSilentOffToday = (Calendar) calendarSilentOnToday.clone();
+    calendarSilentOffToday.add(Calendar.MINUTE, silentDurationMinutes);
+
+    if (now.after(calendarSilentOnToday) && now.before(calendarSilentOffToday)) {
+        Log.d(TAG, "Inside active silent window for " + prayerName + ", keeping existing OFF alarm");
+    } else {
         alarmMgr.cancel(pendingSilentOn);
-
-        Intent silentOffIntent = new Intent(context, SilentModeReceiver.class);
-        silentOffIntent.setAction(SilentModeReceiver.ACTION_SILENT_OFF);
-        PendingIntent pendingSilentOff = PendingIntent.getBroadcast(context, silentOffCode, silentOffIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         alarmMgr.cancel(pendingSilentOff);
 
-        if (isAthanReminder && isSilentModeEnabled) {
-            int iqamaMinutesForSilent;
-try {
-    iqamaMinutesForSilent = Integer.parseInt(sharedPrefs.getString("iqamaMinutes_" + prayerName, "10"));
-    if (iqamaMinutesForSilent < 1) iqamaMinutesForSilent = 10;
-} catch (NumberFormatException e) {
-    iqamaMinutesForSilent = 10;
-}
-
-Calendar calendarSilentOn = Calendar.getInstance();
-calendarSilentOn.set(Calendar.HOUR_OF_DAY, Integer.parseInt(prayerTimes[prayerPosition].split(":", 3)[0]));
-calendarSilentOn.set(Calendar.MINUTE, Integer.parseInt(prayerTimes[prayerPosition].split(":", 3)[1]));
-calendarSilentOn.set(Calendar.SECOND, 0);
-calendarSilentOn.add(Calendar.MINUTE, iqamaMinutesForSilent);
-if (!calendarSilentOn.after(now)) {
-    calendarSilentOn.add(Calendar.DAY_OF_YEAR, 1);
-}
-setSilentAlarm(calendarSilentOn, pendingSilentOn);
-
-Calendar calendarSilentOff = (Calendar) calendarSilentOn.clone();
-calendarSilentOff.add(Calendar.MINUTE, silentDurationMinutes);
-setSilentAlarm(calendarSilentOff, pendingSilentOff);
-
-            Log.d(TAG, "Silent window for " + prayerName + ": " + calendarSilentOn.getTime() + " -> " + calendarSilentOff.getTime());
+        Calendar calendarSilentOn = (Calendar) calendarSilentOnToday.clone();
+        if (!calendarSilentOn.after(now)) {
+            calendarSilentOn.add(Calendar.DAY_OF_YEAR, 1);
         }
+        setAlarm(calendarSilentOn, pendingSilentOn);
+
+        Calendar calendarSilentOff = (Calendar) calendarSilentOn.clone();
+        calendarSilentOff.add(Calendar.MINUTE, silentDurationMinutes);
+        setAlarm(calendarSilentOff, pendingSilentOff);
+
+        Log.d(TAG, "Silent window for " + prayerName + ": " + calendarSilentOn.getTime() + " -> " + calendarSilentOff.getTime());
+    }
+} else {
+    alarmMgr.cancel(pendingSilentOn);
+    alarmMgr.cancel(pendingSilentOff);
+}
         // ✅ الإقامة
         boolean isIqamaEnabled = sharedPrefs.getBoolean("isIqamaReminder_" + prayerName, false);
         int iqamaSound = sharedPrefs.getInt("iqamaSoundChoice_" + prayerName, 1);
