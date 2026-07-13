@@ -70,6 +70,7 @@ public class AthanTimerService extends Service {
                     @Override
                     public void run() {
                         initNotification();
+                        checkMissedPrayerEvents();
                     }
                 }, 0, 60 * 1000);
             }
@@ -232,5 +233,91 @@ public class AthanTimerService extends Service {
             return secondsText + " " + getResources().getString(R.string.until) + " " + prayerName;
         }
         return hoursText + minutesText + " " + getResources().getString(R.string.until) + " " + prayerName;
+	}
+	private interface FireAction { void run(); }
+
+	private void fireIfMissed(String prefKey, Calendar targetTime, Calendar now, long graceMs, FireAction action) {
+		if (!now.after(targetTime)) return;
+		long lateBy = now.getTimeInMillis() - targetTime.getTimeInMillis();
+		if (lateBy > graceMs) return;
+		action.run();
+	}
+
+	private void checkMissedPrayerEvents() {
+		try {
+			if (mContext == null) return;
+			String[] prayerKeys    = {"fajr", "dhuhr", "asr", "maghrib", "isha"};
+			String[] reminderPrefs = {"isFajrReminder", "isDuhrReminder", "isAsrReminder", "isMaghribReminder", "isIshaaReminder"};
+			int[] prayerPositions  = {0, 2, 3, 5, 6};
+			String[] athanDataTypes = {
+					MainActivity.DATA_TYPE_ATHAN1, MainActivity.DATA_TYPE_ATHAN2,
+					MainActivity.DATA_TYPE_ATHAN3, MainActivity.DATA_TYPE_ATHAN4,
+					MainActivity.DATA_TYPE_ATHAN5
+			};
+
+			PrayTime prayers = PrayTime.instancePrayTime(mContext);
+			prayers.setTimeFormat(PrayTime.TIME_FORMAT_Time24);
+			String[] prayerTimes = prayers.getPrayerTimes(mContext);
+			if (prayerTimes == null) return;
+
+			Calendar now = Calendar.getInstance();
+			long GRACE_MS = 10 * 60 * 1000L;
+
+			for (int i = 0; i < prayerKeys.length; i++) {
+				String key = prayerKeys[i];
+				if (prayerTimes[prayerPositions[i]].equalsIgnoreCase(prayers.getInvalidTime())) continue;
+				if (!sharedPrefs.getBoolean(reminderPrefs[i], true)) continue;
+
+				String[] hm = prayerTimes[prayerPositions[i]].split(":", 3);
+				Calendar prayerCal = Calendar.getInstance();
+				prayerCal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hm[0]));
+				prayerCal.set(Calendar.MINUTE, Integer.parseInt(hm[1]));
+				prayerCal.set(Calendar.SECOND, 0);
+
+				final String fKey = key;
+				final int fIndex = i;
+
+				// اقتراب الصلاة
+				if (sharedPrefs.getBoolean("isPreAthanReminder_" + key, true)) {
+					int preMin;
+					try { preMin = Integer.parseInt(sharedPrefs.getString("preAthanMinutes_" + key, "15")); } catch (Exception e) { preMin = 15; }
+					Calendar preCal = (Calendar) prayerCal.clone();
+					preCal.add(Calendar.MINUTE, -preMin);
+					fireIfMissed("watchdog_gate_pre_" + key, preCal, now, GRACE_MS, () -> {
+						Intent i2 = new Intent(mContext, ThikrAlarmReceiver.class);
+						i2.putExtra("com.alaaeltaweel.thikrallah.datatype", MyAlarmsManager.DATA_TYPE_PRE_ATHAN + "_" + fKey);
+						i2.putExtra("prayer_name", fKey);
+						mContext.sendBroadcast(i2);
+						Timber.tag(TAG).d("Watchdog fired pre-athan for " + fKey);
+					});
+				}
+
+				// الأذان
+				fireIfMissed("watchdog_gate_athan_" + key, prayerCal, now, GRACE_MS, () -> {
+					Intent i2 = new Intent(mContext, ThikrAlarmReceiver.class);
+					i2.putExtra("com.alaaeltaweel.thikrallah.datatype", athanDataTypes[fIndex]);
+					mContext.sendBroadcast(i2);
+					Timber.tag(TAG).d("Watchdog fired athan for " + fKey);
+				});
+
+				// الإقامة
+				int iqamaMin;
+				try { iqamaMin = Integer.parseInt(sharedPrefs.getString("iqamaMinutes_" + key, "10")); } catch (Exception e) { iqamaMin = 10; }
+				int iqamaSound = sharedPrefs.getInt("iqamaSoundChoice_" + key, 1);
+				Calendar iqamaCal = (Calendar) prayerCal.clone();
+				iqamaCal.add(Calendar.MINUTE, iqamaMin);
+				final int fSound = iqamaSound;
+				fireIfMissed("watchdog_gate_iqama_" + key, iqamaCal, now, GRACE_MS, () -> {
+					Intent i2 = new Intent(mContext, ThikrAlarmReceiver.class);
+					i2.putExtra("com.alaaeltaweel.thikrallah.datatype", "iqama");
+					i2.putExtra("prayer_name", fKey);
+					i2.putExtra("iqama_sound", fSound);
+					mContext.sendBroadcast(i2);
+					Timber.tag(TAG).d("Watchdog fired iqama for " + fKey);
+				});
+			}
+		} catch (Exception e) {
+			Timber.tag(TAG).e(e, "checkMissedPrayerEvents error");
+		}
 	}
 	}
