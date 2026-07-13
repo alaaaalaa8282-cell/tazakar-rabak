@@ -114,12 +114,10 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
             athanIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_CLEAR_TOP |
                     Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
             
             context.startActivity(athanIntent);
             
-}
-} else {
+        } else {
 
             // ✅ الأذكار العادية — لا تشتغل أثناء المكالمات (فحص المكالمة الأول)
             boolean isInCallForThikr = false;
