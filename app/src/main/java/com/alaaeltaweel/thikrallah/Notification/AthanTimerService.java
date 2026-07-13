@@ -69,9 +69,10 @@ public class AthanTimerService extends Service {
                 timer.scheduleAtFixedRate(new TimerTask() {
                     @Override
                     public void run() {
-                        initNotification();
-                        checkMissedPrayerEvents();
-                    }
+                    initNotification();
+                    checkMissedPrayerEvents();
+                    checkMissedGeneralThikr();
+                }
                 }, 0, 60 * 1000);
             }
         } else {
@@ -318,6 +319,33 @@ public class AthanTimerService extends Service {
 			}
 		} catch (Exception e) {
 			Timber.tag(TAG).e(e, "checkMissedPrayerEvents error");
+		}
+	}
+	private void checkMissedGeneralThikr() {
+		try {
+			if (mContext == null) return;
+			boolean remindThroughDay = sharedPrefs.getBoolean("RemindmeThroughTheDay", true);
+			if (!remindThroughDay) return;
+
+			int intervalMinutes;
+			try { intervalMinutes = Integer.parseInt(sharedPrefs.getString("RemindMeEvery", "60")); } catch (Exception e) { intervalMinutes = 60; }
+			if (intervalMinutes < 1) intervalMinutes = 60;
+
+			long lastFired = sharedPrefs.getLong("last_general_thikr_time", 0);
+			if (lastFired == 0) return; // لسه ماشتغلتش ولا مرة، سيبها للمنبه العادي
+
+			long nowMs = System.currentTimeMillis();
+			long intervalMs = intervalMinutes * 60 * 1000L;
+			long graceMs = 5 * 60 * 1000L;
+
+			if ((nowMs - lastFired) > (intervalMs + graceMs)) {
+				Intent i2 = new Intent(mContext, ThikrAlarmReceiver.class);
+				i2.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_GENERAL_THIKR);
+				mContext.sendBroadcast(i2);
+				Timber.tag(TAG).d("Watchdog fired general thikr (missed interval)");
+			}
+		} catch (Exception e) {
+			Timber.tag(TAG).e(e, "checkMissedGeneralThikr error");
 		}
 	}
 	}
