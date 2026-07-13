@@ -188,6 +188,7 @@ if (allThikrs == null || allThikrs.isEmpty()) return;
 int currentIndex = sharedPrefs.getInt("thikr_current_index", 0) % allThikrs.size();
 UserThikr thikr = allThikrs.get(currentIndex);
 sharedPrefs.edit().putInt("thikr_current_index", currentIndex + 1).apply();
+sharedPrefs.edit().putLong("last_general_thikr_time", System.currentTimeMillis()).apply();
             if (thikr==null){
                 return;
             }
