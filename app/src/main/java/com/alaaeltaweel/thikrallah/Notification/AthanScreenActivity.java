@@ -26,7 +26,7 @@ import com.alaaeltaweel.thikrallah.ThikrMediaPlayerService;
 
 public class AthanScreenActivity extends AppCompatActivity {
 
-    private static final int AUTO_DISMISS_DELAY  = 10 * 60 * 1000;
+    private static final int AUTO_DISMISS_DELAY  = 5 * 60 * 1000;
     private static final int SLIDESHOW_INTERVAL  = 30 * 1000; // 30 ثانية
     private static final int CALL_DISMISS_DELAY  = 4 * 60 * 1000; // 4 دقايق لو في مكالمة
     private static final String TAG = "AthanScreenActivity";
