@@ -1490,8 +1490,11 @@ public class ThikrMediaPlayerService extends Service implements OnCompletionList
         currentThikrCounter++;
 
         if (this.getThikrType().equalsIgnoreCase(MainActivity.DATA_TYPE_GENERAL_THIKR) || this.getThikrType().contains(MainActivity.DATA_TYPE_QURAN) || this.getThikrType().contains(MainActivity.DATA_TYPE_ATHAN)) {
-
-            this.resetPlayer();
+    // شغل الدعاء بعد الأذان
+            Intent duaIntent = new Intent("com.alaaeltaweel.thikrallah.ATHAN_COMPLETE");
+            sendBroadcast(duaIntent);
+            
+                this.resetPlayer();
 
             this.stopForeground(true);
 
