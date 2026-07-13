@@ -488,7 +488,13 @@ calendarPre.add(Calendar.MINUTE, -preAthanMinutes);
         // ✅ الوضع الصامت أثناء الصلاة
         boolean isSilentModeEnabled = sharedPrefs.getBoolean("isSilentModeDuringPrayer", true);
         
-        int silentDurationMinutes = Integer.parseInt(sharedPrefs.getString("silentModeDurationMinutes", "15"));
+        int silentDurationMinutes;
+try {
+    silentDurationMinutes = Integer.parseInt(sharedPrefs.getString("silentModeDurationMinutes", "15"));
+    if (silentDurationMinutes < 1) silentDurationMinutes = 15;
+} catch (NumberFormatException e) {
+    silentDurationMinutes = 15;
+}
         
 
         Intent silentOnIntent = new Intent(context, SilentModeReceiver.class);
