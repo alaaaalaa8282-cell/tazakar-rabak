@@ -457,7 +457,7 @@ private void setAlarmClockHighPriority(long timeInMilliseconds, PendingIntent op
 
         // ✅ تنبيه قبل الصلاة بـ 15 دقيقة
         Intent preAthanIntent = new Intent(context, ThikrAlarmReceiver.class);
-        preAthanIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", DATA_TYPE_PRE_ATHAN);
+        preAthanIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", DATA_TYPE_PRE_ATHAN + "_" + prayerName);
         preAthanIntent.putExtra("prayer_name", prayerName);
 
         PendingIntent pendingIntentPreAthan = PendingIntent.getBroadcast(context, preRequestCode, preAthanIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
