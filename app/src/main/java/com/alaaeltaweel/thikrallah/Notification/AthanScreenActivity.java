@@ -26,7 +26,7 @@ import com.alaaeltaweel.thikrallah.ThikrMediaPlayerService;
 
 public class AthanScreenActivity extends AppCompatActivity {
 
-    private static final int AUTO_DISMISS_DELAY  = 5 * 60 * 1000;
+    private static final int AUTO_DISMISS_DELAY  = 10 * 60 * 1000;
     private static final int SLIDESHOW_INTERVAL  = 30 * 1000; // 30 ثانية
     private static final int CALL_DISMISS_DELAY  = 4 * 60 * 1000; // 4 دقايق لو في مكالمة
     private static final String TAG = "AthanScreenActivity";
@@ -73,6 +73,14 @@ public class AthanScreenActivity extends AppCompatActivity {
     private BroadcastReceiver athanCompleteReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            boolean isDuaEnabled = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context).getBoolean("isDuaAfterAthan", false);
+            if (isDuaEnabled) {
+                android.media.MediaPlayer mp = android.media.MediaPlayer.create(context, R.raw.dua_after_athan);
+                if (mp != null) {
+                    mp.setOnCompletionListener(android.media.MediaPlayer::release);
+                    mp.start();
+                }
+            }
             stopAthanAndClose();
         }
     };
