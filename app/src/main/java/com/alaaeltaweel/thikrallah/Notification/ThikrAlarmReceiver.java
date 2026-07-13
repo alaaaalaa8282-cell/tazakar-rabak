@@ -185,7 +185,7 @@ if (audioManager != null) {
         AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
 }
     
-    String channelId = "pre_athan_reminder_" + prayerKey;
+    String channelId = "pre_athan_reminder_v2_" + prayerKey;
     NotificationManager notificationManager =
             (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -264,7 +264,7 @@ if (audioManager != null) {
         AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
 }
         
-    String channelId = "iqama_channel_s" + soundChoice;
+    String channelId = "iqama_channel_v2_s" + soundChoice;
     NotificationManager nm =
         (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
