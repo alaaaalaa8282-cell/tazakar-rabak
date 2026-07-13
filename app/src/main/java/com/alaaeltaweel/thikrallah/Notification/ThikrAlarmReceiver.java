@@ -61,7 +61,7 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
         String dataType = data.getString("com.alaaeltaweel.thikrallah.datatype");
 
         // ✅ تنبيه قبل الصلاة بـ 15 دقيقة
-        if (MyAlarmsManager.DATA_TYPE_PRE_ATHAN.equals(dataType)) {
+        if (dataType != null && dataType.startsWith(MyAlarmsManager.DATA_TYPE_PRE_ATHAN)) {
 
             String prayerName = data.getString("prayer_name", "fajr");
            Log.d("ThikrAlarmReceiver", "pre-athan prayer_name: " + prayerName);
