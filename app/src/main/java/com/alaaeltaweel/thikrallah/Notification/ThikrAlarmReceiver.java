@@ -177,7 +177,19 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                 return;
             }
 
-            
+            // ✅ حماية من تكرار الذكر العام لو المنبه الحقيقي والحارس الذاتي اشتغلوا مع بعض
+            if (MainActivity.DATA_TYPE_GENERAL_THIKR.equals(dataType)) {
+                SharedPreferences generalPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+                long lastGeneralAttempt = generalPrefs.getLong("last_general_thikr_receiver_time", 0);
+                long nowMs2 = System.currentTimeMillis();
+                if (nowMs2 - lastGeneralAttempt < 60 * 1000L) {
+                    Log.d(TAG, "General thikr fired too close to last one, skipping duplicate");
+                    if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
+                    return;
+                }
+                generalPrefs.edit().putLong("last_general_thikr_receiver_time", nowMs2).commit();
+            }
+
             // باقي التنبيهات تشتغل عادي
             data.putBoolean("isUserAction", false);
             Intent intent2 = new Intent(context, ThikrService.class).putExtras(data);
