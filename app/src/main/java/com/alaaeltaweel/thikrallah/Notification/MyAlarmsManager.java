@@ -166,23 +166,34 @@ public class MyAlarmsManager {
         // Random Reminder
         PendingIntent pendingIntentGeneral = PendingIntent.getBroadcast(context, requestCodeRandomAlarm, launchIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_GENERAL_THIKR), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         if (RemindmeThroughTheDay) {
-            alarmMgr.cancel(pendingIntentGeneral);
-            String[] dayReminderStart = sharedPrefs.getString("daytReminderTime", "8:00").split(":", 3);
-
-            Calendar startWindow = Calendar.getInstance();
-            startWindow.set(Calendar.HOUR_OF_DAY, Integer.parseInt(dayReminderStart[0]));
-            startWindow.set(Calendar.MINUTE, Integer.parseInt(dayReminderStart[1]));
-            startWindow.set(Calendar.SECOND, 0);
-
-            Calendar calendar1;
-            if (now.before(startWindow)) {
-                // ✅ لسه ماوصلناش معاد البداية، خلي أول تذكير يبدأ بالظبط من معاد البداية
-                calendar1 = startWindow;
+            long storedNextTime = sharedPrefs.getLong("next_general_thikr_scheduled_time", 0);
+            if (storedNextTime > now.getTimeInMillis()) {
+                // ✅ فيه ميعاد مجدول بالفعل ولسه ماجاش وقته، متلمسوش
+                Log.d("MyAlarmsManager", "General thikr already scheduled, skipping reschedule");
             } else {
-                calendar1 = Calendar.getInstance();
-                calendar1.setTime(dat);
-                calendar1.add(Calendar.MINUTE, Integer.parseInt(RandomReminderInterval));
+                alarmMgr.cancel(pendingIntentGeneral);
+                String[] dayReminderStart = sharedPrefs.getString("daytReminderTime", "8:00").split(":", 3);
+
+                Calendar startWindow = Calendar.getInstance();
+                startWindow.set(Calendar.HOUR_OF_DAY, Integer.parseInt(dayReminderStart[0]));
+                startWindow.set(Calendar.MINUTE, Integer.parseInt(dayReminderStart[1]));
+                startWindow.set(Calendar.SECOND, 0);
+
+                Calendar calendar1;
+                if (now.before(startWindow)) {
+                    calendar1 = startWindow;
+                } else {
+                    calendar1 = Calendar.getInstance();
+                    calendar1.setTime(dat);
+                    calendar1.add(Calendar.MINUTE, Integer.parseInt(RandomReminderInterval));
+                }
+                this.setAlarm(calendar1, pendingIntentGeneral);
+                sharedPrefs.edit().putLong("next_general_thikr_scheduled_time", calendar1.getTimeInMillis()).apply();
             }
+        } else {
+            alarmMgr.cancel(pendingIntentGeneral);
+            sharedPrefs.edit().remove("next_general_thikr_scheduled_time").apply();
+        }
             this.setAlarm(calendar1, pendingIntentGeneral);
         } else {
             alarmMgr.cancel(pendingIntentGeneral);
