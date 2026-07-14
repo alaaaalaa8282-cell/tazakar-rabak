@@ -241,6 +241,11 @@ public class AthanTimerService extends Service {
 		if (!now.after(targetTime)) return;
 		long lateBy = now.getTimeInMillis() - targetTime.getTimeInMillis();
 		if (lateBy > graceMs) return;
+
+		long lastAttempt = sharedPrefs.getLong(prefKey, 0);
+		if (now.getTimeInMillis() - lastAttempt < 5 * 60 * 1000L) return;
+		sharedPrefs.edit().putLong(prefKey, now.getTimeInMillis()).commit();
+
 		action.run();
 	}
 
@@ -332,13 +337,14 @@ public class AthanTimerService extends Service {
 			if (intervalMinutes < 1) intervalMinutes = 60;
 
 			long lastFired = sharedPrefs.getLong("last_general_thikr_time", 0);
-			if (lastFired == 0) return; // لسه ماشتغلتش ولا مرة، سيبها للمنبه العادي
+			if (lastFired == 0) return;
 
 			long nowMs = System.currentTimeMillis();
 			long intervalMs = intervalMinutes * 60 * 1000L;
 			long graceMs = 5 * 60 * 1000L;
 
 			if ((nowMs - lastFired) > (intervalMs + graceMs)) {
+				sharedPrefs.edit().putLong("last_general_thikr_time", nowMs).commit();
 				Intent i2 = new Intent(mContext, ThikrAlarmReceiver.class);
 				i2.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_GENERAL_THIKR);
 				mContext.sendBroadcast(i2);
