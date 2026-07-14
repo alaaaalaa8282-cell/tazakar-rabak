@@ -638,7 +638,7 @@ public class ThikrMediaPlayerService extends Service implements OnCompletionList
 
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        this.setThikrType(intent.getExtras().getString("com.alaaeltaweel.thikrallah.datatype", null));
+        String incomingDataType = intent.getExtras().getString("com.alaaeltaweel.thikrallah.datatype", null);
 
         Timber.d("ThikrMediaPlayerService onStartCommand");
 
@@ -715,7 +715,7 @@ public class ThikrMediaPlayerService extends Service implements OnCompletionList
             return Service.START_NOT_STICKY;
 
         }
-
+        this.setThikrType(incomingDataType);
         Timber.d("initNotification called");
 
         initNotification();
@@ -1489,19 +1489,23 @@ public class ThikrMediaPlayerService extends Service implements OnCompletionList
 
         currentThikrCounter++;
 
-        if (this.getThikrType().equalsIgnoreCase(MainActivity.DATA_TYPE_GENERAL_THIKR) || this.getThikrType().contains(MainActivity.DATA_TYPE_QURAN) || this.getThikrType().contains(MainActivity.DATA_TYPE_ATHAN)) {
-    // شغل الدعاء بعد الأذان
+        if (this.getThikrType().contains(MainActivity.DATA_TYPE_ATHAN)) {
+            // ✅ شغل الدعاء بعد الأذان - بس لو ده أذان حقيقي فعلاً
             Intent duaIntent = new Intent("com.alaaeltaweel.thikrallah.ATHAN_COMPLETE");
             sendBroadcast(duaIntent);
-            
-                this.resetPlayer();
 
+            this.resetPlayer();
             this.stopForeground(true);
-
             this.stopSelf();
-
             return;
+        }
 
+        if (this.getThikrType().equalsIgnoreCase(MainActivity.DATA_TYPE_GENERAL_THIKR) || this.getThikrType().contains(MainActivity.DATA_TYPE_QURAN)) {
+            // ✅ تنظيف عادي فقط - من غير ما نطلق حدث "الأذان خلص"
+            this.resetPlayer();
+            this.stopForeground(true);
+            this.stopSelf();
+            return;
         }
 
         if (this.getCurrentPlaying() >= getThikrArray().length && currentThikrCounter >= getCurrentThikrRepeat()) {
