@@ -512,7 +512,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface, Lo
                 listPermissionsNeeded.add(Manifest.permission.FOREGROUND_SERVICE);
             }
         }
-        */
+        /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             int postnotification_permission = ContextCompat.checkSelfPermission(this,
                     Manifest.permission.POST_NOTIFICATIONS);
