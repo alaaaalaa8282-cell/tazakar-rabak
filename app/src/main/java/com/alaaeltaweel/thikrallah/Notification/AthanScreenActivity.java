@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.alaaeltaweel.thikrallah.MainActivity;
 import com.alaaeltaweel.thikrallah.R;
 import com.alaaeltaweel.thikrallah.ThikrMediaPlayerService;
+import android.content.SharedPreferences;
 
 public class AthanScreenActivity extends AppCompatActivity {
 
@@ -269,12 +270,33 @@ public class AthanScreenActivity extends AppCompatActivity {
     }
 
     private void playAthan() {
+        // ✅ لو المنبه شغّل الصوت أصلاً، متشغلوش تاني من هنا
+        SharedPreferences soundPrefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
+        long triggeredTime = soundPrefs.getLong("athan_sound_triggered_" + dataType, 0);
+        if (System.currentTimeMillis() - triggeredTime < 10 * 1000L) {
+            Log.d(TAG, "Athan sound already triggered by receiver, skipping duplicate play");
+            return;
+        }
+        soundPrefs.edit().putLong("athan_sound_triggered_" + dataType, System.currentTimeMillis()).commit();
+
         android.media.AudioManager am = (android.media.AudioManager) getSystemService(Context.AUDIO_SERVICE);
-if (am != null) {
-    am.requestAudioFocus(null,
-        android.media.AudioManager.STREAM_ALARM,
-        android.media.AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-}
+        if (am != null) {
+            am.requestAudioFocus(null,
+                android.media.AudioManager.STREAM_ALARM,
+                android.media.AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+        }
+        Bundle data = new Bundle();
+        data.putInt("ACTION", ThikrMediaPlayerService.MEDIA_PLAYER_PLAY);
+        data.putString("com.alaaeltaweel.thikrallah.datatype", dataType);
+        data.putBoolean("isUserAction", false);
+
+        Intent intent = new Intent(this, ThikrService.class).putExtras(data);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent);
+        } else {
+            startService(intent);
+        }
+            }
         Bundle data = new Bundle();
         data.putInt("ACTION", ThikrMediaPlayerService.MEDIA_PLAYER_PLAY);
         data.putString("com.alaaeltaweel.thikrallah.datatype", dataType);
