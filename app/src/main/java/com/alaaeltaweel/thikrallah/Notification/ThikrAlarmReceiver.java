@@ -41,6 +41,10 @@ import com.alaaeltaweel.thikrallah.R;
 
 import android.media.AudioManager;
 
+import com.alaaeltaweel.thikrallah.ThikrMediaPlayerService;
+
+import com.alaaeltaweel.thikrallah.ThikrService;
+
 public class ThikrAlarmReceiver extends BroadcastReceiver {
     String TAG = "ThikrAlarmReceiver";
 
@@ -139,13 +143,31 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                 Log.d(TAG, "Cannot check call state");
             }
 
+            // ✅ شغّل صوت الأذان مباشرة من المنبه نفسه - مستقل عن نجاح فتح الشاشة
+            // القفل ده مشترك مع AthanScreenActivity عشان الصوت ميتكررش لو الشاشة فتحت بعده
+            if (!isInCall) {
+                SharedPreferences soundPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+                soundPrefs.edit().putLong("athan_sound_triggered_" + dataType, nowMs).commit();
+
+                Bundle soundData = new Bundle();
+                soundData.putInt("ACTION", ThikrMediaPlayerService.MEDIA_PLAYER_PLAY);
+                soundData.putString("com.alaaeltaweel.thikrallah.datatype", dataType);
+                soundData.putBoolean("isUserAction", false);
+                Intent soundIntent = new Intent(context, ThikrService.class).putExtras(soundData);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(soundIntent);
+                } else {
+                    context.startService(soundIntent);
+                }
+            }
+
             Intent athanIntent = new Intent(context, AthanScreenActivity.class);
             athanIntent.putExtras(data);
             athanIntent.putExtra("isCallInProgress", isInCall);
             athanIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_CLEAR_TOP |
                     Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            
+
             context.startActivity(athanIntent);
             
         } else {
