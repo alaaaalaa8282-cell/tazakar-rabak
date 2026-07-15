@@ -512,7 +512,6 @@ public class MainActivity extends AppCompatActivity implements MainInterface, Lo
                 listPermissionsNeeded.add(Manifest.permission.FOREGROUND_SERVICE);
             }
         }
-        /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             int postnotification_permission = ContextCompat.checkSelfPermission(this,
                     Manifest.permission.POST_NOTIFICATIONS);
@@ -521,7 +520,6 @@ public class MainActivity extends AppCompatActivity implements MainInterface, Lo
                 Log.d(TAG,"POST_NOTIFICATIONS permission requested");
             }
         }
-        */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             int alarmsPermission = ContextCompat.checkSelfPermission(this,
                     Manifest.permission.SCHEDULE_EXACT_ALARM);
