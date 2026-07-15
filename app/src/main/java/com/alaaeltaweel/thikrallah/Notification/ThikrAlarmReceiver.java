@@ -43,7 +43,6 @@ import android.media.AudioManager;
 
 import com.alaaeltaweel.thikrallah.ThikrMediaPlayerService;
 
-import com.alaaeltaweel.thikrallah.ThikrService;
 
 public class ThikrAlarmReceiver extends BroadcastReceiver {
     String TAG = "ThikrAlarmReceiver";
