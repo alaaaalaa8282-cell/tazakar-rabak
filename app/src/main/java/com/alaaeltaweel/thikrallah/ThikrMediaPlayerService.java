@@ -680,11 +680,11 @@ public class ThikrMediaPlayerService extends Service implements OnCompletionList
 
             }
 
-            // ✅ إرسال broadcast لـ AthanScreenActivity عشان تقفل
-
-            Intent broadcastIntent = new Intent("com.alaaeltaweel.thikrallah.ATHAN_COMPLETE");
-
-            sendBroadcast(broadcastIntent);
+            // ✅ إرسال broadcast لـ AthanScreenActivity - بس لو ده أذان حقيقي فعلاً
+            if (this.getThikrType() != null && this.getThikrType().contains(MainActivity.DATA_TYPE_ATHAN)) {
+                Intent broadcastIntent = new Intent("com.alaaeltaweel.thikrallah.ATHAN_COMPLETE");
+                sendBroadcast(broadcastIntent);
+            }
 
             this.stopForeground(true);
 
