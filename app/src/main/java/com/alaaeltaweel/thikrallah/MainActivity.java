@@ -504,7 +504,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface, Lo
             }
         }
 
-         */
+         /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             int foregroundservice_permission = ContextCompat.checkSelfPermission(this,
                     Manifest.permission.FOREGROUND_SERVICE);
