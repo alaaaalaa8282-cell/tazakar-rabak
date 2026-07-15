@@ -494,7 +494,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface, Lo
 
     private void requestNormalPermissions() {
         List<String> listPermissionsNeeded = new ArrayList<>();
-        /*/
+        /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(this)) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
