@@ -297,18 +297,6 @@ public class AthanScreenActivity extends AppCompatActivity {
             startService(intent);
         }
             }
-        Bundle data = new Bundle();
-        data.putInt("ACTION", ThikrMediaPlayerService.MEDIA_PLAYER_PLAY);
-        data.putString("com.alaaeltaweel.thikrallah.datatype", dataType);
-        data.putBoolean("isUserAction", false);
-
-        Intent intent = new Intent(this, ThikrService.class).putExtras(data);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(intent);
-        } else {
-            startService(intent);
-        }
-    }
 
     private void stopAthanAndClose() {
         Bundle data = new Bundle();
