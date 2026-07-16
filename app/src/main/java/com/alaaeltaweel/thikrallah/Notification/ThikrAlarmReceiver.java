@@ -49,7 +49,7 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
 
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+     public void onReceive(Context context, Intent intent) {
 
         Log.d(TAG, "onrecieve called");
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
