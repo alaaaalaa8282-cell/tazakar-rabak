@@ -182,13 +182,21 @@ private PhoneStateListener phoneStateListener;
 		String thikrType="";
 		thikrType=data.getString("com.alaaeltaweel.thikrallah.datatype", "");
 		if (thikrType.equals(MainActivity.DATA_TYPE_GENERAL_THIKR)){
-            MyDBHelper db = new MyDBHelper(this);
+          // ✅ فترة تهدئة تمنع تكرار الذكر العام لو أكتر من مصدر حاول يشغله قريب من بعض
+            long lastActualPlay = sharedPrefs.getLong("last_general_thikr_actual_play_time", 0);
+            long nowGeneralMs = System.currentTimeMillis();
+            if (nowGeneralMs - lastActualPlay < 2 * 60 * 1000L) {
+                Log.d(TAG, "General thikr cooldown active, skipping duplicate trigger");
+                return;
+            }
+            sharedPrefs.edit().putLong("last_general_thikr_actual_play_time", nowGeneralMs).commit();
+			MyDBHelper db = new MyDBHelper(this);
             ArrayList<UserThikr> allThikrs = db.getAllEnabledThikrs();
-if (allThikrs == null || allThikrs.isEmpty()) return;
-int currentIndex = sharedPrefs.getInt("thikr_current_index", 0) % allThikrs.size();
-UserThikr thikr = allThikrs.get(currentIndex);
-sharedPrefs.edit().putInt("thikr_current_index", currentIndex + 1).apply();
-sharedPrefs.edit().putLong("last_general_thikr_time", System.currentTimeMillis()).apply();
+           if (allThikrs == null || allThikrs.isEmpty()) return;
+            int currentIndex = sharedPrefs.getInt("thikr_current_index", 0) % allThikrs.size();
+            UserThikr thikr = allThikrs.get(currentIndex);
+            sharedPrefs.edit().putInt("thikr_current_index", currentIndex + 1).apply();
+            sharedPrefs.edit().putLong("last_general_thikr_time", System.currentTimeMillis()).apply();
             if (thikr==null){
                 return;
             }
