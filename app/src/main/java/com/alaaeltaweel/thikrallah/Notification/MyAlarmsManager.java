@@ -164,6 +164,7 @@ public class MyAlarmsManager {
         }
 
         // Random Reminder
+        PendingIntent pendingIntentGeneral = PendingIntent.getBroadcast(context, requestCodeRandomAlarm, launchIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_GENERAL_THIKR), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         if (RemindmeThroughTheDay) {
             long storedNextTime = sharedPrefs.getLong("next_general_thikr_scheduled_time", 0);
             String storedInterval = sharedPrefs.getString("next_general_thikr_scheduled_interval", "");
