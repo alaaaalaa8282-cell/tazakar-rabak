@@ -182,22 +182,15 @@ private PhoneStateListener phoneStateListener;
 		String thikrType="";
 		thikrType=data.getString("com.alaaeltaweel.thikrallah.datatype", "");
 	if (thikrType.equals(MainActivity.DATA_TYPE_GENERAL_THIKR)){
-
-            // ✅ فترة تهدئة ذكية تتناسب مع الفاصل الزمني المختار، تمنع تكرار قريب من بعض
-            long lastActualPlay = sharedPrefs.getLong("last_general_thikr_actual_play_time", 0);
-            long nowGeneralMs = System.currentTimeMillis();
-            int currentIntervalMin;
-            try {
-                currentIntervalMin = Integer.parseInt(sharedPrefs.getString("RemindMeEvery", "60"));
-            } catch (Exception e) {
-                currentIntervalMin = 60;
-            }
-            long cooldownMs = Math.min(2 * 60 * 1000L, Math.max(30 * 1000L, (currentIntervalMin * 60 * 1000L) / 2));
-            if (nowGeneralMs - lastActualPlay < cooldownMs) {
-                Log.d(TAG, "General thikr cooldown active, skipping duplicate trigger");
+		
+       // ✅ كل ذكر مجدول له هوية فريدة (وقته المستهدف بالظبط)
+            long thisOccurrence = sharedPrefs.getLong("next_general_thikr_scheduled_time", 0);
+            long lastClaimedOccurrence = sharedPrefs.getLong("last_claimed_general_thikr_occurrence", 0);
+            if (thisOccurrence != 0 && thisOccurrence == lastClaimedOccurrence) {
+                Log.d(TAG, "This general thikr occurrence already claimed, skipping duplicate trigger");
                 return;
             }
-            sharedPrefs.edit().putLong("last_general_thikr_actual_play_time", nowGeneralMs).commit();
+            sharedPrefs.edit().putLong("last_claimed_general_thikr_occurrence", thisOccurrence).commit();
         
 			MyDBHelper db = new MyDBHelper(this);
             ArrayList<UserThikr> allThikrs = db.getAllEnabledThikrs();
