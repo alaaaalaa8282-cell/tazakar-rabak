@@ -275,8 +275,7 @@ public class MyDBHelper  extends SQLiteOpenHelper {
         String file="";
         ArrayList<UserThikr> list= new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_NAME, null, ENABLED_COLUMN + " LIKE '%" + 1 + "%'", null, null, null, null);
-
+      Cursor cursor = db.query(TABLE_NAME, null, ENABLED_COLUMN + " LIKE '%" + 1 + "%'", null, null, null, ID_COLUMN);
         if (cursor.moveToFirst()) {
 
             while (cursor.isAfterLast() == false) {
