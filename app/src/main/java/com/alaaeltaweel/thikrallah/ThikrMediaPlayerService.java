@@ -1635,16 +1635,23 @@ public class ThikrMediaPlayerService extends Service implements OnCompletionList
 
 
     public void resetPlayer() {
-
-        if (this.player != null) {
-
+    if (this.player != null) {
+        try {
             this.player.stop();
-
-            this.player.reset();
-
+        } catch (Exception e) {
+            Timber.tag(TAG).e(e, "resetPlayer: stop() failed, discarding player");
         }
-
+        try {
+            this.player.reset();
+        } catch (Exception e) {
+            Timber.tag(TAG).e(e, "resetPlayer: reset() failed, discarding player");
+            try {
+                this.player.release();
+            } catch (Exception ignored) {}
+            this.player = null;
+        }
     }
+}
 
 
 
