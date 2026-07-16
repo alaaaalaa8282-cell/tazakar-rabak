@@ -164,10 +164,12 @@ public class MyAlarmsManager {
         }
 
         // Random Reminder
-        PendingIntent pendingIntentGeneral = PendingIntent.getBroadcast(context, requestCodeRandomAlarm, launchIntent.putExtra("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_GENERAL_THIKR), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         if (RemindmeThroughTheDay) {
             long storedNextTime = sharedPrefs.getLong("next_general_thikr_scheduled_time", 0);
-            if (storedNextTime > now.getTimeInMillis()) {
+            String storedInterval = sharedPrefs.getString("next_general_thikr_scheduled_interval", "");
+            boolean intervalChanged = !RandomReminderInterval.equals(storedInterval);
+
+            if (storedNextTime > now.getTimeInMillis() && !intervalChanged) {
                 Log.d("MyAlarmsManager", "General thikr already scheduled, skipping reschedule");
             } else {
                 alarmMgr.cancel(pendingIntentGeneral);
@@ -187,7 +189,10 @@ public class MyAlarmsManager {
                     calendar1.add(Calendar.MINUTE, Integer.parseInt(RandomReminderInterval));
                 }
                 this.setAlarm(calendar1, pendingIntentGeneral);
-                sharedPrefs.edit().putLong("next_general_thikr_scheduled_time", calendar1.getTimeInMillis()).apply();
+                sharedPrefs.edit()
+                        .putLong("next_general_thikr_scheduled_time", calendar1.getTimeInMillis())
+                        .putString("next_general_thikr_scheduled_interval", RandomReminderInterval)
+                        .apply();
             }
         } else {
             alarmMgr.cancel(pendingIntentGeneral);
