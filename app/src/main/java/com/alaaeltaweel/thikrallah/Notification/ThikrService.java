@@ -198,7 +198,7 @@ private PhoneStateListener phoneStateListener;
                 return;
             }
             sharedPrefs.edit().putLong("last_general_thikr_actual_play_time", nowGeneralMs).commit();
-            sharedPrefs.edit().putLong("last_general_thikr_actual_play_time", nowGeneralMs).commit();
+        
 			MyDBHelper db = new MyDBHelper(this);
             ArrayList<UserThikr> allThikrs = db.getAllEnabledThikrs();
            if (allThikrs == null || allThikrs.isEmpty()) return;
