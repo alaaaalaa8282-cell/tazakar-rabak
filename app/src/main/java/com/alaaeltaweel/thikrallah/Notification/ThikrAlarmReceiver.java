@@ -232,7 +232,11 @@ private void showPreAthanNotification(Context context, String prayerKey) {
     int soundRes;
     switch (prayerKey) {
         case "fajr":    prayerNameAr = "الفجر";  soundRes = R.raw.pre_fajr;    break;
-        case "dhuhr":   prayerNameAr = "الظهر";  soundRes = R.raw.pre_dhuhr;   break;
+        case "dhuhr":
+    boolean isFriday = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY;
+    prayerNameAr = isFriday ? "الجمعة" : "الظهر";
+    soundRes = isFriday ? R.raw.pre_gomaa : R.raw.pre_dhuhr;
+    break;
         case "asr":     prayerNameAr = "العصر";  soundRes = R.raw.pre_asr;     break;
         case "maghrib": prayerNameAr = "المغرب"; soundRes = R.raw.pre_maghrib; break;
         case "isha":    prayerNameAr = "العشاء"; soundRes = R.raw.pre_isha;    break;
@@ -304,7 +308,9 @@ PendingIntent pendingIntent = PendingIntent.getBroadcast(context, prayerKey.hash
     String prayerNameAr;
     switch (prayerKey) {
         case "fajr":    prayerNameAr = "الفجر";  break;
-        case "dhuhr":   prayerNameAr = "الظهر";  break;
+        case "dhuhr":
+    prayerNameAr = (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) ? "الجمعة" : "الظهر";
+    break;
         case "asr":     prayerNameAr = "العصر";  break;
         case "maghrib": prayerNameAr = "المغرب"; break;
         case "isha":    prayerNameAr = "العشاء"; break;
