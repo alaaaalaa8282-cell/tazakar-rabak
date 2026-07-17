@@ -114,7 +114,7 @@
             android:label="@string/title_activity_preferences"
             android:theme="@style/AppTheme.Base" />
 
-        <!-- ✅ شاشة الأذان - لا تظهر في Recent Apps -->
+         <!-- ✅ شاشة الأذان - لا تظهر في Recent Apps -->
         <activity
     android:name="com.alaaeltaweel.thikrallah.Notification.AthanScreenActivity"
     android:exported="false"
