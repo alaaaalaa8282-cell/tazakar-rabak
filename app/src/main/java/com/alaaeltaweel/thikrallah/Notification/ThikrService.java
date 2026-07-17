@@ -250,9 +250,9 @@ private PhoneStateListener phoneStateListener;
                     this.startService(new Intent(this, ThikrMediaPlayerService.class).putExtras(data));
                 }
                 } else {
-            Log.d(TAG, "Call in progress, will resume after call ends");
-            pendingThikrAfterCall = true;
-        }
+    Log.d(TAG, "Call in progress, scheduling next thikr");
+    new MyAlarmsManager(getApplicationContext()).UpdateAllApplicableAlarms();
+}
 			}
             new MyAlarmsManager(getApplicationContext()).UpdateAllApplicableAlarms();
             return;
