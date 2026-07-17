@@ -181,22 +181,7 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
             } catch (SecurityException e) {
                 Log.d(TAG, "Cannot check call state");
             }
-            if (isInCallForThikr) {
-                Log.d(TAG, "Call in progress, scheduling thikr after 15 min");
-                android.app.AlarmManager alarmManager =
-                    (android.app.AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                android.app.PendingIntent pendingIntent = android.app.PendingIntent.getBroadcast(
-                    context,
-                    dataType.hashCode() + 9999,
-                    new Intent(context, ThikrAlarmReceiver.class).putExtras(data),
-                    android.app.PendingIntent.FLAG_UPDATE_CURRENT |
-                    android.app.PendingIntent.FLAG_IMMUTABLE);
-                alarmManager.setExactAndAllowWhileIdle(
-                    android.app.AlarmManager.RTC_WAKEUP,
-                    System.currentTimeMillis() + (15 * 60 * 1000),
-                    pendingIntent);
-                return;
-            }
+            
 
             // ✅ حماية من تكرار الذكر العام لو المنبه الحقيقي والحارس الذاتي اشتغلوا مع بعض
             if (MainActivity.DATA_TYPE_GENERAL_THIKR.equals(dataType)) {
