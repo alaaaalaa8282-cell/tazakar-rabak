@@ -249,10 +249,10 @@ private PhoneStateListener phoneStateListener;
                 } else {
                     this.startService(new Intent(this, ThikrMediaPlayerService.class).putExtras(data));
                 }
-                } else {
-    Log.d(TAG, "Call in progress, scheduling next thikr");
-    new MyAlarmsManager(getApplicationContext()).UpdateAllApplicableAlarms();
-}
+                      } else {
+            Log.d(TAG, "Call in progress, will resume after call ends");
+            pendingThikrAfterCall = true;
+        }
 			}
             new MyAlarmsManager(getApplicationContext()).UpdateAllApplicableAlarms();
             return;
