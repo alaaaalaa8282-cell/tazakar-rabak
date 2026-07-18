@@ -228,12 +228,12 @@ private void showPreAthanNotification(Context context, String prayerKey) {
     private void showIqamaNotification(Context context, String prayerKey, int soundChoice) {
     String prayerNameAr;
     switch (prayerKey) {
-        case "fajr":    prayerNameAr = "الفجر";  soundRes = R.raw.pre_fajr;    break;
-        case "dhuhr":   prayerNameAr = "الظهر";  soundRes = R.raw.pre_dhuhr;   break;
-        case "asr":     prayerNameAr = "العصر";  soundRes = R.raw.pre_asr;     break;
-        case "maghrib": prayerNameAr = "المغرب"; soundRes = R.raw.pre_maghrib; break;
-        case "isha":    prayerNameAr = "العشاء"; soundRes = R.raw.pre_isha;    break;
-        default:        prayerNameAr = "الصلاة"; soundRes = R.raw.pre_fajr;    break;
+         case "fajr":    prayerNameAr = "الفجر";  break;
+        case "dhuhr":   prayerNameAr = "الظهر";  break;
+        case "asr":     prayerNameAr = "العصر";  break;
+        case "maghrib": prayerNameAr = "المغرب"; break;
+        case "isha":    prayerNameAr = "العشاء"; break;
+        default:        prayerNameAr = "الصلاة"; break;
     }
 
     int soundRes;
