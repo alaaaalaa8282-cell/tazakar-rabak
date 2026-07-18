@@ -183,7 +183,7 @@ public class MainFragment extends Fragment {
             // التاريخ الهجري (مع تطبيق تعديل المستخدم hijri_offset)
             int hijriOffset = Integer.parseInt(mPrefs.getString("hijri_offset", "0"));
             net.time4j.calendar.HijriCalendar hijriToday =
-    net.time4j.engine.SystemClock.inLocalView().today().transform(
+    net.time4j.SystemClock.inLocalView().today().transform(
         net.time4j.calendar.HijriCalendar.class,
         net.time4j.calendar.HijriCalendar.VARIANT_UMALQURA);
             if (hijriOffset != 0) {
@@ -240,7 +240,7 @@ public class MainFragment extends Fragment {
                 if (getActivity() == null || !isAdded()) return;
                 try {
                     net.time4j.calendar.HijriCalendar islamicCalendar = 
-    net.time4j.engine.SystemClock.inLocalView().today().transform(
+    net.time4j.SystemClock.inLocalView().today().transform(
         net.time4j.calendar.HijriCalendar.class,
         net.time4j.calendar.HijriCalendar.VARIANT_UMALQURA);
                     int hijriMonth = islamicCalendar.getMonth().getValue() - 1;
