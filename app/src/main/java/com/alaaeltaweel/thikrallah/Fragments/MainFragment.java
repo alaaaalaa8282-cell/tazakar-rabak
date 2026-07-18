@@ -183,9 +183,9 @@ public class MainFragment extends Fragment {
             // التاريخ الهجري (مع تطبيق تعديل المستخدم hijri_offset)
             int hijriOffset = Integer.parseInt(mPrefs.getString("hijri_offset", "0"));
             net.time4j.calendar.HijriCalendar hijriToday =
-                    net.time4j.calendar.HijriCalendar.nowInSystemTime(
-                            net.time4j.calendar.HijriCalendar.VARIANT_UMALQURA,
-                         net.time4j.calendar.HijriCalendar.VARIANT_UMALQURA);
+    net.time4j.engine.SystemClock.inLocalView().today().transform(
+        net.time4j.calendar.HijriCalendar.class,
+        net.time4j.calendar.HijriCalendar.VARIANT_UMALQURA);
             if (hijriOffset != 0) {
                 hijriToday = hijriToday.plus(hijriOffset, net.time4j.calendar.HijriCalendar.Unit.DAYS);
             }
