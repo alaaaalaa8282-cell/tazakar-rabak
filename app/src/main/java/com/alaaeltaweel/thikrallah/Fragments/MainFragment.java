@@ -182,20 +182,24 @@ public class MainFragment extends Fragment {
 
             // التاريخ الهجري (مع تطبيق تعديل المستخدم hijri_offset)
             int hijriOffset = Integer.parseInt(mPrefs.getString("hijri_offset", "0"));
-            android.icu.util.IslamicCalendar islamicCalendar = new android.icu.util.IslamicCalendar();
-            islamicCalendar.add(android.icu.util.Calendar.DAY_OF_MONTH, hijriOffset);
-            int hijriDay   = islamicCalendar.get(android.icu.util.Calendar.DAY_OF_MONTH);
-            int hijriMonth = islamicCalendar.get(android.icu.util.Calendar.MONTH);
-            int hijriYear  = islamicCalendar.get(android.icu.util.Calendar.YEAR);
+            net.time4j.calendar.HijriCalendar hijriToday =
+                    net.time4j.calendar.HijriCalendar.nowInSystemTime(
+                            net.time4j.calendar.HijriCalendar.VARIANT_UMALQURA,
+                            net.time4j.calendar.HijriAdjustment.NONE);
+            if (hijriOffset != 0) {
+                hijriToday = hijriToday.plus(hijriOffset, net.time4j.calendar.HijriCalendar.Unit.DAYS);
+            }
+            int hijriDay   = hijriToday.getDayOfMonth();
+            int hijriMonth = hijriToday.getMonth().getValue() - 1; // نفس فهرسة hijriMonths[] القديمة (0-11)
+            int hijriYear  = hijriToday.getYear();
 
             String[] hijriMonths = {
-                "محرم", "صفر", "ربيع الأول", "ربيع الثاني",
-                "جمادى الأولى", "جمادى الآخرة", "رجب", "شعبان",
-                "رمضان", "شوال", "ذو القعدة", "ذو الحجة"
+                    "محرم", "صفر", "ربيع الأول", "ربيع الثاني",
+                    "جمادى الأولى", "جمادى الآخرة", "رجب", "شعبان",
+                    "رمضان", "شوال", "ذو القعدة", "ذو الحجة"
             };
 
             textHijriDate.setText(hijriDay + " " + hijriMonths[hijriMonth] + " " + hijriYear);
-
             // أوقات الصلاة من PrayTime
             PrayTime prayersObject = PrayTime.instancePrayTime(mContext);
             String[] times = prayersObject.getPrayerTimes(mContext);
@@ -212,15 +216,10 @@ public class MainFragment extends Fragment {
                 }
             } else {
                 // كم يوم فاضل على رمضان
-                android.icu.util.IslamicCalendar nextRamadan = new android.icu.util.IslamicCalendar();
-                nextRamadan.set(android.icu.util.Calendar.MONTH, 8);
-                nextRamadan.set(android.icu.util.Calendar.DAY_OF_MONTH, 1);
-                if (hijriMonth >= 8) {
-                    nextRamadan.set(android.icu.util.Calendar.YEAR, hijriYear + 1);
-                } else {
-                    nextRamadan.set(android.icu.util.Calendar.YEAR, hijriYear);
-                }
-                long diffMs = nextRamadan.getTimeInMillis() - islamicCalendar.getTimeInMillis();
+                int targetRamadanYear = (hijriMonth >= 8) ? hijriYear + 1 : hijriYear;
+                net.time4j.calendar.HijriCalendar nextRamadan = net.time4j.calendar.HijriCalendar.of(
+                        net.time4j.calendar.HijriCalendar.VARIANT_UMALQURA, targetRamadanYear, 9, 1);
+                long daysToRamadan = hijriToday.until(nextRamadan, net.time4j.calendar.HijriCalendar.Unit.DAYS);
                 long daysToRamadan = diffMs / (1000 * 60 * 60 * 24);
                 textRamadanInfo.setText("🌙 " + hijriMonths[hijriMonth]);
                 textCountdownLabel.setText("باقي على رمضان");
@@ -240,8 +239,10 @@ public class MainFragment extends Fragment {
             public void run() {
                 if (getActivity() == null || !isAdded()) return;
                 try {
-                    android.icu.util.IslamicCalendar islamicCalendar = new android.icu.util.IslamicCalendar();
-                    int hijriMonth = islamicCalendar.get(android.icu.util.Calendar.MONTH);
+                    net.time4j.calendar.HijriCalendar islamicCalendar = net.time4j.calendar.HijriCalendar.nowInSystemTime(
+                            net.time4j.calendar.HijriCalendar.VARIANT_UMALQURA,
+                            net.time4j.calendar.HijriAdjustment.NONE);
+                    int hijriMonth = islamicCalendar.getMonth().getValue() - 1;
                     boolean isRamadan = (hijriMonth == 8);
 
                     if (isRamadan) {
