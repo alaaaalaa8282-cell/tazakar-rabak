@@ -219,7 +219,11 @@ public class MainFragment extends Fragment {
                 int targetRamadanYear = (hijriMonth >= 8) ? hijriYear + 1 : hijriYear;
                 net.time4j.calendar.HijriCalendar nextRamadan = net.time4j.calendar.HijriCalendar.of(
                         net.time4j.calendar.HijriCalendar.VARIANT_UMALQURA, targetRamadanYear, 9, 1);
-                long daysToRamadan = hijriToday.until(nextRamadan, net.time4j.calendar.HijriCalendar.Unit.DAYS);
+                long diffMs = nextRamadan.transform(net.time4j.PlainDate.class)
+    .toTemporalAccessor().getLong(java.time.temporal.ChronoField.EPOCH_DAY)
+    - hijriToday.transform(net.time4j.PlainDate.class)
+    .toTemporalAccessor().getLong(java.time.temporal.ChronoField.EPOCH_DAY);
+long daysToRamadan = diffMs;
                 long daysToRamadan = diffMs / (1000 * 60 * 60 * 24);
                 textRamadanInfo.setText("🌙 " + hijriMonths[hijriMonth]);
                 textCountdownLabel.setText("باقي على رمضان");
