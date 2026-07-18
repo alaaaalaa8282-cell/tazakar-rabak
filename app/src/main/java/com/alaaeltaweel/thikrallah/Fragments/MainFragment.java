@@ -239,9 +239,10 @@ public class MainFragment extends Fragment {
             public void run() {
                 if (getActivity() == null || !isAdded()) return;
                 try {
-                    net.time4j.calendar.HijriCalendar islamicCalendar = net.time4j.calendar.HijriCalendar.nowInSystemTime(
-                            net.time4j.calendar.HijriCalendar.VARIANT_UMALQURA,
-                            net.time4j.calendar.HijriCalendar.VARIANT_UMALQURA);
+                    net.time4j.calendar.HijriCalendar islamicCalendar = 
+    net.time4j.engine.SystemClock.inLocalView().today().transform(
+        net.time4j.calendar.HijriCalendar.class,
+        net.time4j.calendar.HijriCalendar.VARIANT_UMALQURA);
                     int hijriMonth = islamicCalendar.getMonth().getValue() - 1;
                     boolean isRamadan = (hijriMonth == 8);
 
