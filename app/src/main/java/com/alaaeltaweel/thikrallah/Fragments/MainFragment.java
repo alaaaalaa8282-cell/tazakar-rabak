@@ -185,7 +185,7 @@ public class MainFragment extends Fragment {
             net.time4j.calendar.HijriCalendar hijriToday =
                     net.time4j.calendar.HijriCalendar.nowInSystemTime(
                             net.time4j.calendar.HijriCalendar.VARIANT_UMALQURA,
-                            net.time4j.calendar.HijriAdjustment.NONE);
+                         net.time4j.calendar.HijriCalendar.VARIANT_UMALQURA);
             if (hijriOffset != 0) {
                 hijriToday = hijriToday.plus(hijriOffset, net.time4j.calendar.HijriCalendar.Unit.DAYS);
             }
@@ -241,7 +241,7 @@ public class MainFragment extends Fragment {
                 try {
                     net.time4j.calendar.HijriCalendar islamicCalendar = net.time4j.calendar.HijriCalendar.nowInSystemTime(
                             net.time4j.calendar.HijriCalendar.VARIANT_UMALQURA,
-                            net.time4j.calendar.HijriAdjustment.NONE);
+                            net.time4j.calendar.HijriCalendar.VARIANT_UMALQURA);
                     int hijriMonth = islamicCalendar.getMonth().getValue() - 1;
                     boolean isRamadan = (hijriMonth == 8);
 
