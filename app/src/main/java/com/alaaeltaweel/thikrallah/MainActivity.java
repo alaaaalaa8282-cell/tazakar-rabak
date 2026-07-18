@@ -560,14 +560,16 @@ public class MainActivity extends AppCompatActivity implements MainInterface, Lo
         PreferenceManager.setDefaultValues(this.getApplicationContext(), R.xml.preferences_general, true);
         mcontext = this.getApplicationContext();
               // ✅ تنظيف لمرة واحدة لتسجيلات تنبيهات قديمة ممكن تكون اتسجلت غلط
-        if (!mPrefs.getBoolean("cleared_stale_notification_flags_v1", false)) {
+        if (!mPrefs.getBoolean("cleared_stale_notification_flags_v2", false)) {
             SharedPreferences.Editor cleanupEditor = mPrefs.edit();
             String[] prayerKeysToClean = {"fajr", "dhuhr", "asr", "maghrib", "isha"};
             for (String pk : prayerKeysToClean) {
                 cleanupEditor.remove("last_preathan_time_" + pk);
                 cleanupEditor.remove("last_iqama_time_" + pk);
             }
-            cleanupEditor.putBoolean("cleared_stale_notification_flags_v1", true);
+            cleanupEditor.remove("next_general_thikr_scheduled_time");
+            cleanupEditor.remove("last_claimed_general_thikr_occurrence");
+            cleanupEditor.putBoolean("cleared_stale_notification_flags_v2", true);
             cleanupEditor.apply();
         }
         populateBuiltinDatabase();
