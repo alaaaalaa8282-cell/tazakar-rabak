@@ -160,7 +160,16 @@ private void showPreAthanNotification(Context context, String prayerKey) {
     int soundRes;
     switch (prayerKey) {
         case "fajr":    prayerNameAr = "الفجر";  soundRes = R.raw.pre_fajr;    break;
-        case "dhuhr":   prayerNameAr = "الظهر";  soundRes = R.raw.pre_dhuhr;   break;
+        case "dhuhr":
+            java.util.Calendar preCalCheck = java.util.Calendar.getInstance();
+            if (preCalCheck.get(java.util.Calendar.DAY_OF_WEEK) == java.util.Calendar.FRIDAY) {
+                prayerNameAr = "الجمعة";
+                soundRes = R.raw.pre_gomaa;
+            } else {
+                prayerNameAr = "الظهر";
+                soundRes = R.raw.pre_dhuhr;
+            }
+            break;
         case "asr":     prayerNameAr = "العصر";  soundRes = R.raw.pre_asr;     break;
         case "maghrib": prayerNameAr = "المغرب"; soundRes = R.raw.pre_maghrib; break;
         case "isha":    prayerNameAr = "العشاء"; soundRes = R.raw.pre_isha;    break;
