@@ -229,11 +229,18 @@ private void showPreAthanNotification(Context context, String prayerKey) {
     String prayerNameAr;
     switch (prayerKey) {
         case "fajr":    prayerNameAr = "الفجر";  break;
-        case "dhuhr":   prayerNameAr = "الظهر";  break;
-        case "asr":     prayerNameAr = "العصر";  break;
-        case "maghrib": prayerNameAr = "المغرب"; break;
-        case "isha":    prayerNameAr = "العشاء"; break;
-        default:        prayerNameAr = "الصلاة"; break;
+            case "dhuhr":
+                java.util.Calendar iqamaCalCheck = java.util.Calendar.getInstance();
+                if (iqamaCalCheck.get(java.util.Calendar.DAY_OF_WEEK) == java.util.Calendar.FRIDAY) {
+                    prayerNameAr = "الجمعة";
+                } else {
+                    prayerNameAr = "الظهر";
+                }
+                break;
+            case "asr":     prayerNameAr = "العصر";  break;
+            case "maghrib": prayerNameAr = "المغرب"; break;
+            case "isha":    prayerNameAr = "العشاء"; break;
+            default:        prayerNameAr = "الصلاة"; break;
     }
 
     int soundRes;
