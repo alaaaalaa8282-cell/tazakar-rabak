@@ -41,12 +41,15 @@ import com.alaaeltaweel.thikrallah.R;
 
 import android.media.AudioManager;
 
+import com.alaaeltaweel.thikrallah.ThikrMediaPlayerService;
+
+
 public class ThikrAlarmReceiver extends BroadcastReceiver {
     String TAG = "ThikrAlarmReceiver";
 
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+     public void onReceive(Context context, Intent intent) {
 
         Log.d(TAG, "onrecieve called");
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
@@ -139,13 +142,31 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                 Log.d(TAG, "Cannot check call state");
             }
 
+            // ✅ شغّل صوت الأذان مباشرة من المنبه نفسه - مستقل عن نجاح فتح الشاشة
+            // القفل ده مشترك مع AthanScreenActivity عشان الصوت ميتكررش لو الشاشة فتحت بعده
+            if (!isInCall) {
+                SharedPreferences soundPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+                soundPrefs.edit().putLong("athan_sound_triggered_" + dataType, nowMs).commit();
+
+                Bundle soundData = new Bundle();
+                soundData.putInt("ACTION", ThikrMediaPlayerService.MEDIA_PLAYER_PLAY);
+                soundData.putString("com.alaaeltaweel.thikrallah.datatype", dataType);
+                soundData.putBoolean("isUserAction", false);
+                Intent soundIntent = new Intent(context, ThikrService.class).putExtras(soundData);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(soundIntent);
+                } else {
+                    context.startService(soundIntent);
+                }
+            }
+
             Intent athanIntent = new Intent(context, AthanScreenActivity.class);
             athanIntent.putExtras(data);
             athanIntent.putExtra("isCallInProgress", isInCall);
             athanIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_CLEAR_TOP |
                     Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            
+
             context.startActivity(athanIntent);
             
         } else {
@@ -172,12 +193,24 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                     android.app.PendingIntent.FLAG_IMMUTABLE);
                 alarmManager.setExactAndAllowWhileIdle(
                     android.app.AlarmManager.RTC_WAKEUP,
-                    System.currentTimeMillis() + (15 * 60 * 1000),
+                    System.currentTimeMillis() + (10 * 60 * 1000),
                     pendingIntent);
                 return;
             }
 
-            
+            // ✅ حماية من تكرار الذكر العام لو المنبه الحقيقي والحارس الذاتي اشتغلوا مع بعض
+            if (MainActivity.DATA_TYPE_GENERAL_THIKR.equals(dataType)) {
+                SharedPreferences generalPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+                long lastGeneralAttempt = generalPrefs.getLong("last_general_thikr_receiver_time", 0);
+                long nowMs2 = System.currentTimeMillis();
+                if (nowMs2 - lastGeneralAttempt < 60 * 1000L) {
+                    Log.d(TAG, "General thikr fired too close to last one, skipping duplicate");
+                    if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
+                    return;
+                }
+                generalPrefs.edit().putLong("last_general_thikr_receiver_time", nowMs2).commit();
+            }
+
             // باقي التنبيهات تشتغل عادي
             data.putBoolean("isUserAction", false);
             Intent intent2 = new Intent(context, ThikrService.class).putExtras(data);
