@@ -68,7 +68,12 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
 
             String prayerName = data.getString("prayer_name", "fajr");
             Log.d("ThikrAlarmReceiver", "pre-athan prayer_name: " + prayerName);
-
+// ✅ لا تشتغل التنبيهات وقت المكالمات (شبكة أو واتساب/ماسنجر)
+            if (isInCallLite(context)) {
+                Log.d(TAG, "Call in progress, skipping pre-athan notification: " + prayerName);
+                if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
+                return;
+            }
             // ✅ حماية تابعة لإعداد المستخدم - لو غيّر عدد الدقايق، تسمح للتنبيه يشتغل تاني حتى في نفس اليوم
             SharedPreferences prePrefs = PreferenceManager.getDefaultSharedPreferences(context);
             long lastPreTime = prePrefs.getLong("last_preathan_time_" + prayerName, 0);
@@ -101,7 +106,12 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
         if ("iqama".equals(dataType)) {
             String prayerName = data.getString("prayer_name", "fajr");
             int iqamaSound = data.getInt("iqama_sound", 1);
-
+     // ✅ لا تشتغل التنبيهات وقت المكالمات (شبكة أو واتساب/ماسنجر)
+            if (isInCallLite(context)) {
+                Log.d(TAG, "Call in progress, skipping iqama notification: " + prayerName);
+                if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
+                return;
+            }
             // ✅ حماية تابعة لإعداد المستخدم - لو غيّر عدد الدقايق، تسمح للإقامة تشتغل تاني حتى في نفس اليوم
             SharedPreferences iqamaPrefs = PreferenceManager.getDefaultSharedPreferences(context);
             long lastIqamaTime = iqamaPrefs.getLong("last_iqama_time_" + prayerName, 0);
@@ -385,4 +395,20 @@ PendingIntent pi = PendingIntent.getBroadcast(context, prayerKey.hashCode() + 22
                 .putLong("last_iqama_play_time", System.currentTimeMillis()).apply();
     nm.notify(("iqama_" + prayerKey).hashCode(), builder.build());
     }
+    private boolean isInCallLite(Context context) {
+        try {
+            TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            if (tm != null && tm.getCallState() != TelephonyManager.CALL_STATE_IDLE) {
+                return true;
+            }
+            AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            if (am != null && am.getMode() == AudioManager.MODE_IN_COMMUNICATION) {
+                return true;
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Cannot check call state in isInCallLite");
+        }
+        return false;
+    }
 }
+
