@@ -41,15 +41,12 @@ import com.alaaeltaweel.thikrallah.R;
 
 import android.media.AudioManager;
 
-import com.alaaeltaweel.thikrallah.ThikrMediaPlayerService;
-
-
 public class ThikrAlarmReceiver extends BroadcastReceiver {
     String TAG = "ThikrAlarmReceiver";
 
 
     @Override
-     public void onReceive(Context context, Intent intent) {
+    public void onReceive(Context context, Intent intent) {
 
         Log.d(TAG, "onrecieve called");
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
@@ -63,77 +60,51 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
 
         String dataType = data.getString("com.alaaeltaweel.thikrallah.datatype");
 
-  // ✅ تنبيه قبل الصلاة
+        // ✅ تنبيه قبل الصلاة بـ 15 دقيقة
         if (dataType != null && dataType.startsWith(MyAlarmsManager.DATA_TYPE_PRE_ATHAN)) {
 
             String prayerName = data.getString("prayer_name", "fajr");
             Log.d("ThikrAlarmReceiver", "pre-athan prayer_name: " + prayerName);
-// ✅ لا تشتغل التنبيهات وقت المكالمات (شبكة أو واتساب/ماسنجر)
-            if (isInCallLite(context)) {
-                Log.d(TAG, "Call in progress, skipping pre-athan notification: " + prayerName);
-                if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
-                return;
-            }
-            // ✅ حماية تابعة لإعداد المستخدم - لو غيّر عدد الدقايق، تسمح للتنبيه يشتغل تاني حتى في نفس اليوم
+
+            // ✅ منع تكرار تنبيه اقتراب الصلاة في نفس اليوم (يحمي لو الـ watchdog اشتغل كمان)
             SharedPreferences prePrefs = PreferenceManager.getDefaultSharedPreferences(context);
             long lastPreTime = prePrefs.getLong("last_preathan_time_" + prayerName, 0);
-            String currentPreMinutes = prePrefs.getString("preAthanMinutes_" + prayerName, "15");
-            String lastPreMinutesUsed = prePrefs.getString("last_preathan_minutes_used_" + prayerName, "");
             Calendar lastPreCal = Calendar.getInstance();
             lastPreCal.setTimeInMillis(lastPreTime);
             Calendar nowPreCal = Calendar.getInstance();
-            boolean samePreOccurrence = lastPreTime > 0 &&
+            if (lastPreTime > 0 &&
                 lastPreCal.get(Calendar.DAY_OF_YEAR) == nowPreCal.get(Calendar.DAY_OF_YEAR) &&
-                lastPreCal.get(Calendar.YEAR) == nowPreCal.get(Calendar.YEAR) &&
-                currentPreMinutes.equals(lastPreMinutesUsed);
-            if (samePreOccurrence) {
-                Log.d(TAG, "Pre-athan already shown for this exact setting today, skipping: " + prayerName);
+                lastPreCal.get(Calendar.YEAR) == nowPreCal.get(Calendar.YEAR)) {
+                Log.d(TAG, "Pre-athan already shown today, skipping: " + prayerName);
                 if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
                 return;
             }
-            prePrefs.edit()
-                    .putLong("last_preathan_time_" + prayerName, System.currentTimeMillis())
-                    .putString("last_preathan_minutes_used_" + prayerName, currentPreMinutes)
-                    .apply();
+            prePrefs.edit().putLong("last_preathan_time_" + prayerName, System.currentTimeMillis()).apply();
 
             showPreAthanNotification(context, prayerName);
             if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
             return;
 
         }
-         
-         // ✅ الإقامة
+        // ✅ الإقامة
         if ("iqama".equals(dataType)) {
-            android.widget.Toast.makeText(context, "IQAMA RECEIVED", android.widget.Toast.LENGTH_LONG).show();
             String prayerName = data.getString("prayer_name", "fajr");
             int iqamaSound = data.getInt("iqama_sound", 1);
-     // ✅ لا تشتغل التنبيهات وقت المكالمات (شبكة أو واتساب/ماسنجر)
-            if (isInCallLite(context)) {
-                Log.d(TAG, "Call in progress, skipping iqama notification: " + prayerName);
-                if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
-                return;
-            }
-            // ✅ حماية تابعة لإعداد المستخدم - لو غيّر عدد الدقايق، تسمح للإقامة تشتغل تاني حتى في نفس اليوم
+
+            // ✅ منع تكرار الإقامة في نفس اليوم (يحمي لو الـ watchdog اشتغل كمان)
             SharedPreferences iqamaPrefs = PreferenceManager.getDefaultSharedPreferences(context);
             long lastIqamaTime = iqamaPrefs.getLong("last_iqama_time_" + prayerName, 0);
-            String currentIqamaMinutes = iqamaPrefs.getString("iqamaMinutes_" + prayerName, "10");
-            String lastIqamaMinutesUsed = iqamaPrefs.getString("last_iqama_minutes_used_" + prayerName, "");
             Calendar lastIqamaCal = Calendar.getInstance();
             lastIqamaCal.setTimeInMillis(lastIqamaTime);
             Calendar nowIqamaCal = Calendar.getInstance();
-            boolean sameIqamaOccurrence = lastIqamaTime > 0 &&
+            if (lastIqamaTime > 0 &&
                 lastIqamaCal.get(Calendar.DAY_OF_YEAR) == nowIqamaCal.get(Calendar.DAY_OF_YEAR) &&
-                lastIqamaCal.get(Calendar.YEAR) == nowIqamaCal.get(Calendar.YEAR) &&
-                currentIqamaMinutes.equals(lastIqamaMinutesUsed);
-            if (sameIqamaOccurrence) {
-                Log.d(TAG, "Iqama already shown for this exact setting today, skipping: " + prayerName);
+                lastIqamaCal.get(Calendar.YEAR) == nowIqamaCal.get(Calendar.YEAR)) {
+                Log.d(TAG, "Iqama already shown today, skipping: " + prayerName);
                 if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
                 return;
             }
-            iqamaPrefs.edit()
-                    .putLong("last_iqama_time_" + prayerName, System.currentTimeMillis())
-                    .putString("last_iqama_minutes_used_" + prayerName, currentIqamaMinutes)
-                    .apply();
+            iqamaPrefs.edit().putLong("last_iqama_time_" + prayerName, System.currentTimeMillis()).apply();
 
             showIqamaNotification(context, prayerName, iqamaSound);
             if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
@@ -168,31 +139,13 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                 Log.d(TAG, "Cannot check call state");
             }
 
-            // ✅ شغّل صوت الأذان مباشرة من المنبه نفسه - مستقل عن نجاح فتح الشاشة
-            // القفل ده مشترك مع AthanScreenActivity عشان الصوت ميتكررش لو الشاشة فتحت بعده
-            if (!isInCall) {
-                SharedPreferences soundPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-                soundPrefs.edit().putLong("athan_sound_triggered_" + dataType, nowMs).commit();
-
-                Bundle soundData = new Bundle();
-                soundData.putInt("ACTION", ThikrMediaPlayerService.MEDIA_PLAYER_PLAY);
-                soundData.putString("com.alaaeltaweel.thikrallah.datatype", dataType);
-                soundData.putBoolean("isUserAction", false);
-                Intent soundIntent = new Intent(context, ThikrService.class).putExtras(soundData);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    context.startForegroundService(soundIntent);
-                } else {
-                    context.startService(soundIntent);
-                }
-            }
-
             Intent athanIntent = new Intent(context, AthanScreenActivity.class);
             athanIntent.putExtras(data);
             athanIntent.putExtra("isCallInProgress", isInCall);
             athanIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_CLEAR_TOP |
                     Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
+            
             context.startActivity(athanIntent);
             
         } else {
@@ -219,24 +172,12 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                     android.app.PendingIntent.FLAG_IMMUTABLE);
                 alarmManager.setExactAndAllowWhileIdle(
                     android.app.AlarmManager.RTC_WAKEUP,
-                    System.currentTimeMillis() + (10 * 60 * 1000),
+                    System.currentTimeMillis() + (15 * 60 * 1000),
                     pendingIntent);
                 return;
             }
 
-            // ✅ حماية من تكرار الذكر العام لو المنبه الحقيقي والحارس الذاتي اشتغلوا مع بعض
-            if (MainActivity.DATA_TYPE_GENERAL_THIKR.equals(dataType)) {
-                SharedPreferences generalPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-                long lastGeneralAttempt = generalPrefs.getLong("last_general_thikr_receiver_time", 0);
-                long nowMs2 = System.currentTimeMillis();
-                if (nowMs2 - lastGeneralAttempt < 60 * 1000L) {
-                    Log.d(TAG, "General thikr fired too close to last one, skipping duplicate");
-                    if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
-                    return;
-                }
-                generalPrefs.edit().putLong("last_general_thikr_receiver_time", nowMs2).commit();
-            }
-
+            
             // باقي التنبيهات تشتغل عادي
             data.putBoolean("isUserAction", false);
             Intent intent2 = new Intent(context, ThikrService.class).putExtras(data);
@@ -327,94 +268,73 @@ PendingIntent pendingIntent = PendingIntent.getBroadcast(context, prayerKey.hash
                dataType.equals(MainActivity.DATA_TYPE_ATHAN5);
     }
     private void showIqamaNotification(Context context, String prayerKey, int soundChoice) {
-        try {
-            String prayerNameAr;
-            switch (prayerKey) {
-                case "fajr":    prayerNameAr = "الفجر";  break;
-                case "dhuhr":   prayerNameAr = "الظهر";  break;
-                case "asr":     prayerNameAr = "العصر";  break;
-                case "maghrib": prayerNameAr = "المغرب"; break;
-                case "isha":    prayerNameAr = "العشاء"; break;
-                default:        prayerNameAr = "الصلاة"; break;
-            }
-
-            int soundRes;
-            switch (soundChoice) {
-                case 2:  soundRes = R.raw.iqama_2; break;
-                case 3:  soundRes = R.raw.iqama_3; break;
-                default: soundRes = R.raw.iqama_1; break;
-            }
-
-            android.net.Uri soundUri = android.net.Uri.parse(
-                "android.resource://" + context.getPackageName() + "/" + soundRes);
-
-            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            if (audioManager != null) {
-                audioManager.requestAudioFocus(null,
-                    AudioManager.STREAM_ALARM,
-                    AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-            }
-
-            String channelId = "iqama_channel_v2_s" + soundChoice;
-            NotificationManager nm =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationChannel channel = new NotificationChannel(
-                    channelId, "إقامة الصلاة", NotificationManager.IMPORTANCE_HIGH);
-                channel.setSound(soundUri,
-                    new android.media.AudioAttributes.Builder()
-                        .setUsage(android.media.AudioAttributes.USAGE_ALARM)
-                        .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                        .build());
-                channel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-                nm.createNotificationChannel(channel);
-            }
-
-            Intent stopIntent = new Intent("com.alaaeltaweel.thikrallah.STOP_SOUND");
-            PendingIntent pi = PendingIntent.getBroadcast(context, prayerKey.hashCode() + 2222,
-                    stopIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-            Intent wakeIntent = new Intent(context, WakeUpActivity.class);
-            wakeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent wakePi = PendingIntent.getActivity(context, prayerKey.hashCode() + 8888,
-                wakeIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.drawable.ic_launcher)
-                .setContentTitle("إقامة صلاة " + prayerNameAr)
-                .setContentText("حان وقت إقامة الصلاة")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true)
-                .setTimeoutAfter(3 * 60 * 1000L)
-                .setFullScreenIntent(wakePi, true)
-                .setSound(soundUri)
-                .setContentIntent(pi);
-
-            PreferenceManager.getDefaultSharedPreferences(context).edit()
-                    .putLong("last_iqama_play_time", System.currentTimeMillis()).apply();
-            nm.notify(("iqama_" + prayerKey).hashCode(), builder.build());
-
-            android.widget.Toast.makeText(context, "IQAMA NOTIFY SUCCESS", android.widget.Toast.LENGTH_LONG).show();
-
-        } catch (Exception e) {
-            android.widget.Toast.makeText(context, "IQAMA ERROR: " + e.getClass().getSimpleName() + " - " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
-        }
+    String prayerNameAr;
+    switch (prayerKey) {
+        case "fajr":    prayerNameAr = "الفجر";  break;
+        case "dhuhr":   prayerNameAr = "الظهر";  break;
+        case "asr":     prayerNameAr = "العصر";  break;
+        case "maghrib": prayerNameAr = "المغرب"; break;
+        case "isha":    prayerNameAr = "العشاء"; break;
+        default:        prayerNameAr = "الصلاة"; break;
     }
-    private boolean isInCallLite(Context context) {
-        try {
-            TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            if (tm != null && tm.getCallState() != TelephonyManager.CALL_STATE_IDLE) {
-                return true;
-            }
-            AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            if (am != null && am.getMode() == AudioManager.MODE_IN_COMMUNICATION) {
-                return true;
-            }
-        } catch (Exception e) {
-            Log.d(TAG, "Cannot check call state in isInCallLite");
-        }
-        return false;
+
+    int soundRes;
+    switch (soundChoice) {
+        case 2:  soundRes = R.raw.iqama_2; break;
+        case 3:  soundRes = R.raw.iqama_3; break;
+        default: soundRes = R.raw.iqama_1; break;
+    }
+
+    android.net.Uri soundUri = android.net.Uri.parse(
+        "android.resource://" + context.getPackageName() + "/" + soundRes);
+
+        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+if (audioManager != null) {
+    audioManager.requestAudioFocus(null,
+        AudioManager.STREAM_ALARM,
+        AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+}
+        
+    String channelId = "iqama_channel_v2_s" + soundChoice;
+    NotificationManager nm =
+        (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        NotificationChannel channel = new NotificationChannel(
+            channelId, "إقامة الصلاة", NotificationManager.IMPORTANCE_HIGH);
+        channel.setSound(soundUri,
+            new android.media.AudioAttributes.Builder()
+                .setUsage(android.media.AudioAttributes.USAGE_ALARM)
+                .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build());
+       channel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+        nm.createNotificationChannel(channel);
+    
+    }
+        
+
+    Intent stopIntent = new Intent("com.alaaeltaweel.thikrallah.STOP_SOUND");
+PendingIntent pi = PendingIntent.getBroadcast(context, prayerKey.hashCode() + 2222,
+        stopIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+    Intent wakeIntent = new Intent(context, WakeUpActivity.class);
+    wakeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    PendingIntent wakePi = PendingIntent.getActivity(context, prayerKey.hashCode() + 8888,
+        wakeIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+    NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
+        .setSmallIcon(R.drawable.ic_launcher)
+        .setContentTitle("إقامة صلاة " + prayerNameAr)
+        .setContentText("حان وقت إقامة الصلاة")
+        .setPriority(NotificationCompat.PRIORITY_HIGH)
+        .setAutoCancel(true)
+        .setTimeoutAfter(3 * 60 * 1000L) 
+        .setFullScreenIntent(wakePi, true) 
+        .setSound(soundUri)
+        .setContentIntent(pi); 
+
+        PreferenceManager.getDefaultSharedPreferences(context).edit()
+                .putLong("last_iqama_play_time", System.currentTimeMillis()).apply();
+    nm.notify(("iqama_" + prayerKey).hashCode(), builder.build());
     }
 }
-
