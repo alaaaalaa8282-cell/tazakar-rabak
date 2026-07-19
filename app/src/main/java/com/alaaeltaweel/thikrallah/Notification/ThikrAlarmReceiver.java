@@ -327,75 +327,79 @@ PendingIntent pendingIntent = PendingIntent.getBroadcast(context, prayerKey.hash
                dataType.equals(MainActivity.DATA_TYPE_ATHAN5);
     }
     private void showIqamaNotification(Context context, String prayerKey, int soundChoice) {
-   android.widget.Toast.makeText(context, "IQAMA NOTIFICATION BUILDING", android.widget.Toast.LENGTH_LONG).show();
-        String prayerNameAr;
-    switch (prayerKey) {
-        case "fajr":    prayerNameAr = "الفجر";  break;
-        case "dhuhr":   prayerNameAr = "الظهر";  break;
-        case "asr":     prayerNameAr = "العصر";  break;
-        case "maghrib": prayerNameAr = "المغرب"; break;
-        case "isha":    prayerNameAr = "العشاء"; break;
-        default:        prayerNameAr = "الصلاة"; break;
-    }
+        try {
+            String prayerNameAr;
+            switch (prayerKey) {
+                case "fajr":    prayerNameAr = "الفجر";  break;
+                case "dhuhr":   prayerNameAr = "الظهر";  break;
+                case "asr":     prayerNameAr = "العصر";  break;
+                case "maghrib": prayerNameAr = "المغرب"; break;
+                case "isha":    prayerNameAr = "العشاء"; break;
+                default:        prayerNameAr = "الصلاة"; break;
+            }
 
-    int soundRes;
-    switch (soundChoice) {
-        case 2:  soundRes = R.raw.iqama_2; break;
-        case 3:  soundRes = R.raw.iqama_3; break;
-        default: soundRes = R.raw.iqama_1; break;
-    }
+            int soundRes;
+            switch (soundChoice) {
+                case 2:  soundRes = R.raw.iqama_2; break;
+                case 3:  soundRes = R.raw.iqama_3; break;
+                default: soundRes = R.raw.iqama_1; break;
+            }
 
-    android.net.Uri soundUri = android.net.Uri.parse(
-        "android.resource://" + context.getPackageName() + "/" + soundRes);
+            android.net.Uri soundUri = android.net.Uri.parse(
+                "android.resource://" + context.getPackageName() + "/" + soundRes);
 
-        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-if (audioManager != null) {
-    audioManager.requestAudioFocus(null,
-        AudioManager.STREAM_ALARM,
-        AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-}
-        
-    String channelId = "iqama_channel_v2_s" + soundChoice;
-    NotificationManager nm =
-        (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            if (audioManager != null) {
+                audioManager.requestAudioFocus(null,
+                    AudioManager.STREAM_ALARM,
+                    AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+            }
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        NotificationChannel channel = new NotificationChannel(
-            channelId, "إقامة الصلاة", NotificationManager.IMPORTANCE_HIGH);
-        channel.setSound(soundUri,
-            new android.media.AudioAttributes.Builder()
-                .setUsage(android.media.AudioAttributes.USAGE_ALARM)
-                .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build());
-       channel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-        nm.createNotificationChannel(channel);
-    
-    }
-        
+            String channelId = "iqama_channel_v2_s" + soundChoice;
+            NotificationManager nm =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-    Intent stopIntent = new Intent("com.alaaeltaweel.thikrallah.STOP_SOUND");
-PendingIntent pi = PendingIntent.getBroadcast(context, prayerKey.hashCode() + 2222,
-        stopIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel channel = new NotificationChannel(
+                    channelId, "إقامة الصلاة", NotificationManager.IMPORTANCE_HIGH);
+                channel.setSound(soundUri,
+                    new android.media.AudioAttributes.Builder()
+                        .setUsage(android.media.AudioAttributes.USAGE_ALARM)
+                        .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build());
+                channel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+                nm.createNotificationChannel(channel);
+            }
 
-    Intent wakeIntent = new Intent(context, WakeUpActivity.class);
-    wakeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    PendingIntent wakePi = PendingIntent.getActivity(context, prayerKey.hashCode() + 8888,
-        wakeIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            Intent stopIntent = new Intent("com.alaaeltaweel.thikrallah.STOP_SOUND");
+            PendingIntent pi = PendingIntent.getBroadcast(context, prayerKey.hashCode() + 2222,
+                    stopIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-    NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
-        .setSmallIcon(R.drawable.ic_launcher)
-        .setContentTitle("إقامة صلاة " + prayerNameAr)
-        .setContentText("حان وقت إقامة الصلاة")
-        .setPriority(NotificationCompat.PRIORITY_HIGH)
-        .setAutoCancel(true)
-        .setTimeoutAfter(3 * 60 * 1000L) 
-        .setFullScreenIntent(wakePi, true) 
-        .setSound(soundUri)
-        .setContentIntent(pi); 
+            Intent wakeIntent = new Intent(context, WakeUpActivity.class);
+            wakeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            PendingIntent wakePi = PendingIntent.getActivity(context, prayerKey.hashCode() + 8888,
+                wakeIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        PreferenceManager.getDefaultSharedPreferences(context).edit()
-                .putLong("last_iqama_play_time", System.currentTimeMillis()).apply();
-    nm.notify(("iqama_" + prayerKey).hashCode(), builder.build());
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle("إقامة صلاة " + prayerNameAr)
+                .setContentText("حان وقت إقامة الصلاة")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+                .setTimeoutAfter(3 * 60 * 1000L)
+                .setFullScreenIntent(wakePi, true)
+                .setSound(soundUri)
+                .setContentIntent(pi);
+
+            PreferenceManager.getDefaultSharedPreferences(context).edit()
+                    .putLong("last_iqama_play_time", System.currentTimeMillis()).apply();
+            nm.notify(("iqama_" + prayerKey).hashCode(), builder.build());
+
+            android.widget.Toast.makeText(context, "IQAMA NOTIFY SUCCESS", android.widget.Toast.LENGTH_LONG).show();
+
+        } catch (Exception e) {
+            android.widget.Toast.makeText(context, "IQAMA ERROR: " + e.getClass().getSimpleName() + " - " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
+        }
     }
     private boolean isInCallLite(Context context) {
         try {
