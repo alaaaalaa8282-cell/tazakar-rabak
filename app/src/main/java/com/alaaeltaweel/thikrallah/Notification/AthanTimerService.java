@@ -213,7 +213,7 @@ public class AthanTimerService extends Service {
 
 		min = min / 1000;
 		int hours = (int) Math.floor(((double) min) / 3600);
-		long minutes = (min - hours * 3600) / 60 + 1;
+		long minutes = (min - hours * 3600) / 60;
 
 		String hoursText = "";
 		String minutesText = "";
