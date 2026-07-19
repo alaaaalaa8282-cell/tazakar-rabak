@@ -104,6 +104,7 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
          
          // ✅ الإقامة
         if ("iqama".equals(dataType)) {
+            android.widget.Toast.makeText(context, "IQAMA RECEIVED", android.widget.Toast.LENGTH_LONG).show();
             String prayerName = data.getString("prayer_name", "fajr");
             int iqamaSound = data.getInt("iqama_sound", 1);
      // ✅ لا تشتغل التنبيهات وقت المكالمات (شبكة أو واتساب/ماسنجر)
@@ -326,7 +327,8 @@ PendingIntent pendingIntent = PendingIntent.getBroadcast(context, prayerKey.hash
                dataType.equals(MainActivity.DATA_TYPE_ATHAN5);
     }
     private void showIqamaNotification(Context context, String prayerKey, int soundChoice) {
-    String prayerNameAr;
+   android.widget.Toast.makeText(context, "IQAMA NOTIFICATION BUILDING", android.widget.Toast.LENGTH_LONG).show();
+        String prayerNameAr;
     switch (prayerKey) {
         case "fajr":    prayerNameAr = "الفجر";  break;
         case "dhuhr":   prayerNameAr = "الظهر";  break;
