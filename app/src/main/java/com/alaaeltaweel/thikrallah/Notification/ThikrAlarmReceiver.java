@@ -63,51 +63,66 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
 
         String dataType = data.getString("com.alaaeltaweel.thikrallah.datatype");
 
-        // ✅ تنبيه قبل الصلاة بـ 15 دقيقة
+  // ✅ تنبيه قبل الصلاة
         if (dataType != null && dataType.startsWith(MyAlarmsManager.DATA_TYPE_PRE_ATHAN)) {
 
             String prayerName = data.getString("prayer_name", "fajr");
             Log.d("ThikrAlarmReceiver", "pre-athan prayer_name: " + prayerName);
 
-            // ✅ منع تكرار تنبيه اقتراب الصلاة في نفس اليوم (يحمي لو الـ watchdog اشتغل كمان)
+            // ✅ حماية تابعة لإعداد المستخدم - لو غيّر عدد الدقايق، تسمح للتنبيه يشتغل تاني حتى في نفس اليوم
             SharedPreferences prePrefs = PreferenceManager.getDefaultSharedPreferences(context);
             long lastPreTime = prePrefs.getLong("last_preathan_time_" + prayerName, 0);
+            String currentPreMinutes = prePrefs.getString("preAthanMinutes_" + prayerName, "15");
+            String lastPreMinutesUsed = prePrefs.getString("last_preathan_minutes_used_" + prayerName, "");
             Calendar lastPreCal = Calendar.getInstance();
             lastPreCal.setTimeInMillis(lastPreTime);
             Calendar nowPreCal = Calendar.getInstance();
-            if (lastPreTime > 0 &&
+            boolean samePreOccurrence = lastPreTime > 0 &&
                 lastPreCal.get(Calendar.DAY_OF_YEAR) == nowPreCal.get(Calendar.DAY_OF_YEAR) &&
-                lastPreCal.get(Calendar.YEAR) == nowPreCal.get(Calendar.YEAR)) {
-                Log.d(TAG, "Pre-athan already shown today, skipping: " + prayerName);
+                lastPreCal.get(Calendar.YEAR) == nowPreCal.get(Calendar.YEAR) &&
+                currentPreMinutes.equals(lastPreMinutesUsed);
+            if (samePreOccurrence) {
+                Log.d(TAG, "Pre-athan already shown for this exact setting today, skipping: " + prayerName);
                 if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
                 return;
             }
-            prePrefs.edit().putLong("last_preathan_time_" + prayerName, System.currentTimeMillis()).apply();
+            prePrefs.edit()
+                    .putLong("last_preathan_time_" + prayerName, System.currentTimeMillis())
+                    .putString("last_preathan_minutes_used_" + prayerName, currentPreMinutes)
+                    .apply();
 
             showPreAthanNotification(context, prayerName);
             if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
             return;
 
         }
-        // ✅ الإقامة
+         
+         // ✅ الإقامة
         if ("iqama".equals(dataType)) {
             String prayerName = data.getString("prayer_name", "fajr");
             int iqamaSound = data.getInt("iqama_sound", 1);
 
-            // ✅ منع تكرار الإقامة في نفس اليوم (يحمي لو الـ watchdog اشتغل كمان)
+            // ✅ حماية تابعة لإعداد المستخدم - لو غيّر عدد الدقايق، تسمح للإقامة تشتغل تاني حتى في نفس اليوم
             SharedPreferences iqamaPrefs = PreferenceManager.getDefaultSharedPreferences(context);
             long lastIqamaTime = iqamaPrefs.getLong("last_iqama_time_" + prayerName, 0);
+            String currentIqamaMinutes = iqamaPrefs.getString("iqamaMinutes_" + prayerName, "10");
+            String lastIqamaMinutesUsed = iqamaPrefs.getString("last_iqama_minutes_used_" + prayerName, "");
             Calendar lastIqamaCal = Calendar.getInstance();
             lastIqamaCal.setTimeInMillis(lastIqamaTime);
             Calendar nowIqamaCal = Calendar.getInstance();
-            if (lastIqamaTime > 0 &&
+            boolean sameIqamaOccurrence = lastIqamaTime > 0 &&
                 lastIqamaCal.get(Calendar.DAY_OF_YEAR) == nowIqamaCal.get(Calendar.DAY_OF_YEAR) &&
-                lastIqamaCal.get(Calendar.YEAR) == nowIqamaCal.get(Calendar.YEAR)) {
-                Log.d(TAG, "Iqama already shown today, skipping: " + prayerName);
+                lastIqamaCal.get(Calendar.YEAR) == nowIqamaCal.get(Calendar.YEAR) &&
+                currentIqamaMinutes.equals(lastIqamaMinutesUsed);
+            if (sameIqamaOccurrence) {
+                Log.d(TAG, "Iqama already shown for this exact setting today, skipping: " + prayerName);
                 if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
                 return;
             }
-            iqamaPrefs.edit().putLong("last_iqama_time_" + prayerName, System.currentTimeMillis()).apply();
+            iqamaPrefs.edit()
+                    .putLong("last_iqama_time_" + prayerName, System.currentTimeMillis())
+                    .putString("last_iqama_minutes_used_" + prayerName, currentIqamaMinutes)
+                    .apply();
 
             showIqamaNotification(context, prayerName, iqamaSound);
             if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
