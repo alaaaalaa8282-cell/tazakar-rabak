@@ -209,6 +209,7 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                     return;
                 }
                 generalPrefs.edit().putLong("last_general_thikr_receiver_time", nowMs2).commit();
+           new MyAlarmsManager(context).UpdateAllApplicableAlarms();
             }
 
             // باقي التنبيهات تشتغل عادي
