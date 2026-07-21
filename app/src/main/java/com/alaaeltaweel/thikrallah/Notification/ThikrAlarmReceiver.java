@@ -303,21 +303,23 @@ PendingIntent pendingIntent = PendingIntent.getBroadcast(context, prayerKey.hash
     android.net.Uri soundUri = android.net.Uri.parse(
         "android.resource://" + context.getPackageName() + "/" + soundRes);
 
-        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+         AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+boolean canPlayIqamaSound = true;
 if (audioManager != null) {
-    audioManager.requestAudioFocus(null,
+    int focusResult = audioManager.requestAudioFocus(null,
         AudioManager.STREAM_ALARM,
         AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+    canPlayIqamaSound = (focusResult == AudioManager.AUDIOFOCUS_REQUEST_GRANTED);
 }
         
-    String channelId = "iqama_channel_v2_s" + soundChoice;
+    String channelId = "iqama_channel_vAudioManager2_s" + soundChoice;
     NotificationManager nm =
         (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         NotificationChannel channel = new NotificationChannel(
             channelId, "إقامة الصلاة", NotificationManager.IMPORTANCE_HIGH);
-        channel.setSound(canPlaySound ? soundUri : null),
+        channel.setSound(canPlayIqamaSound ? soundUri : null),
             new android.media.AudioAttributes.Builder()
                 .setUsage(android.media.AudioAttributes.USAGE_ALARM)
                 .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -345,7 +347,7 @@ PendingIntent pi = PendingIntent.getBroadcast(context, prayerKey.hashCode() + 22
         .setAutoCancel(true)
         .setTimeoutAfter(3 * 60 * 1000L) 
         .setFullScreenIntent(wakePi, true) 
-        .setSound(canPlaySound ? soundUri : null))
+        .setSound(canPlayIqamaSound ? soundUri : null))
         .setContentIntent(pi); 
 
         PreferenceManager.getDefaultSharedPreferences(context).edit()
