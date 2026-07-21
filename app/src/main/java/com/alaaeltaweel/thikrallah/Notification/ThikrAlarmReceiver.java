@@ -219,11 +219,13 @@ private void showPreAthanNotification(Context context, String prayerKey) {
         "android.resource://" + context.getPackageName() + "/" + soundRes);
 
     AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-if (audioManager != null) {
-    audioManager.requestAudioFocus(null,
-        AudioManager.STREAM_ALARM,
-        AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-}
+    boolean canPlaySound = true;
+    if (audioManager != null) {
+        int focusResult = audioManager.requestAudioFocus(null,
+            AudioManager.STREAM_ALARM,
+            AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+        canPlaySound = (focusResult == AudioManager.AUDIOFOCUS_REQUEST_GRANTED);
+    }
     
     String channelId = "pre_athan_reminder_v2_" + prayerKey;
     NotificationManager notificationManager =
@@ -234,11 +236,15 @@ if (audioManager != null) {
                 channelId, "تنبيه اقتراب الصلاة", NotificationManager.IMPORTANCE_HIGH);
         channel.enableVibration(true);
         channel.setVibrationPattern(new long[]{0, 500, 200, 500});
-        channel.setSound(soundUri,
-            new android.media.AudioAttributes.Builder()
-                .setUsage(android.media.AudioAttributes.USAGE_ALARM)
-                .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build());
+        if (canPlaySound) {
+            channel.setSound(soundUri,
+                new android.media.AudioAttributes.Builder()
+                    .setUsage(android.media.AudioAttributes.USAGE_ALARM)
+                    .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build());
+        } else {
+            channel.setSound(null, null);
+        }
         channel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         notificationManager.createNotificationChannel(channel);
     
