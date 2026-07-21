@@ -237,7 +237,7 @@ private void showPreAthanNotification(Context context, String prayerKey) {
         channel.enableVibration(true);
         channel.setVibrationPattern(new long[]{0, 500, 200, 500});
         if (canPlaySound) {
-            channel.setSound(soundUri,
+            channel..setSound(canPlaySound ? soundUri : null),
                 new android.media.AudioAttributes.Builder()
                     .setUsage(android.media.AudioAttributes.USAGE_ALARM)
                     .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -266,7 +266,7 @@ PendingIntent pendingIntent = PendingIntent.getBroadcast(context, prayerKey.hash
             .setAutoCancel(true)
            .setTimeoutAfter(3 * 60 * 1000L) 
             .setVibrate(new long[]{0, 500, 200, 500})
-            .setSound(soundUri)
+            ..setSound(canPlaySound ? soundUri : null))
             .setContentIntent(pendingIntent) 
             .setFullScreenIntent(wakePendingIntent, true);
     PreferenceManager.getDefaultSharedPreferences(context).edit()
@@ -317,7 +317,7 @@ if (audioManager != null) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         NotificationChannel channel = new NotificationChannel(
             channelId, "إقامة الصلاة", NotificationManager.IMPORTANCE_HIGH);
-        channel.setSound(soundUri,
+        channel..setSound(canPlaySound ? soundUri : null),
             new android.media.AudioAttributes.Builder()
                 .setUsage(android.media.AudioAttributes.USAGE_ALARM)
                 .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -345,7 +345,7 @@ PendingIntent pi = PendingIntent.getBroadcast(context, prayerKey.hashCode() + 22
         .setAutoCancel(true)
         .setTimeoutAfter(3 * 60 * 1000L) 
         .setFullScreenIntent(wakePi, true) 
-        .setSound(soundUri)
+        ..setSound(canPlaySound ? soundUri : null))
         .setContentIntent(pi); 
 
         PreferenceManager.getDefaultSharedPreferences(context).edit()
