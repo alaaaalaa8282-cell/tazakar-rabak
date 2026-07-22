@@ -219,11 +219,13 @@ private void showPreAthanNotification(Context context, String prayerKey) {
         "android.resource://" + context.getPackageName() + "/" + soundRes);
 
     AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-if (audioManager != null) {
-    audioManager.requestAudioFocus(null,
-        AudioManager.STREAM_ALARM,
-        AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-}
+    boolean canPlaySound = true;
+    if (audioManager != null) {
+        int focusResult = audioManager.requestAudioFocus(null,
+            AudioManager.STREAM_ALARM,
+            AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+        canPlaySound = (focusResult == AudioManager.AUDIOFOCUS_REQUEST_GRANTED);
+    }
     
     String channelId = "pre_athan_reminder_v2_" + prayerKey;
     NotificationManager notificationManager =
@@ -234,11 +236,15 @@ if (audioManager != null) {
                 channelId, "تنبيه اقتراب الصلاة", NotificationManager.IMPORTANCE_HIGH);
         channel.enableVibration(true);
         channel.setVibrationPattern(new long[]{0, 500, 200, 500});
-        channel.setSound(soundUri,
-            new android.media.AudioAttributes.Builder()
-                .setUsage(android.media.AudioAttributes.USAGE_ALARM)
-                .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build());
+        if (canPlaySound) {
+            channel.setSound(canPlaySound ? soundUri : null,
+                new android.media.AudioAttributes.Builder()
+                    .setUsage(android.media.AudioAttributes.USAGE_ALARM)
+                    .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build());
+        } else {
+            channel.setSound(null, null);
+        }
         channel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         notificationManager.createNotificationChannel(channel);
     
@@ -260,7 +266,7 @@ PendingIntent pendingIntent = PendingIntent.getBroadcast(context, prayerKey.hash
             .setAutoCancel(true)
            .setTimeoutAfter(3 * 60 * 1000L) 
             .setVibrate(new long[]{0, 500, 200, 500})
-            .setSound(soundUri)
+            .setSound(canPlaySound ? soundUri : null)
             .setContentIntent(pendingIntent) 
             .setFullScreenIntent(wakePendingIntent, true);
     PreferenceManager.getDefaultSharedPreferences(context).edit()
@@ -297,11 +303,13 @@ PendingIntent pendingIntent = PendingIntent.getBroadcast(context, prayerKey.hash
     android.net.Uri soundUri = android.net.Uri.parse(
         "android.resource://" + context.getPackageName() + "/" + soundRes);
 
-        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+         AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+boolean canPlayIqamaSound = true;
 if (audioManager != null) {
-    audioManager.requestAudioFocus(null,
+    int focusResult = audioManager.requestAudioFocus(null,
         AudioManager.STREAM_ALARM,
         AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+    canPlayIqamaSound = (focusResult == AudioManager.AUDIOFOCUS_REQUEST_GRANTED);
 }
         
     String channelId = "iqama_channel_v2_s" + soundChoice;
@@ -311,7 +319,7 @@ if (audioManager != null) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         NotificationChannel channel = new NotificationChannel(
             channelId, "إقامة الصلاة", NotificationManager.IMPORTANCE_HIGH);
-        channel.setSound(soundUri,
+        channel.setSound(canPlayIqamaSound ? soundUri : null,
             new android.media.AudioAttributes.Builder()
                 .setUsage(android.media.AudioAttributes.USAGE_ALARM)
                 .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -339,7 +347,7 @@ PendingIntent pi = PendingIntent.getBroadcast(context, prayerKey.hashCode() + 22
         .setAutoCancel(true)
         .setTimeoutAfter(3 * 60 * 1000L) 
         .setFullScreenIntent(wakePi, true) 
-        .setSound(soundUri)
+        .setSound(canPlayIqamaSound ? soundUri : null)
         .setContentIntent(pi); 
 
         PreferenceManager.getDefaultSharedPreferences(context).edit()
