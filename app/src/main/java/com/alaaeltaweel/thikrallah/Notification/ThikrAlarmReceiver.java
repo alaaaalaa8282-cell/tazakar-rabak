@@ -82,7 +82,7 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                 if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
                 return;
             }
-            prePrefs.edit().putLong("last_preathan_time_" + prayerName, System.currentTimeMillis()).apply();
+            prePrefs.edit().putLong("last_preathan_time_" + prayerName, System.currentTimeMillis()).commit();
 
             showPreAthanNotification(context, prayerName);
             if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
@@ -107,7 +107,7 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                 if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
                 return;
             }
-            iqamaPrefs.edit().putLong("last_iqama_time_" + prayerName, System.currentTimeMillis()).apply();
+            iqamaPrefs.edit().putLong("last_iqama_time_" + prayerName, System.currentTimeMillis()).commit();
 
             showIqamaNotification(context, prayerName, iqamaSound);
             if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
@@ -129,7 +129,7 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
                 Log.d(TAG, "Athan already played today, skipping: " + dataType);
                 return;
             }
-            prefs.edit().putLong("last_athan_time_" + dataType, nowMs).apply();
+            prefs.edit().putLong("last_athan_time_" + dataType, nowMs).commit();
 
             // ✅ تحقق من وجود مكالمة وابعت الحالة للشاشة
             boolean isInCall = false;
