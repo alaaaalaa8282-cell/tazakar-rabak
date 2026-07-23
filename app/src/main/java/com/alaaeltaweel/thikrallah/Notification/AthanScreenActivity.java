@@ -76,7 +76,15 @@ public class AthanScreenActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             boolean isDuaEnabled = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context).getBoolean("isDuaAfterAthan", false);
             if (isDuaEnabled) {
-                android.media.MediaPlayer mp = android.media.MediaPlayer.create(context, R.raw.dua_after_athan);
+                // السطر 78 — أضف قبل MediaPlayer
+AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+if (am != null) {
+    am.requestAudioFocus(null,
+        AudioManager.STREAM_ALARM,
+        AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+}
+// السطر 79 — ابقى زي ما هو
+android.media.MediaPlayer mp = android.media.MediaPlayer.create(context, R.raw.dua_after_athan);
                 if (mp != null) {
                     mp.setOnCompletionListener(android.media.MediaPlayer::release);
                     mp.start();
