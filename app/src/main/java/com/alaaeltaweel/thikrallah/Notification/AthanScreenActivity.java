@@ -24,6 +24,7 @@ import com.alaaeltaweel.thikrallah.MainActivity;
 import com.alaaeltaweel.thikrallah.R;
 import com.alaaeltaweel.thikrallah.ThikrMediaPlayerService;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 
 public class AthanScreenActivity extends AppCompatActivity {
 
