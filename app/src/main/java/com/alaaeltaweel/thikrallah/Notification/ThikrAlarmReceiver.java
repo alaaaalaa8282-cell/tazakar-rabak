@@ -56,11 +56,7 @@ public class ThikrAlarmReceiver extends BroadcastReceiver {
             PowerManager.WakeLock wakeLock = pm.newWakeLock(
     PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "tazakar:ThikrReceiverWakeLock");
         wakeLock.acquire(60 * 1000L);
-if ("com.alaaeltaweel.thikrallah.STOP_DUA".equals(intent.getAction())) {
-            AthanScreenActivity.stopDua(context);
-            if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
-            return;
-}
+
         Bundle data = intent.getExtras();
 
         if (data == null) return;
