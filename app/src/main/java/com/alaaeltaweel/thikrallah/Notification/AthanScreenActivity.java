@@ -72,68 +72,24 @@ public class AthanScreenActivity extends AppCompatActivity {
         R.drawable.father_bg7
     };
 
-    private static android.media.MediaPlayer duaMediaPlayer;
-
-    public static void stopDua(Context context) {
-        if (duaMediaPlayer != null) {
-            try { if (duaMediaPlayer.isPlaying()) duaMediaPlayer.stop(); } catch (Exception ignored) {}
-            try { duaMediaPlayer.release(); } catch (Exception ignored) {}
-            duaMediaPlayer = null;
-        }
-        android.app.NotificationManager nm = (android.app.NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (nm != null) nm.cancel(9911);
-    }
-
-    private static void playDua(Context context) {
-        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        if (am != null) {
-            am.requestAudioFocus(null, AudioManager.STREAM_ALARM, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-        }
-        duaMediaPlayer = android.media.MediaPlayer.create(context, R.raw.dua_after_athan);
-        if (duaMediaPlayer != null) {
-            android.media.MediaPlayer playerRef = duaMediaPlayer;
-            playerRef.setOnCompletionListener(mp -> {
-                mp.release();
-                duaMediaPlayer = null;
-                android.app.NotificationManager nmDone = (android.app.NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                if (nmDone != null) nmDone.cancel(9911);
-            });
-            playerRef.start();
-            showDuaStopNotification(context);
-        }
-    }
-
-    private static void showDuaStopNotification(Context context) {
-        String channelId = "dua_stop_channel_v1";
-        android.app.NotificationManager nm = (android.app.NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            android.app.NotificationChannel channel = new android.app.NotificationChannel(
-                channelId, "الدعاء بعد الأذان", android.app.NotificationManager.IMPORTANCE_LOW);
-            nm.createNotificationChannel(channel);
-        }
-        Intent stopIntent = new Intent(context, ThikrAlarmReceiver.class);
-        stopIntent.setAction("com.alaaeltaweel.thikrallah.STOP_DUA");
-        android.app.PendingIntent stopPi = android.app.PendingIntent.getBroadcast(context, 9911, stopIntent,
-            android.app.PendingIntent.FLAG_UPDATE_CURRENT | android.app.PendingIntent.FLAG_IMMUTABLE);
-
-        androidx.core.app.NotificationCompat.Builder builder = new androidx.core.app.NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.ic_launcher)
-            .setContentTitle("الدعاء بعد الأذان")
-            .setContentText("جاري تشغيل الدعاء - اضغط للإيقاف")
-            .setPriority(androidx.core.app.NotificationCompat.PRIORITY_LOW)
-            .setOngoing(true)
-            .setAutoCancel(false)
-            .addAction(0, "إيقاف", stopPi)
-            .setContentIntent(stopPi);
-        nm.notify(9911, builder.build());
-    }
-
     private BroadcastReceiver athanCompleteReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             boolean isDuaEnabled = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context).getBoolean("isDuaAfterAthan", false);
             if (isDuaEnabled) {
-                playDua(context);
+                // السطر 78 — أضف قبل MediaPlayer
+AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+if (am != null) {
+    am.requestAudioFocus(null,
+        AudioManager.STREAM_ALARM,
+        AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+}
+// السطر 79 — ابقى زي ما هو
+android.media.MediaPlayer mp = android.media.MediaPlayer.create(context, R.raw.dua_after_athan);
+                if (mp != null) {
+                    mp.setOnCompletionListener(android.media.MediaPlayer::release);
+                    mp.start();
+                }
             }
             stopAthanAndClose();
         }
@@ -360,7 +316,11 @@ public class AthanScreenActivity extends AppCompatActivity {
         
         boolean isDuaEnabled = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).getBoolean("isDuaAfterAthan", false);
         if (isDuaEnabled) {
-            playDua(this);
+            android.media.MediaPlayer mp = android.media.MediaPlayer.create(this, R.raw.dua_after_athan);
+            if (mp != null) {
+                mp.setOnCompletionListener(android.media.MediaPlayer::release);
+                mp.start();
+            }
         }
         Intent stopThikr = new Intent(this, ThikrService.class);
         stopService(stopThikr);
