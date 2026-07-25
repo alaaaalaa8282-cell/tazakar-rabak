@@ -109,6 +109,7 @@ public class AthanScreenActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             android.app.NotificationChannel channel = new android.app.NotificationChannel(
                 channelId, "الدعاء بعد الأذان", android.app.NotificationManager.IMPORTANCE_LOW);
+          channel.setLockscreenVisibility(androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC);
             nm.createNotificationChannel(channel);
         }
         Intent stopIntent = new Intent(context, ThikrAlarmReceiver.class);
@@ -122,6 +123,7 @@ public class AthanScreenActivity extends AppCompatActivity {
             .setContentText("جاري تشغيل الدعاء - اضغط للإيقاف")
             .setPriority(androidx.core.app.NotificationCompat.PRIORITY_LOW)
             .setOngoing(true)
+            .setVisibility(androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC) 
             .setAutoCancel(false)
             .addAction(0, "إيقاف", stopPi)
             .setContentIntent(stopPi);
