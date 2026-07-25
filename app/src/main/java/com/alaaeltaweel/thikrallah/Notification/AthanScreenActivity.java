@@ -316,8 +316,11 @@ android.media.MediaPlayer mp = android.media.MediaPlayer.create(context, R.raw.d
         
         boolean isDuaEnabled = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).getBoolean("isDuaAfterAthan", false);
         if (isDuaEnabled) {
-            playDua(this);
-        }
+            android.media.MediaPlayer mp = android.media.MediaPlayer.create(this, R.raw.dua_after_athan);
+            if (mp != null) {
+                mp.setOnCompletionListener(android.media.MediaPlayer::release);
+                mp.start();
+            }
         }
         Intent stopThikr = new Intent(this, ThikrService.class);
         stopService(stopThikr);
