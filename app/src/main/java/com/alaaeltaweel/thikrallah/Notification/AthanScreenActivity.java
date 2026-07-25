@@ -72,7 +72,6 @@ public class AthanScreenActivity extends AppCompatActivity {
         R.drawable.father_bg7
     };
 
-    // ✅ مشغّل الدعاء - متغير ثابت عشان يفضل موجود حتى بعد ما الشاشة تتقفل
     private static android.media.MediaPlayer duaMediaPlayer;
 
     public static void stopDua(Context context) {
@@ -92,13 +91,14 @@ public class AthanScreenActivity extends AppCompatActivity {
         }
         duaMediaPlayer = android.media.MediaPlayer.create(context, R.raw.dua_after_athan);
         if (duaMediaPlayer != null) {
-            duaMediaPlayer.setOnCompletionListener(mp -> {
+            android.media.MediaPlayer playerRef = duaMediaPlayer;
+            playerRef.setOnCompletionListener(mp -> {
                 mp.release();
                 duaMediaPlayer = null;
                 android.app.NotificationManager nmDone = (android.app.NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 if (nmDone != null) nmDone.cancel(9911);
             });
-            duaMediaPlayer.start();
+            playerRef.start();
             showDuaStopNotification(context);
         }
     }
@@ -135,7 +135,7 @@ public class AthanScreenActivity extends AppCompatActivity {
             if (isDuaEnabled) {
                 playDua(context);
             }
-            stopAthanAndCloseStatic(context);
+            stopAthanAndClose();
         }
     };
 
@@ -349,7 +349,7 @@ public class AthanScreenActivity extends AppCompatActivity {
         } else {
             startService(intent);
         }
-    }
+            }
 
     private void stopAthanAndClose() {
         Bundle data = new Bundle();
@@ -357,12 +357,11 @@ public class AthanScreenActivity extends AppCompatActivity {
         data.putString("com.alaaeltaweel.thikrallah.datatype", dataType);
         Intent stopMedia = new Intent(this, ThikrMediaPlayerService.class).putExtras(data);
         startService(stopMedia);
-
+        
         boolean isDuaEnabled = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).getBoolean("isDuaAfterAthan", false);
         if (isDuaEnabled) {
             playDua(this);
         }
-
         Intent stopThikr = new Intent(this, ThikrService.class);
         stopService(stopThikr);
 
@@ -371,19 +370,8 @@ public class AthanScreenActivity extends AppCompatActivity {
         autoHandler.removeCallbacksAndMessages(null);
         unregisterPhoneStateListener();
         finish();
-        // جدد الأذان الجاي
-        MainActivity.startAthanTimer(getApplicationContext());
-    }
-
-    // ✅ نسخة ثابتة تُستخدم من داخل athanCompleteReceiver (اللي هو نفسه static context-friendly)
-    private static void stopAthanAndCloseStatic(Context context) {
-        Bundle data = new Bundle();
-        data.putInt("ACTION", ThikrMediaPlayerService.MEDIA_PLAYER_STOP);
-        Intent stopMedia = new Intent(context, ThikrMediaPlayerService.class).putExtras(data);
-        context.startService(stopMedia);
-        Intent stopThikr = new Intent(context, ThikrService.class);
-        context.stopService(stopThikr);
-        MainActivity.startAthanTimer(context.getApplicationContext());
+   // جدد الأذان الجاي
+MainActivity.startAthanTimer(getApplicationContext());
     }
 
     @Override
@@ -395,3 +383,4 @@ public class AthanScreenActivity extends AppCompatActivity {
         super.onDestroy();
     }
 }
+
