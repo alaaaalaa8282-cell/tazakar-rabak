@@ -126,7 +126,8 @@ public class AthanScreenActivity extends AppCompatActivity {
             .setVisibility(androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC) 
             .setAutoCancel(false)
             .addAction(0, "إيقاف", stopPi)
-            .setContentIntent(stopPi);
+            .setContentIntent(stopPi)
+           .setFullScreenIntent(stopPi, true);
         nm.notify(9911, builder.build());
     }
 
