@@ -108,7 +108,7 @@ public class AthanScreenActivity extends AppCompatActivity {
         android.app.NotificationManager nm = (android.app.NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             android.app.NotificationChannel channel = new android.app.NotificationChannel(
-                channelId, "الدعاء بعد الأذان", android.app.NotificationManager.IMPORTANCE_LOW);
+                channelId, "الدعاء بعد الأذان", android.app.NotificationManager.IMPORTANCE_DEFAULT);
           channel.setLockscreenVisibility(androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC);
             nm.createNotificationChannel(channel);
         }
