@@ -103,6 +103,12 @@ android.media.MediaPlayer mp = android.media.MediaPlayer.create(context, R.raw.d
                 Log.d(TAG, "Call ended, playing athan now");
                 isCallInProgress = false;
                 athanPlayed = true;
+                android.media.AudioManager am = (android.media.AudioManager) getSystemService(Context.AUDIO_SERVICE);
+if (am != null && am.getRingerMode() == android.media.AudioManager.RINGER_MODE_VIBRATE) {
+    android.content.SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
+    int previousMode = prefs.getInt(SilentModeReceiver.PREF_PREVIOUS_RINGER_MODE, android.media.AudioManager.RINGER_MODE_NORMAL);
+    am.setRingerMode(previousMode);
+}
                 autoHandler.removeCallbacksAndMessages(null);
                 playAthan();
                 autoHandler.postDelayed(() -> stopAthanAndClose(), AUTO_DISMISS_DELAY);
