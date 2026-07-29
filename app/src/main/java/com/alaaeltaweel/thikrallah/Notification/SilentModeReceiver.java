@@ -28,12 +28,23 @@ public void onReceive(Context context, Intent intent) {
     if (ACTION_SILENT_ON.equals(intent.getAction())) {
         int currentMode = audioManager.getRingerMode();
         prefs.edit().putInt(PREF_PREVIOUS_RINGER_MODE, currentMode).commit();
+      prefs.edit().putBoolean("pending_silent_off", false).apply();
         audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
         Log.d(TAG, "Silent mode ON, previous mode was " + currentMode);
     } else if (ACTION_SILENT_OFF.equals(intent.getAction())) {
+    android.telephony.TelephonyManager tm = (android.telephony.TelephonyManager)
+        context.getSystemService(Context.TELEPHONY_SERVICE);
+    boolean inCall = tm != null &&
+        tm.getCallState() != android.telephony.TelephonyManager.CALL_STATE_IDLE;
+    if (!inCall) {
         int previousMode = prefs.getInt(PREF_PREVIOUS_RINGER_MODE, AudioManager.RINGER_MODE_NORMAL);
         audioManager.setRingerMode(previousMode);
         Log.d(TAG, "Silent mode OFF, restored mode " + previousMode);
+    } else {
+        prefs.edit().putBoolean("pending_silent_off", true).apply();
+        Log.d(TAG, "Silent mode OFF pending - call in progress");
+    }
+} 
     } else if ("com.alaaeltaweel.thikrallah.STOP_SOUND".equals(intent.getAction())) {
     audioManager.setStreamVolume(AudioManager.STREAM_ALARM, 0, 0);
 }  
