@@ -391,6 +391,13 @@
     android:showWhenLocked="true"
     android:turnScreenOn="true"
     android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+   <receiver
+    android:name="com.alaaeltaweel.thikrallah.Notification.PhoneStateReceiver"
+    android:exported="false">
+    <intent-filter>
+        <action android:name="android.intent.action.PHONE_STATE" />
+    </intent-filter>
+</receiver>
     </application>
 
     <queries>
