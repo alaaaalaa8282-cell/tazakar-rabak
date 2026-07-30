@@ -44,6 +44,7 @@ public class SilentModeReceiver extends BroadcastReceiver {
         } else if (ACTION_SILENT_OFF.equals(intent.getAction())) {
             int previousMode = prefs.getInt(PREF_PREVIOUS_RINGER_MODE, AudioManager.RINGER_MODE_NORMAL);
             audioManager.setRingerMode(previousMode);
+           audioManager.setMode(AudioManager.MODE_NORMAL);
             prefs.edit().putBoolean(PREF_SILENT_ACTIVE_BY_APP, false).commit();
             Log.d(TAG, "Silent mode OFF, restored mode " + previousMode);
         } else if ("com.alaaeltaweel.thikrallah.STOP_SOUND".equals(intent.getAction())) {
