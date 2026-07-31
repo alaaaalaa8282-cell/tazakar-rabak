@@ -27,6 +27,12 @@ public class BatteryStateReceiver extends BroadcastReceiver {
             case PowerManager.ACTION_POWER_SAVE_MODE_CHANGED:
                 Log.d(TAG, "Re-checking alarms after power state change");
                 new MyAlarmsManager(context.getApplicationContext()).UpdateAllApplicableAlarms();
+               PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+              if (pm != null && !pm.isPowerSaveMode()) {
+              Intent launch = new Intent(context, com.alaaeltaweel.thikrallah.MainActivity.class);
+              launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+             context.startActivity(launch);
+            }
                 break;
         }
     }
