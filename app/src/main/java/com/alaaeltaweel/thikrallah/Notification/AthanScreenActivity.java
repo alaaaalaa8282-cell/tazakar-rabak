@@ -314,10 +314,8 @@ android.media.MediaPlayer mp = android.media.MediaPlayer.create(context, R.raw.d
         Intent stopMedia = new Intent(this, ThikrMediaPlayerService.class).putExtras(data);
         startService(stopMedia);
         
-        boolean isDuaEnabled = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).getBoolean("isDuaAfterAthan", false);
-        if (isDuaEnabled) {
-            android.media.MediaPlayer mp = android.media.MediaPlayer.create(this, R.raw.dua_after_athan);
-            if (mp != null) {
+
+        
                 mp.setOnCompletionListener(android.media.MediaPlayer::release);
                 mp.start();
             }
