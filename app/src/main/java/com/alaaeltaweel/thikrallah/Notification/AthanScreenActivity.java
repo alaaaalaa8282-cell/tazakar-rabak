@@ -141,7 +141,7 @@ public static void stopDua(Context context) {
             duaMediaPlayer.start();
             showDuaStopNotification(context);
         }
-    }
+    
 
     private BroadcastReceiver athanCompleteReceiver = new BroadcastReceiver() {
         @Override
