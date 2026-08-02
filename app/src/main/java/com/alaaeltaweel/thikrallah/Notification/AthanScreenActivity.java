@@ -34,6 +34,44 @@ public class AthanScreenActivity extends AppCompatActivity {
     private static final String TAG = "AthanScreenActivity";
     private static android.media.MediaPlayer duaMediaPlayer;
 
+public static void stopDua(Context context) {
+        if (duaMediaPlayer != null) {
+            try { if (duaMediaPlayer.isPlaying()) duaMediaPlayer.stop(); } catch (Exception ignored) {}
+            try { duaMediaPlayer.release(); } catch (Exception ignored) {}
+            duaMediaPlayer = null;
+        }
+        android.app.NotificationManager nm = (android.app.NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (nm != null) nm.cancel(9911);
+    }
+
+    private static void showDuaStopNotification(Context context) {
+        String channelId = "dua_stop_channel_v3";
+        android.app.NotificationManager nm = (android.app.NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            android.app.NotificationChannel channel = new android.app.NotificationChannel(
+                channelId, "الدعاء بعد الأذان", android.app.NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setLockscreenVisibility(androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC);
+            nm.createNotificationChannel(channel);
+        }
+        Intent stopIntent = new Intent(context, ThikrAlarmReceiver.class);
+        stopIntent.setAction("com.alaaeltaweel.thikrallah.STOP_DUA");
+        android.app.PendingIntent stopPi = android.app.PendingIntent.getBroadcast(context, 9911, stopIntent,
+            android.app.PendingIntent.FLAG_UPDATE_CURRENT | android.app.PendingIntent.FLAG_IMMUTABLE);
+
+        androidx.core.app.NotificationCompat.Builder builder = new androidx.core.app.NotificationCompat.Builder(context, channelId)
+            .setSmallIcon(R.drawable.ic_launcher)
+            .setContentTitle("الدعاء بعد الأذان")
+            .setContentText("جاري تشغيل الدعاء - اضغط للإيقاف")
+            .setPriority(androidx.core.app.NotificationCompat.PRIORITY_DEFAULT)
+            .setVisibility(androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC)
+            .setOngoing(true)
+            .setAutoCancel(false)
+            .addAction(0, "إيقاف", stopPi)
+            .setContentIntent(stopPi);
+        // ✅ من غير setFullScreenIntent خالص - ده كان سبب توقف الذكر العام قبل كده
+        nm.notify(9911, builder.build());
+    }
+    
     private Handler autoHandler = new Handler();
     private Handler slideshowHandler = new Handler();
     private Handler athanTextHandler = new Handler();
@@ -94,13 +132,14 @@ public class AthanScreenActivity extends AppCompatActivity {
                 AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
         }
 
-        duaMediaPlayer = android.media.MediaPlayer.create(context, R.raw.dua_after_athan);
-        if (duaMediaPlayer != null) {
-            duaMediaPlayer.setOnCompletionListener(mp -> {
+        duaMediaPlayer.setOnCompletionListener(mp -> {
                 mp.release();
                 duaMediaPlayer = null;
+                android.app.NotificationManager nmDone = (android.app.NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                if (nmDone != null) nmDone.cancel(9911);
             });
             duaMediaPlayer.start();
+            showDuaStopNotification(context);
         }
     }
 
