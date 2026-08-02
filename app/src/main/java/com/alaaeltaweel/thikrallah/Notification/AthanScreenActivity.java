@@ -131,7 +131,7 @@ public static void stopDua(Context context) {
                 AudioManager.STREAM_ALARM,
                 AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
         }
-
+        duaMediaPlayer = android.media.MediaPlayer.create(context, R.raw.dua_after_athan);
         duaMediaPlayer.setOnCompletionListener(mp -> {
                 mp.release();
                 duaMediaPlayer = null;
