@@ -27,7 +27,7 @@ if (intent.getBooleanExtra("isWatchdog", false)) {
                 }
             }
             return;
-}
+  }
             // إعادة جدولة الـ alarms فقط بدون تشغيل الأذان
             if (intent.getAction().equalsIgnoreCase(AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED)
                 || intent.getAction().equalsIgnoreCase(Intent.ACTION_TIME_CHANGED)
