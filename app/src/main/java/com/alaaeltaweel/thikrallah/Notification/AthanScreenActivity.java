@@ -32,6 +32,7 @@ public class AthanScreenActivity extends AppCompatActivity {
     private static final int SLIDESHOW_INTERVAL  = 30 * 1000; // 30 ثانية
     private static final int CALL_DISMISS_DELAY  = 4 * 60 * 1000; // 4 دقايق لو في مكالمة
     private static final String TAG = "AthanScreenActivity";
+    private static android.media.MediaPlayer duaMediaPlayer;
 
     private Handler autoHandler = new Handler();
     private Handler slideshowHandler = new Handler();
@@ -72,25 +73,41 @@ public class AthanScreenActivity extends AppCompatActivity {
         R.drawable.father_bg7
     };
 
+    private void playDuaAfterAthan(Context context) {
+        boolean isDuaEnabled = androidx.preference.PreferenceManager
+                .getDefaultSharedPreferences(context).getBoolean("isDuaAfterAthan", false);
+        if (!isDuaEnabled) return;
+
+        // وقف أي تشغيل سابق قبل ما نبدأ واحد جديد
+        if (duaMediaPlayer != null) {
+            try {
+                if (duaMediaPlayer.isPlaying()) duaMediaPlayer.stop();
+            } catch (IllegalStateException ignored) {}
+            duaMediaPlayer.release();
+            duaMediaPlayer = null;
+        }
+
+        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        if (am != null) {
+            am.requestAudioFocus(null,
+                AudioManager.STREAM_ALARM,
+                AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+        }
+
+        duaMediaPlayer = android.media.MediaPlayer.create(context, R.raw.dua_after_athan);
+        if (duaMediaPlayer != null) {
+            duaMediaPlayer.setOnCompletionListener(mp -> {
+                mp.release();
+                duaMediaPlayer = null;
+            });
+            duaMediaPlayer.start();
+        }
+    }
+
     private BroadcastReceiver athanCompleteReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            boolean isDuaEnabled = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context).getBoolean("isDuaAfterAthan", false);
-            if (isDuaEnabled) {
-                // السطر 78 — أضف قبل MediaPlayer
-AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-if (am != null) {
-    am.requestAudioFocus(null,
-        AudioManager.STREAM_ALARM,
-        AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-}
-// السطر 79 — ابقى زي ما هو
-android.media.MediaPlayer mp = android.media.MediaPlayer.create(context, R.raw.dua_after_athan);
-                if (mp != null) {
-                    mp.setOnCompletionListener(android.media.MediaPlayer::release);
-                    mp.start();
-                }
-            }
+            playDuaAfterAthan(context);
             stopAthanAndClose();
         }
     };
@@ -314,14 +331,7 @@ android.media.MediaPlayer mp = android.media.MediaPlayer.create(context, R.raw.d
         Intent stopMedia = new Intent(this, ThikrMediaPlayerService.class).putExtras(data);
         startService(stopMedia);
         
-        boolean isDuaEnabled = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).getBoolean("isDuaAfterAthan", false);
-        if (isDuaEnabled) {
-            android.media.MediaPlayer mp = android.media.MediaPlayer.create(this, R.raw.dua_after_athan);
-            if (mp != null) {
-                mp.setOnCompletionListener(android.media.MediaPlayer::release);
-                mp.start();
-            }
-        }
+        playDuaAfterAthan(this);
         Intent stopThikr = new Intent(this, ThikrService.class);
         stopService(stopThikr);
 
