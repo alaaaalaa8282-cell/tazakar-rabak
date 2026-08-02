@@ -102,7 +102,7 @@ if ("com.alaaeltaweel.thikrallah.STOP_DUA".equals(intent.getAction())) {
             return;
 
         }
-        // ✅ الإقامة
+         // ✅ الإقامة
         if ("iqama".equals(dataType)) {
             String prayerName = data.getString("prayer_name", "fajr");
             int iqamaSound = data.getInt("iqama_sound", 1);
