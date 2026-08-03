@@ -191,28 +191,39 @@ private PhoneStateListener phoneStateListener;
             }
             sharedPrefs.edit().putLong("last_claimed_general_thikr_occurrence", thisOccurrence).commit();
         
-			MyDBHelper db = new MyDBHelper(this);
-            ArrayList<UserThikr> allThikrs = db.getAllEnabledThikrs();
-           if (allThikrs == null || allThikrs.isEmpty()) return;
-            int currentIndex = sharedPrefs.getInt("thikr_current_index", 0) % allThikrs.size();
-            UserThikr thikr = allThikrs.get(currentIndex);
-            sharedPrefs.edit().putInt("thikr_current_index", currentIndex + 1).apply();
-            sharedPrefs.edit().putLong("last_general_thikr_time", System.currentTimeMillis()).apply();
-            if (thikr==null){
-                return;
-            }
-            int fileNumber=-1;
-            if(android.text.TextUtils.isDigitsOnly(thikr.getFile()) && !thikr.getFile().equalsIgnoreCase("")){
-                fileNumber=Integer.parseInt(thikr.getFile());
-            }
-            Log.d(TAG,"filenumber is"+fileNumber);
-            int reminderType=Integer.parseInt(sharedPrefs.getString("RemindmeThroughTheDayType", "1"));
-			//fire text chat head service
-            if (reminderType==1 ||reminderType==3){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (Settings.canDrawOverlays(this)) {
-                        Log.d(TAG, "calling chatheadservice 150");
-                        Intent intentChatHead=new Intent(this.getApplicationContext(), ChatHeadService.class);
+			try {
+                MyDBHelper db = new MyDBHelper(this);
+                ArrayList<UserThikr> allThikrs = db.getAllEnabledThikrs();
+                if (allThikrs == null || allThikrs.isEmpty()) return;
+                int currentIndex = sharedPrefs.getInt("thikr_current_index", 0) % allThikrs.size();
+                UserThikr thikr = allThikrs.get(currentIndex);
+                sharedPrefs.edit().putInt("thikr_current_index", currentIndex + 1).apply();
+                sharedPrefs.edit().putLong("last_general_thikr_time", System.currentTimeMillis()).apply();
+                if (thikr == null) {
+                    return;
+                }
+                int fileNumber = -1;
+                if (android.text.TextUtils.isDigitsOnly(thikr.getFile()) && !thikr.getFile().equalsIgnoreCase("")) {
+                    fileNumber = Integer.parseInt(thikr.getFile());
+                }
+                Log.d(TAG, "filenumber is" + fileNumber);
+                int reminderType = Integer.parseInt(sharedPrefs.getString("RemindmeThroughTheDayType", "1"));
+                //fire text chat head service
+                if (reminderType == 1 || reminderType == 3) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (Settings.canDrawOverlays(this)) {
+                            Log.d(TAG, "calling chatheadservice 150");
+                            Intent intentChatHead = new Intent(this.getApplicationContext(), ChatHeadService.class);
+                            intentChatHead.putExtra("thikr", thikr.getThikrText());
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                startForegroundService(intentChatHead);
+                            } else {
+                                startService(intentChatHead);
+                            }
+                        }
+                    } else {
+                        Log.d(TAG, "calling chatheadservice 160");
+                        Intent intentChatHead = new Intent(this.getApplicationContext(), ChatHeadService.class);
                         intentChatHead.putExtra("thikr", thikr.getThikrText());
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             startForegroundService(intentChatHead);
@@ -220,40 +231,31 @@ private PhoneStateListener phoneStateListener;
                             startService(intentChatHead);
                         }
                     }
-                }else{
-                    Log.d(TAG, "calling chatheadservice 160");
-                    Intent intentChatHead=new Intent(this.getApplicationContext(), ChatHeadService.class);
-                    intentChatHead.putExtra("thikr", thikr.getThikrText());
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        startForegroundService(intentChatHead);
+                }
+
+                boolean isQuietTime = isTimeNowQuietTime();
+                if (((reminderType == 1 || reminderType == 2) && isQuietTime == false && (thikr.isBuiltIn() == true || thikr.getFile().length() > 2))) {
+                    if (!isInCall()) {
+                        sharedPrefs.edit().putString("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_GENERAL_THIKR).apply();
+                        data.putInt("ACTION", ThikrMediaPlayerService.MEDIA_PLAYER_PLAY);
+                        Log.d(TAG, "fileNumber sent through intent is " + fileNumber);
+                        data.putInt("FILE", fileNumber);
+                        data.putString("FILE_PATH", thikr.getFile());
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            this.startForegroundService(new Intent(this, ThikrMediaPlayerService.class).putExtras(data));
+                        } else {
+                            this.startService(new Intent(this, ThikrMediaPlayerService.class).putExtras(data));
+                        }
                     } else {
-                        startService(intentChatHead);
+                        Log.d(TAG, "Call in progress, will resume after call ends");
+                        pendingThikrAfterCall = true;
                     }
                 }
+            } catch (Exception e) {
+                Log.d(TAG, "Error while processing general thikr, will still reschedule next occurrence: " + e.getMessage());
+            } finally {
+                new MyAlarmsManager(getApplicationContext()).UpdateAllApplicableAlarms();
             }
-
-
-
-
-			boolean isQuietTime=isTimeNowQuietTime();
-			if (((reminderType==1 ||reminderType==2)&&isQuietTime==false&&(thikr.isBuiltIn()==true||thikr.getFile().length()>2))){
-			    if (!isInCall()) {
-                sharedPrefs.edit().putString("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_GENERAL_THIKR).apply();
-                data.putInt("ACTION", ThikrMediaPlayerService.MEDIA_PLAYER_PLAY);
-                Log.d(TAG,"fileNumber sent through intent is "+fileNumber);
-                data.putInt("FILE", fileNumber);
-                data.putString("FILE_PATH",thikr.getFile());
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    this.startForegroundService(new Intent(this, ThikrMediaPlayerService.class).putExtras(data));
-                } else {
-                    this.startService(new Intent(this, ThikrMediaPlayerService.class).putExtras(data));
-                }
-                      } else {
-            Log.d(TAG, "Call in progress, will resume after call ends");
-            pendingThikrAfterCall = true;
-        }
-			}
-            new MyAlarmsManager(getApplicationContext()).UpdateAllApplicableAlarms();
             return;
 
 		}
