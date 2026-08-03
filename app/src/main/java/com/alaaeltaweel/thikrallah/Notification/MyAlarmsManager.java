@@ -189,7 +189,7 @@ public class MyAlarmsManager {
                     calendar1.setTime(dat);
                     calendar1.add(Calendar.MINUTE, Integer.parseInt(RandomReminderInterval));
                 }
-               // ✅ لو الميعاد المحسوب واقع في فترة الراحة، اقفز لآخرها
+                // ✅ لو الميعاد المحسوب واقع في فترة الراحة، اقفز لآخرها
                 boolean quietTimeChoice = sharedPrefs.getBoolean("quiet_time_choice", true);
                 if (quietTimeChoice) {
                     String[] qStart = sharedPrefs.getString("quiet_time_start", "22:00").split(":", 2);
