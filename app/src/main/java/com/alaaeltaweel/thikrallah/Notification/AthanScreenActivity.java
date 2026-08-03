@@ -40,6 +40,8 @@ public static void stopDua(Context context) {
             try { duaMediaPlayer.release(); } catch (Exception ignored) {}
             duaMediaPlayer = null;
         }
+        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        if (am != null) am.abandonAudioFocus(null); // ✅ سيب الميكروفون هنا كمان لو المستخدم وقف الدعاء يدوي
         android.app.NotificationManager nm = (android.app.NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (nm != null) nm.cancel(9911);
     }
@@ -131,10 +133,11 @@ public static void stopDua(Context context) {
                 AudioManager.STREAM_ALARM,
                 AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
         }
-        duaMediaPlayer = android.media.MediaPlayer.create(context, R.raw.dua_after_athan);
+
         duaMediaPlayer.setOnCompletionListener(mp -> {
                 mp.release();
                 duaMediaPlayer = null;
+                if (am != null) am.abandonAudioFocus(null); // ✅ سيب الميكروفون بعد ما الدعاء يخلص
                 android.app.NotificationManager nmDone = (android.app.NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 if (nmDone != null) nmDone.cancel(9911);
             });
