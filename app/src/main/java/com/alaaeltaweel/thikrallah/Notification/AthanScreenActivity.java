@@ -41,7 +41,7 @@ public static void stopDua(Context context) {
             duaMediaPlayer = null;
         }
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        if (am != null) am.abandonAudioFocus(null); // ✅ سيب الميكروفون هنا كمان لو المستخدم وقف الدعاء يدوي
+      if (am != null && duaMediaPlayer != null) am.abandonAudioFocus(null);// ✅ سيب الميكروفون هنا كمان لو المستخدم وقف الدعاء يدوي
         android.app.NotificationManager nm = (android.app.NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (nm != null) nm.cancel(9911);
     }
