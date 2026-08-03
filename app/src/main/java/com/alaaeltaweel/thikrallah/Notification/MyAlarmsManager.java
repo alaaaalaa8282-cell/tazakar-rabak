@@ -189,6 +189,35 @@ public class MyAlarmsManager {
                     calendar1.setTime(dat);
                     calendar1.add(Calendar.MINUTE, Integer.parseInt(RandomReminderInterval));
                 }
+               // ✅ لو الميعاد المحسوب واقع في فترة الراحة، اقفز لآخرها
+                boolean quietTimeChoice = sharedPrefs.getBoolean("quiet_time_choice", true);
+                if (quietTimeChoice) {
+                    String[] qStart = sharedPrefs.getString("quiet_time_start", "22:00").split(":", 2);
+                    String[] qEnd = sharedPrefs.getString("quiet_time_end", "22:00").split(":", 2);
+                    int quietStartMin = Integer.parseInt(qStart[0]) * 60 + Integer.parseInt(qStart[1]);
+                    int quietEndMin = Integer.parseInt(qEnd[0]) * 60 + Integer.parseInt(qEnd[1]);
+                    int calMin = calendar1.get(Calendar.HOUR_OF_DAY) * 60 + calendar1.get(Calendar.MINUTE);
+
+                    boolean isWithinQuiet;
+                    if (quietStartMin > quietEndMin) {
+                        // الفترة بتعدي منتصف الليل، زي 22:00 -> 06:00
+                        isWithinQuiet = (calMin >= quietStartMin) || (calMin < quietEndMin);
+                    } else {
+                        // فترة في نفس اليوم، زي 2:00 -> 10:00
+                        isWithinQuiet = (calMin >= quietStartMin) && (calMin < quietEndMin);
+                    }
+
+                    if (isWithinQuiet) {
+                        boolean crossesMidnight = quietStartMin > quietEndMin && calMin >= quietStartMin;
+                        calendar1.set(Calendar.HOUR_OF_DAY, Integer.parseInt(qEnd[0]));
+                        calendar1.set(Calendar.MINUTE, Integer.parseInt(qEnd[1]));
+                        calendar1.set(Calendar.SECOND, 0);
+                        if (crossesMidnight) {
+                            calendar1.add(Calendar.DATE, 1);
+                        }
+                    }
+                }
+                
                 this.setAlarm(calendar1, pendingIntentGeneral);
                 sharedPrefs.edit()
                         .putLong("next_general_thikr_scheduled_time", calendar1.getTimeInMillis())
