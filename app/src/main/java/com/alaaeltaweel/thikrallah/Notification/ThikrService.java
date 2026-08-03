@@ -254,7 +254,6 @@ private PhoneStateListener phoneStateListener;
             } catch (Exception e) {
                 Log.d(TAG, "Error while processing general thikr, will still reschedule next occurrence: " + e.getMessage());
             } finally {
-                new MyAlarmsManager(getApplicationContext()).UpdateAllApplicableAlarms();
             }
             return;
 
