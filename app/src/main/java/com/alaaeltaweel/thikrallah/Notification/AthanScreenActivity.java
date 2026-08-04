@@ -133,7 +133,13 @@ public static void stopDua(Context context) {
                 AudioManager.STREAM_ALARM,
                 AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
         }
-
+   // ✅ ده اللي كان ناقص - إنشاء الـ MediaPlayer وتحديد ملف الدعاء
+     duaMediaPlayer = android.media.MediaPlayer.create(context, R.raw.dua_after_athan);
+    if (duaMediaPlayer == null) {
+    Log.e(TAG, "فشل تحميل ملف الدعاء dua_after_athan.mp3");
+    if (am != null) am.abandonAudioFocus(null);
+    return;
+    }
         duaMediaPlayer.setOnCompletionListener(mp -> {
                 mp.release();
                 duaMediaPlayer = null;
