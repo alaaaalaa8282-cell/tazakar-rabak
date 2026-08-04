@@ -185,7 +185,7 @@ public class MyAlarmsManager {
                     String[] qEnd = sharedPrefs.getString("quiet_time_end", "22:00").split(":", 2);
                     int quietStartMin = Integer.parseInt(qStart[0]) * 60 + Integer.parseInt(qStart[1]);
                     int quietEndMin = Integer.parseInt(qEnd[0]) * 60 + Integer.parseInt(qEnd[1]);
-                    int nowMin = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE);
+                    int nowMin = calendar1.get(Calendar.HOUR_OF_DAY) * 60 + calendar1.get(Calendar.MINUTE);
 
                     boolean nowIsWithinQuiet;
                     if (quietStartMin > quietEndMin) {
