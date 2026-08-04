@@ -174,20 +174,9 @@ public class MyAlarmsManager {
                 Log.d("MyAlarmsManager", "General thikr already scheduled, skipping reschedule");
             } else {
                 alarmMgr.cancel(pendingIntentGeneral);
-                String[] dayReminderStart = sharedPrefs.getString("daytReminderTime", "8:00").split(":", 3);
-
-                Calendar startWindow = Calendar.getInstance();
-                startWindow.set(Calendar.HOUR_OF_DAY, Integer.parseInt(dayReminderStart[0]));
-                startWindow.set(Calendar.MINUTE, Integer.parseInt(dayReminderStart[1]));
-                startWindow.set(Calendar.SECOND, 0);
-
-                Calendar calendar1;
-                if (now.before(startWindow)) {
-                    calendar1 = startWindow;
-                } else {
-                    calendar1 = Calendar.getInstance();
-                    calendar1.setTime(dat);
-                    calendar1.add(Calendar.MINUTE, Integer.parseInt(RandomReminderInterval));
+                Calendar calendar1 = Calendar.getInstance();
+             calendar1.setTime(dat);
+             calendar1.add(Calendar.MINUTE, Integer.parseInt(RandomReminderInterval));
                 }
                 // ✅ لو دلوقتي (وقت الحساب نفسه) واقع جوه فترة الراحة، اقفز لآخرها فورًا
                 boolean quietTimeChoice = sharedPrefs.getBoolean("quiet_time_choice", true);
