@@ -177,7 +177,7 @@ public class MyAlarmsManager {
                 Calendar calendar1 = Calendar.getInstance();
              calendar1.setTime(dat);
              calendar1.add(Calendar.MINUTE, Integer.parseInt(RandomReminderInterval));
-                }
+            
                 // ✅ لو دلوقتي (وقت الحساب نفسه) واقع جوه فترة الراحة، اقفز لآخرها فورًا
                 boolean quietTimeChoice = sharedPrefs.getBoolean("quiet_time_choice", true);
                 if (quietTimeChoice) {
