@@ -234,7 +234,7 @@ private PhoneStateListener phoneStateListener;
                 }
 
                 boolean isQuietTime = isTimeNowQuietTime();
-                if (((reminderType == 1 || reminderType == 2) && isQuietTime == false && (thikr.isBuiltIn() == true || thikr.getFile().length() > 2))) {
+                if (((reminderType == 1 || reminderType == 2) && isQuietTime == false && !AthanScreenActivity.isDuaPlaying() && (thikr.isBuiltIn() == true || thikr.getFile().length() > 2))) {
                     if (!isInCall()) {
                         sharedPrefs.edit().putString("com.alaaeltaweel.thikrallah.datatype", MainActivity.DATA_TYPE_GENERAL_THIKR).apply();
                         data.putInt("ACTION", ThikrMediaPlayerService.MEDIA_PLAYER_PLAY);
@@ -253,14 +253,7 @@ private PhoneStateListener phoneStateListener;
                 }
             } catch (Exception e) {
                 Log.d(TAG, "Error while processing general thikr, will still reschedule next occurrence: " + e.getMessage());
-           
-		} finally {
-                SharedPreferences finalPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-                long nextScheduled = finalPrefs.getLong("next_general_thikr_scheduled_time", 0);
-                if (nextScheduled <= System.currentTimeMillis()) {
-                    // ✅ الحارس مانجحش يحجز الميعاد الجاي (أو فشل لأي سبب) - ده نداء احتياطي بس
-                    new MyAlarmsManager(getApplicationContext()).UpdateAllApplicableAlarms();
-                }
+            } finally {
             }
             return;
 

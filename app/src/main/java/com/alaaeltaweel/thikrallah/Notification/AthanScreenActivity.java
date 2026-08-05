@@ -46,6 +46,10 @@ public static void stopDua(Context context) {
         if (nm != null) nm.cancel(9911);
     }
 
+    public static boolean isDuaPlaying() {
+        return duaMediaPlayer != null;
+    }
+
     private static void showDuaStopNotification(Context context) {
         String channelId = "dua_stop_channel_v3";
         android.app.NotificationManager nm = (android.app.NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
